@@ -1,0 +1,148 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Home">
+	<main>
+
+		<section>
+			<div>
+				<h2>About me</h2>
+				<img>
+			</div>
+			<p>I’m a creative developer currently pursuing my Bachelor's at CSU Monterey Bay. 
+				I focus on frontend development with a specialization in real-time graphics in the browser.
+				My skill set makes me a resourceful individual contributor who blends creativity 
+				with logical problem-solving to make innovative and user-centric digital experiences. </p>
+			<p>My ambition is to combine creative design and technical development seamlessly in my future career. 
+				I bring an engineering mindset to the design process and I care deeply about performance and 
+				the principles behind the a11y project. Off the computer, I like to climb rocks, hike, 
+				read, noodle on bass guitar, and I’m a plant nerd by hobby.</p>
+		</section>
+		<!-- Add Fun animation here -->
+		<section>
+			<p>My latest interest has been exploring graphics programming on the web using Three.js 
+				and WebGL shaders. In the past, I worked with Firebase and writing cloud functions 
+				in Node.js with TypeScript. In community college, my education focused on JavaScript full-stack 
+				development using Next.js, React, and RESTful APIs. My time at CSUMB thus far 
+				has introduced me to a wide breadth of topics like typography and branding, and has 
+				provided me experience with Figma and much of the Adobe Creative suite including 
+				Photoshop, Illustrator, After Effects, and Aero.</p>
+			<img>
+		</section>
+		<section class="services">
+			<h2>Services</h2>
+			<div class="services-list">
+				<div>
+					<h4>Web Development</h4>
+					<p>Freegan JOMO bruh gentrify butcher. Godard activated charcoal cold-pressed marxism. 
+						Bruh seitan photo booth flexitarian pour-over lyft vexillologist Brooklyn. 
+						XOXO cupping letterpress, art party jawn flexitarian palo santo photo booth. 
+						Try-hard paleo quinoa put a bird on it same gastropub shaman pop-up messenger bag copper mug.</p>
+				</div>
+				<div>
+					<h4>User Experience</h4>
+					<p>Tbh ennui yuccie, tumeric drinking vinegar yes plz ascot craft beer bruh banjo asymmetrical. 
+						Knausgaard tumblr fanny pack live-edge biodiesel yuccie. Hot chicken woke glossier, 
+						artisan next level hell of chartreuse franzen adaptogen cold-pressed art party hammock 
+						actually before they sold out. Sus pork belly cardigan messenger bag, literally humblebrag 
+						PBR&B letterpress. Occupy fit celiac woke hell of cliche schlitz deep v.</p>
+				</div>			
+				<div>
+					<h4>Real-time Graphics</h4>
+					<p>Flexitarian succulents intelligentsia yes plz air plant cardigan, deep v coloring book DIY 
+						pok pok selfies kitsch XOXO live-edge hella. Pok pok sus ennui, truffaut hashtag poutine 
+						coloring book literally meditation. Unicorn iceland beard blog artisan XOXO. Iceland knausgaard 
+						tumblr lomo ethical marfa migas kinfolk coloring book jean shorts typewriter literally. </p>
+				</div>
+			</div>
+		</section>
+		<section class="skills">
+			<div>
+				<h3 class="skill-title">Design Skills</h3>
+				<ul>
+					<li>Figma</li>
+					<li>User Experience</li>
+					<li>Web design</li>
+					<li>Interface design</li>
+					<li>Branding</li>
+				</ul>
+			</div>
+			<div>
+				<h3 class="skill-title">Development Tools</h3>
+				<ul>
+					<li>JavaScript</li>
+					<li>Three.js & WebGL</li>
+					<li>Node,js</li>
+					<li>HTML & CSS</li>
+					<li>Git & Deployment workflows</li>
+				</ul>
+			</div>
+		</section>
+		<!-- Add Fun animation here -->
+		<section>
+			<div>
+				<h2 id="contact">Contact</h2>
+				<img>
+			</div>
+			<div>
+				<h4>Let's work together</h4>
+				<p>Something about working together or cooperating!</p>
+				<p>Email</p>
+
+			</div>
+
+			<!-- Socials -->
+			<div>
+				<ul>
+					<li></li>
+					<li></li>
+					<li></li>
+				</ul>
+			</div>
+
+		</section>
+
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		max-width: calc(100% - 2rem);
+		line-height: 1.6;
+	}
+	
+	section {
+		width: 70%;
+		margin: 0 auto;
+		padding: 4em 0;
+	}
+
+	.services {
+		width: 85%;
+	}
+	.services h2 {
+		text-align: center;
+	}
+	.services-list {
+		display: flex;
+		justify-content: space-between;
+		gap: 1em;
+	}
+	.services-list div {
+		width: 400px;
+	}
+
+	.skills {
+		display: flex;
+		justify-content: space-evenly;
+	}
+	.skill-title {
+		text-decoration: underline;
+	}
+
+	h4 {
+		text-align: center;
+	}
+</style>

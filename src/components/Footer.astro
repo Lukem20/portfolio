@@ -1,0 +1,44 @@
+---
+import Logo from "./Logo.astro";
+import Nav from "./Nav.astro";
+---
+
+<footer>
+    <Logo height="125px" width="125px"/>
+    <Nav />
+    <div id="footer-caption">
+        <p>Set in <span>Manrope</span> and <span>League Spartan</span> available
+            under <span>SIL Open Font License Version</span> 1.1.
+            Made with <span>Astro.js</span>; hosted on <span>Netlify</span>.
+            This site uses no tracking or cookies.
+            
+            Copyright © 2023 Luke Moore</p>
+    </div>
+</footer>
+
+<style>
+    footer {
+        width: 100%;
+        margin: 4em 0 0 0;
+        background-color: #2A6679;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    /* white-space: pre-line; will format the paragraph according to how it is above!! */
+    #footer-caption {
+        width: 360px;
+        font-size: 0.8em;
+        white-space: pre-line;
+        padding: 1.5em 0 1.5em 0;
+    }
+
+    span {
+        font-weight: 800;
+    }
+
+    /* Media/container query change the nav to be flex-direction: column at <1000px */
+    /* Media/container query change the entire footer to be flex-direction: column at <900px */
+
+</style>

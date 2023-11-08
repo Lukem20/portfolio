@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CarouselPortfolio from '../components/CarouselPortfolio.astro';
+---
+
+<Layout title="Home">
+	<main>
+		<CarouselPortfolio />
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		width: 800px;
+		max-width: calc(100% - 2rem);
+		line-height: 1.6;
+	}
+</style>
