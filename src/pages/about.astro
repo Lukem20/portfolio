@@ -4,14 +4,14 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout title="Home">
 	<main>
-
+		<!-- About -->
 		<section>
 			<div>
-				<h2>About me</h2>
-				<img>
+				<h2 class="center-text">About me</h2>
+				<img class="center-img" src="" alt="">
 			</div>
 			<p>I’m a creative developer currently pursuing my Bachelor's at CSU Monterey Bay. 
-				I focus on frontend development with a specialization in real-time graphics in the browser.
+				I focus on frontend development with a specialization in graphics in the browser.
 				My skill set makes me a resourceful individual contributor who blends creativity 
 				with logical problem-solving to make innovative and user-centric digital experiences. </p>
 			<p>My ambition is to combine creative design and technical development seamlessly in my future career. 
@@ -19,7 +19,7 @@ import Layout from '../layouts/Layout.astro';
 				the principles behind the a11y project. Off the computer, I like to climb rocks, hike, 
 				read, noodle on bass guitar, and I’m a plant nerd by hobby.</p>
 		</section>
-		<!-- Add Fun animation here -->
+
 		<section>
 			<p>My latest interest has been exploring graphics programming on the web using Three.js 
 				and WebGL shaders. In the past, I worked with Firebase and writing cloud functions 
@@ -28,40 +28,47 @@ import Layout from '../layouts/Layout.astro';
 				has introduced me to a wide breadth of topics like typography and branding, and has 
 				provided me experience with Figma and much of the Adobe Creative suite including 
 				Photoshop, Illustrator, After Effects, and Aero.</p>
-			<img>
+			<img class="center-img" src="" alt="">
 		</section>
+
+		<!-- Services -->
 		<section class="services">
-			<h2>Services</h2>
+			<h2 class="center-text">Services</h2>
 			<div class="services-list">
 				<div>
-					<h4>Web Development</h4>
-					<p>Freegan JOMO bruh gentrify butcher. Godard activated charcoal cold-pressed marxism. 
-						Bruh seitan photo booth flexitarian pour-over lyft vexillologist Brooklyn. 
-						XOXO cupping letterpress, art party jawn flexitarian palo santo photo booth. 
-						Try-hard paleo quinoa put a bird on it same gastropub shaman pop-up messenger bag copper mug.</p>
+					<h4><span>1)</span> Web Development</h4>
+					<p>My first experience with HTML was in 2019, and I have been hooked on the browser since.
+						I have a variety of small personal projects I host on Netlify and a few professional 
+						websites for local businesses and non-profit organizations in Sonoma County, California.
+						
+					</p>
 				</div>
 				<div>
-					<h4>User Experience</h4>
-					<p>Tbh ennui yuccie, tumeric drinking vinegar yes plz ascot craft beer bruh banjo asymmetrical. 
-						Knausgaard tumblr fanny pack live-edge biodiesel yuccie. Hot chicken woke glossier, 
-						artisan next level hell of chartreuse franzen adaptogen cold-pressed art party hammock 
-						actually before they sold out. Sus pork belly cardigan messenger bag, literally humblebrag 
-						PBR&B letterpress. Occupy fit celiac woke hell of cliche schlitz deep v.</p>
+					<h4><span>2)</span> User Experience Design</h4>
+					<p>The end-user is at the core of my design process and is the main source of feedback I use
+						to develop prototypes and iterate on existing features. I reserach users to understand their 
+						needs, behaviors, and pain points. Involving the user in my iteration process allows me to 
+						create inclusive solutions, considering a broader range of abilities, backgrounds, and needs.
+
+					</p>
 				</div>			
 				<div>
-					<h4>Real-time Graphics</h4>
-					<p>Flexitarian succulents intelligentsia yes plz air plant cardigan, deep v coloring book DIY 
-						pok pok selfies kitsch XOXO live-edge hella. Pok pok sus ennui, truffaut hashtag poutine 
-						coloring book literally meditation. Unicorn iceland beard blog artisan XOXO. Iceland knausgaard 
-						tumblr lomo ethical marfa migas kinfolk coloring book jean shorts typewriter literally. </p>
+					<h4><span>3)</span> Graphics & Animations</h4>
+					<p>My latest passion, inspired by my Graphics Programming class in school, has been to explore
+						making art and cool visual effects using shader code and WebGL. I think applying some of
+						these visuals can be used to help <i><b>spice</b></i> up the web pages we view and make browsing the 
+						internet a little more interesting. </p>
 				</div>
 			</div>
 		</section>
+
+		<!-- Skills -->
 		<section class="skills">
 			<div>
 				<h3 class="skill-title">Design Skills</h3>
 				<ul>
 					<li>Figma</li>
+					<li>Adobe Illustrator</li>
 					<li>User Experience</li>
 					<li>Web design</li>
 					<li>Interface design</li>
@@ -72,35 +79,33 @@ import Layout from '../layouts/Layout.astro';
 				<h3 class="skill-title">Development Tools</h3>
 				<ul>
 					<li>JavaScript</li>
-					<li>Three.js & WebGL</li>
-					<li>Node,js</li>
+					<li>Three.js</li>
+					<li>WebGL</li>
+					<li>Node.js</li>
 					<li>HTML & CSS</li>
 					<li>Git & Deployment workflows</li>
 				</ul>
 			</div>
 		</section>
-		<!-- Add Fun animation here -->
-		<section>
+
+		<!-- Contact -->
+		<section id="contact">
 			<div>
-				<h2 id="contact">Contact</h2>
-				<img>
+				<h2>Contact</h2>
+				<img src="" alt="">
 			</div>
 			<div>
-				<h4>Let's work together</h4>
-				<p>Something about working together or cooperating!</p>
-				<p>Email</p>
-
+				<h3>Let's work together!</h3>
+				<p>Something about writing me an email and we can figure out if I am the best fit for your project/busniess!</p>
+				<p>Email@gmail.com</p>
 			</div>
-
-			<!-- Socials -->
 			<div>
-				<ul>
-					<li></li>
-					<li></li>
-					<li></li>
+				<ul id="iconList">
+					<li>LinkedIn ICON PLACEHOLDER</li>
+					<li>GitHub ICON PLACEHOLDER</li>
+					<li>Other ICON PLACEHOLDER</li>
 				</ul>
 			</div>
-
 		</section>
 
 	</main>
@@ -119,10 +124,26 @@ import Layout from '../layouts/Layout.astro';
 		padding: 4em 0;
 	}
 
+	img {
+		height: 40vh;
+		width: 40vw;
+		background-color: yellow;
+	}
+
+	.inline-header {
+		display: inline;
+	}
+	.center-img {
+		display: block;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
 	.services {
 		width: 85%;
 	}
-	.services h2 {
+	.center-text {
 		text-align: center;
 	}
 	.services-list {
@@ -134,6 +155,12 @@ import Layout from '../layouts/Layout.astro';
 		width: 400px;
 	}
 
+	h4 span {
+		font-family: Manrope;
+		font-size: 0.8rem;
+		letter-spacing: 0.2rem;
+	}
+
 	.skills {
 		display: flex;
 		justify-content: space-evenly;
@@ -142,7 +169,7 @@ import Layout from '../layouts/Layout.astro';
 		text-decoration: underline;
 	}
 
-	h4 {
-		text-align: center;
+	#iconList {
+		list-style: none;
 	}
 </style>

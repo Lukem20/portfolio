@@ -1,4 +1,10 @@
-<nav class="menu">
+---
+interface Props {
+	boxsShadowColor: string;
+}
+---
+
+<nav>
     <ul>
       <li><a href="/"><h4>Home</h4></a></li>
       <li><a href="/about"><h4>About</h4></a></li>
@@ -7,6 +13,9 @@
 </nav>
 
 <style>
+    nav {
+        padding: 1.5em 0;
+    }
     ul {
         list-style: none;
         text-transform: uppercase;
@@ -26,7 +35,7 @@
     h4 {
         position: relative;
         text-decoration: none;
-        box-shadow: inset 0 0 0 0 #344054;
+        box-shadow: inset 0 0 0 0 #4cadca;
         margin: 0 -.25rem;
         padding: 0 .25rem;
         transition: color .3s ease-in-out, box-shadow .3s ease-in-out;
@@ -48,11 +57,11 @@
         transform: scaleX(1);
     }   
     h4:hover {
-        box-shadow: inset 200px 0 0 0 #2d6a81;
-        color: #FFFFF2;
+        box-shadow: inset 200px 0 0 0 #2A6679;
+        color: #f2f84f;
     }
     h4:active {
-        color: #2A6679;
+        color: #f2f84f;
     }
 
 
