@@ -39,7 +39,7 @@ import slugPhoto from '../images/slug.jpeg';
 			<h2 class="center-text">Services</h2>
 			<div class="services-list">
 				<div>
-					<h4><span>1)</span> Web Development</h4>
+					<h4 class="service-title"><span>1)</span> Web Development</h4>
 					<p>My first experience with HTML was in 2019, and I have been hooked on the browser since.
 						I have a variety of small personal projects I host on Netlify and a few professional 
 						websites for local businesses and non-profit organizations in Sonoma County, California.
@@ -47,7 +47,7 @@ import slugPhoto from '../images/slug.jpeg';
 					</p>
 				</div>
 				<div>
-					<h4><span>2)</span> User Experience Design</h4>
+					<h4 class="service-title"><span>2)</span> User Experience Design</h4>
 					<p>The end-user is at the core of my design process and is the main source of feedback I use
 						to develop prototypes and iterate on existing features. I reserach users to understand their 
 						needs, behaviors, and pain points. Involving the user in my iteration process allows me to 
@@ -56,7 +56,7 @@ import slugPhoto from '../images/slug.jpeg';
 					</p>
 				</div>			
 				<div>
-					<h4><span>3)</span> Graphics & Animations</h4>
+					<h4 class="service-title"><span>3)</span> Graphics & Animations</h4>
 					<p>My latest passion, inspired by my Graphics Programming class in school, has been to explore
 						making art and cool visual effects using shader code and WebGL. I think applying some of
 						these visuals can be used to help <i><b>spice</b></i> up the web pages we view and make browsing the 
@@ -181,17 +181,23 @@ import slugPhoto from '../images/slug.jpeg';
 	}
 
 	.services {
-		width: 85%;
+		width: 100%;
+		margin: 0;
 	}
 	.center-text {
 		text-align: center;
 	}
 	.services-list {
 		display: flex;
+		justify-content: space-evenly;
+		flex-wrap: wrap;
 		gap: 4em;
 	}
 	.services-list div {
 		width: 400px;
+	}
+	.service-title {
+		margin: 0;
 	}
 
 	h4 span {
@@ -210,6 +216,8 @@ import slugPhoto from '../images/slug.jpeg';
 	}
 	.skill-title {
 		text-decoration: underline;
+		margin-bottom: 0;
+		margin-top: 3rem;
 	}
 
 	#contact-slug {
