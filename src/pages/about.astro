@@ -175,7 +175,7 @@ import slugPhoto from '../images/slug.jpeg';
 	}
 	.center-img {
 		display: block;
-		display: block;
+		border-radius: 10px;
 		margin-left: auto;
 		margin-right: auto;
 	}
@@ -188,8 +188,7 @@ import slugPhoto from '../images/slug.jpeg';
 	}
 	.services-list {
 		display: flex;
-		justify-content: space-between;
-		gap: 1em;
+		gap: 4em;
 	}
 	.services-list div {
 		width: 400px;
@@ -203,7 +202,11 @@ import slugPhoto from '../images/slug.jpeg';
 
 	.skills {
 		display: flex;
-		justify-content: space-evenly;
+		flex-wrap: wrap;
+		justify-content: space-around;
+	}
+	.skills div {
+		width: 300px;
 	}
 	.skill-title {
 		text-decoration: underline;
