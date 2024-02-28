@@ -1,21 +1,23 @@
 ---
 
-
 ---
-<div class="canvas-container">
-    <canvas></canvas>
-</div>
+<div id="title"><h1>Project Title</h1></div>
+<div id="scene-container"></div>
+
+<script type="module" src="src/components/main.js"></script>
 
 <style>
-    .canvas-container {
+    #scene-container {
         margin-top: 1em;
-        height: 83vh;
+        height: 81vh;
         width: 100%;    
     }
 
-    canvas {
-        background-color: #ffff00;
-        height: 100%;
-        width: 100%;
+    #title {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
     }
 </style>

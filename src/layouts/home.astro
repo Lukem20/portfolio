@@ -1,0 +1,86 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { ViewTransitions } from 'astro:transitions';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Luke Moore's 2024 portfolio website" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon-circle.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<ViewTransitions />
+	</head>
+	<body>
+		<Header />
+		<slot />
+	</body>
+</html>
+<style is:global>
+	body { margin: 0; }
+	@font-face {
+		font-family: 'League Spartan';
+		src: url("/fonts/LeagueSpartan-VF.woff2");
+	}
+	@font-face {
+		font-family: 'Manrope';
+		src: url("/fonts/Manrope-VF.woff");
+	}
+
+	@media (prefers-color-scheme: light) {
+		html {
+			background-color: #FFFFF2;
+			color: #22252D;
+		}
+	}
+
+	html {
+		font-family: Manrope, system-ui, sans-serif;
+		font-size: medium;
+		background-color: #22252D;
+		color: #FFFFF2;
+		letter-spacing: 0.1em;
+
+	}
+	
+	h1 {
+		font-family: League Spartan;
+		font-size: 2rem;
+		line-height: 0.8em;
+		font-weight: 850;
+		letter-spacing: normal;
+	}
+	h2 {
+		font-family: League Spartan;
+		font-size: 3rem;
+		line-height: 0.7rem;
+		font-weight: 700;
+		letter-spacing: normal;
+	}
+	h3 {
+		font-family: League Spartan;
+		font-size: 2rem;
+		line-height: 2rem;
+		font-weight: 550;
+		letter-spacing: normal;
+	}
+	/* Used in the Nav */
+	h4 {
+		font-family: League Spartan;
+		font-size: 1.5rem;
+		line-height: 1.2rem;
+		font-weight: 625;
+		letter-spacing: normal;
+	}
+
+</style>
