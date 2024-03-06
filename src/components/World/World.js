@@ -2,7 +2,7 @@
 import { createCamera } from './components/camera.js';
 import { createLights } from './components/lights.js';
 import { createScene } from './components/scene.js';
-import { createPhotos } from './components/photos.js';
+import { createPhotos } from './components/photoWheels.js';
 
 // Systems
 import { createRenderer } from './systems/renderer.js';

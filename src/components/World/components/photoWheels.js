@@ -65,8 +65,8 @@ function createPhotos () {
 
     }
 
-    topGroup.translateY(290);
-    bottomGroup.translateY(-290);
+    topGroup.translateY(295);
+    bottomGroup.translateY(-280);
     
     // Scroll event listeners
     let scrollSpeed = 0.0;
