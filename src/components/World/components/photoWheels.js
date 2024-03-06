@@ -19,22 +19,28 @@ function createPhotos () {
         'src/images/hbc1.JPG',
         'src/images/whatDesigner1.JPG',
         'src/images/sb2.jpg',
+        'src/images/abts1.jpg',
+        'src/images/bit.jpg',
+        //placeholder
         'src/images/color.jpg',
         'src/images/color.jpg',
         'src/images/sisisBarbershop2.JPG',
         'src/images/hbc2.JPG',
         'src/images/whatDesigner2.JPG',
         'src/images/sb1.jpg',
+        'src/images/abts2.jpg',
+        'src/images/bit2.jpg',
+        //placeholder
         'src/images/color.jpg',
         'src/images/color.jpg',
     ];
 
     const numImages = screenshotPaths.length;
-    const size = 102.5;
+    const size = 105;
     const geometry = RoundedRectangle(size, size, 6, 10);
 
     // Position and angle parameters for each mesh
-    const wheelRadius = 220;
+    const wheelRadius = 285;
     let radianInterval = (2 * Math.PI) / numImages;
 
     // Creating image wheels
@@ -65,8 +71,8 @@ function createPhotos () {
 
     }
 
-    topGroup.translateY(295);
-    bottomGroup.translateY(-280);
+    topGroup.translateY(360);
+    bottomGroup.translateY(-345);
     
     // Scroll event listeners
     let scrollSpeed = 0.0;
