@@ -6,7 +6,7 @@ import {
     Group,
 } from 'three';
 
-function createPhotos () {
+async function createPhotos () {
     // Create top & bottom groups to group the photos into a wheel.
     // Create one group to return both wheels together.
     let topGroup = new Group();
@@ -15,22 +15,21 @@ function createPhotos () {
 
     // All photos are added to both wheels.
     let screenshotPaths = [
+        'src/images/bit.jpg',
+        'src/images/whatDesigner1.JPG',
+        'src/images/abts1.jpg',
+        'src/images/sb2.jpg',
         'src/images/sisisBarbershop1.JPG',
         'src/images/hbc1.JPG',
-        'src/images/whatDesigner1.JPG',
-        'src/images/sb2.jpg',
-        'src/images/abts1.jpg',
-        'src/images/bit.jpg',
-        //placeholder
         'src/images/color.jpg',
         'src/images/color.jpg',
+
+        'src/images/bit2.jpg',
+        'src/images/whatDesigner2.JPG',
+        'src/images/abts2.jpg',
+        'src/images/sb1.jpg',
         'src/images/sisisBarbershop2.JPG',
         'src/images/hbc2.JPG',
-        'src/images/whatDesigner2.JPG',
-        'src/images/sb1.jpg',
-        'src/images/abts2.jpg',
-        'src/images/bit2.jpg',
-        //placeholder
         'src/images/color.jpg',
         'src/images/color.jpg',
     ];
@@ -50,7 +49,7 @@ function createPhotos () {
 
     for (let i = 0; i < numImages; i++) {
         // Create texture using screenshot image.
-        material = createTexture(screenshotPaths[i]);
+        material = await createTexture(screenshotPaths[i]);
 
         // Top photo wheel
         topMesh = new Mesh(roundedRectangleGeometry, material);

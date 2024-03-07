@@ -3,7 +3,7 @@ import {
     TextureLoader,
 } from 'three';
 
-function createTexture (imagePath) {
+async function createTexture (imagePath) {
     const textureLoader = new TextureLoader();
     const portfolioScreenshotImage = textureLoader.load(imagePath);
     

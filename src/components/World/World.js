@@ -30,8 +30,9 @@ class World {
         scene.add(ambientLight);
 
         /* Image wheel gallery */
-        const photoWheels = createPhotos();
-        scene.add(photoWheels);
+        createPhotos().then((photoWheels) => {
+            scene.add(photoWheels);
+        });
 
         /* Controls */
         controls = createControls(camera, container);
