@@ -6,4 +6,4 @@ async function main() {
     photoWheel.start();
 }
 
-main();
+await main();

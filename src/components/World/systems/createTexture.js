@@ -5,7 +5,7 @@ import {
 
 async function createTexture (imagePath) {
     const textureLoader = new TextureLoader();
-    const portfolioScreenshotImage = textureLoader.load(imagePath);
+    const portfolioScreenshotImage = textureLoader.loadAsync(imagePath);
     
     return new MeshStandardMaterial({ 
         map: portfolioScreenshotImage,
