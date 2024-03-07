@@ -1,6 +1,5 @@
 import { createTexture } from '../systems/createTexture.js';
 import { 
-    PlaneGeometry, 
     BufferGeometry,
     BufferAttribute,
     Mesh,
@@ -8,12 +7,13 @@ import {
 } from 'three';
 
 function createPhotos () {
-    // A group for each wheel individually, one group for both wheels.
+    // Create top & bottom groups to group the photos into a wheel.
+    // Create one group to return both wheels together.
     let topGroup = new Group();
     let bottomGroup = new Group();
     const bothGalleries = new Group();
 
-    // Square picture objects
+    // All photos are added to both wheels.
     let screenshotPaths = [
         'src/images/sisisBarbershop1.JPG',
         'src/images/hbc1.JPG',
@@ -36,12 +36,12 @@ function createPhotos () {
     ];
 
     const numImages = screenshotPaths.length;
-    const size = 105;
-    const geometry = RoundedRectangle(size, size, 6, 10);
+    const roundedRectangelSize = 105;
+    const roundedRectangleGeometry = RoundedRectangle(roundedRectangelSize, roundedRectangelSize, 6, 10);
 
-    // Position and angle parameters for each mesh
+    // Position and angle parameters for each object
     const wheelRadius = 285;
-    let radianInterval = (2 * Math.PI) / numImages;
+    const radianInterval = (2 * Math.PI) / numImages;
 
     // Creating image wheels
     let material = null;
@@ -49,16 +49,16 @@ function createPhotos () {
     let bottomMesh = null;
 
     for (let i = 0; i < numImages; i++) {
+        // Create texture using screenshot image.
         material = createTexture(screenshotPaths[i]);
 
         // Top photo wheel
-        topMesh = new Mesh(geometry, material);
+        topMesh = new Mesh(roundedRectangleGeometry, material);
         topMesh.position.set(
             Math.cos(radianInterval * i) * wheelRadius,
             Math.sin(radianInterval * i) * wheelRadius,
             i * (-1 * i * 0.01)
         );
-        topGroup.add(topMesh);
 
         // Bottom photo wheel
         bottomMesh = topMesh.clone();
@@ -67,10 +67,19 @@ function createPhotos () {
             Math.sin(radianInterval * i) * wheelRadius,
             i * (-1 * i * 0.01)
         );
-        bottomGroup.add(bottomMesh);
 
+        /**
+         * TODO
+         * -    Add 'onclick' event listener to each Mesh for its project page
+         * -    (or explore wrapping <a href=""></a> around each mesh?)
+         */
+
+        // Add each Mesh to its wheel group.
+        topGroup.add(topMesh);
+        bottomGroup.add(bottomMesh);
     }
 
+    // Move each photo wheel into position.
     topGroup.translateY(360);
     bottomGroup.translateY(-345);
     
@@ -88,18 +97,18 @@ function createPhotos () {
         }
     });
 
-    // Debug panel - remove before deploy
-    const params = {};
-    params.imageSize = size;
+    /**
+     * TODO
+     * -    Make image squares 'snap' into place.
+     */   
 
     bothGalleries.add(topGroup);
     bothGalleries.add(bottomGroup);
     return bothGalleries;
 }
 
-// Planes with rounded corners copied from:
-// https://discourse.threejs.org/t/roundedrectangle-squircle/28645
 
+// https://discourse.threejs.org/t/roundedrectangle-squircle/28645
 function RoundedRectangle( w, h, r, s ) { // width, height, radius corner, smoothness  
 	
 	const wi = w / 2 - r;		// inner width

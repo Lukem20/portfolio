@@ -10,9 +10,6 @@ import { createControls } from './systems/controls.js';
 import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
 
-// Other
-// import { createGUI } from './components/lilgui.js'
-
 let camera;
 let renderer;
 let scene;
@@ -33,8 +30,8 @@ class World {
         scene.add(ambientLight);
 
         /* Image wheel gallery */
-        const photoGallery = createPhotos();
-        scene.add(photoGallery);
+        const photoWheels = createPhotos();
+        scene.add(photoWheels);
 
         /* Controls */
         controls = createControls(camera, container);
