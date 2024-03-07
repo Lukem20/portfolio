@@ -11,6 +11,7 @@ const { title } = Astro.props;
 
 <!doctype html>
 <html lang="en">
+
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content="Luke Moore's 2024 portfolio website" />
@@ -20,11 +21,16 @@ const { title } = Astro.props;
 		<title>{title}</title>
 		<ViewTransitions />
 	</head>
+
 	<body>
 		<Header />
 		<slot />
 	</body>
+
 </html>
+
+<script src="../utils/entry.ts"></script>
+
 <style is:global>
 	body { 
 		margin: 0;
@@ -84,5 +90,4 @@ const { title } = Astro.props;
 		font-weight: 625;
 		letter-spacing: normal;
 	}
-
 </style>
