@@ -25,9 +25,8 @@ class World {
         const ambientLight = createLights();
         scene.add(ambientLight);
 
-        createPhotos(camera).then((photoWheels) => {
-            scene.add(photoWheels);
-        });
+        const photoWheels = createPhotos(camera);
+        scene.add(photoWheels);
 
         const resizer = new Resizer(container, camera, renderer);
     }

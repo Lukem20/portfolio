@@ -7,29 +7,29 @@ import {
     Group,
 } from 'three';
 
-async function createPhotos () {
+function createPhotos () {
     const topGroup = new Group();
     const bottomGroup = new Group();
     const bothGalleries = new Group();
 
     let screenshotPaths = [
-        '/assets/whatDesigner1.JPG',
-        '/assets/bit.jpg',
-        '/assets/abts1.jpg',
-        '/assets/sb2.jpg',
-        '/assets/sisisBarbershop1.JPG',
-        '/assets/hbc1.JPG',
-        '/assets/color.jpg',
-        '/assets/color.jpg',
+        '../../images/whatDesigner1.JPG',
+        '../../images/bit.jpg',
+        '../../images/abts1.jpg',
+        '../../images/sb2.jpg',
+        '../../images/sisisBarbershop1.JPG',
+        '../../images/hbc1.JPG',
+        '../../images/color.jpg',
+        '../../images/color.jpg',
 
-        '/assets/bit2.jpg',
-        '/assets/whatDesigner2.JPG',
-        '/assets/abts2.jpg',
-        '/assets/sb1.jpg',
-        '/assets/sisisBarbershop2.JPG',
-        '/assets/hbc2.JPG',
-        '/assets/color.jpg',
-        '/assets/color.jpg',
+        '../../images/bit2.jpg',
+        '../../images/whatDesigner2.JPG',
+        '../../images/abts2.jpg',
+        '../../images/sb1.jpg',
+        '../../images/sisisBarbershop2.JPG',
+        '../../images/hbc2.JPG',
+        '../../images/color.jpg',
+        '../../images/color.jpg',
     ];
 
     const wheelRadius = 17;
