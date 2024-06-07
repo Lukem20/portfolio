@@ -1,0 +1,96 @@
+#about {
+    max-width: 1500px;
+    line-height: 1.75;
+    margin: 2em auto 6em auto;
+}
+#about section {
+    width: 100%;
+    margin: 0 auto 4em auto;
+}
+#about h2 {
+    font-family: League Spartan;
+    font-size: 3rem;
+    font-weight: 425;
+    margin: 0;
+}
+#about h3 {
+    font-family: League Spartan;
+    font-size: 2rem;
+    font-weight: 400;
+    margin: 0;
+}
+
+#intro-section {
+    display: flex;
+    gap: 3em;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+#intro-section img {
+    height: 50%;
+    max-height: 500px;
+    min-height: 250px;
+    min-width: 200px;
+    width: 30vw;
+    object-fit: cover;
+    /* Make box-shadow same as logo gradient */
+    box-shadow: 0.5rem 0.5rem #f4ff5e;
+}
+#intro-text-container {
+    padding-top: 3em;
+}
+.intro-text {
+    width: 30vw;
+    min-width: 375px;
+}
+
+#skill-section {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 1.925em
+}
+#skill-section div {
+    width: 300px
+}
+#skill-section div ul {
+    padding-left: 1em;
+    margin: 0;
+}
+
+#contact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 3em;
+}
+#contact-header img {
+    min-width: 275px;
+    width: 20vw;
+    /* Make box-shadow same as logo gradient */
+    box-shadow: 0.5rem 0.5rem #f4ff5e;
+}
+#contact-info {
+    padding-top: 3em;
+    width: 37vw;
+    min-width: 300px;
+}
+#contact-info h3 {
+    line-height: 2rem;
+}
+#icon-container {
+    display: flex;
+    padding-top: 1em;
+    gap: 2em;
+}
+.icon {
+    width: 10vw;
+    max-width: 100px;
+    fill: #FFFFF2;
+}
+.icon:hover {
+    fill: #f4ff5e;
+    transition: 0.3s ease;
+}

@@ -1,0 +1,127 @@
+@font-face {
+    font-family: 'League Spartan';
+    src: url("fonts/LeagueSpartan-VF.woff2");
+}
+@font-face {
+    font-family: 'Manrope';
+    src: url("fonts/Manrope-VF.woff");
+}
+
+* {
+    font-family: Manrope, system-ui, sans-serif;
+    color: #FFFFF2;
+}
+html {
+    margin: 0;
+}
+body {
+    margin: 0;
+    background-color: #22252D;
+    overflow-x: hidden;
+}
+
+/* *** Header *** */
+header {
+    display: flex;
+    justify-content: space-between;
+    max-width: calc(100% - 2rem);
+    padding: 0 2em;
+    max-width: 1750px;
+    margin: 0.5em auto 0 auto;
+}
+/* Logo banner */
+#header-title {
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+}
+#header-title h1 {
+    font-size: 2rem;
+    line-height: 0.8em;
+    font-weight: 600;
+    letter-spacing: normal;
+}
+#header-logo {
+    font-family: League Spartan;
+    font-size: 2.5rem;
+    line-height: 0.8em;
+    font-weight: 500;
+    letter-spacing: normal;
+}
+/* Navigation */
+header nav {
+    padding: 1.5em 0;
+}
+nav ul {
+    list-style: none;
+    text-transform: uppercase;
+    display: flex;
+    gap: 2.3em;
+}
+nav a {
+    text-decoration: none;
+}
+nav a h4 {
+    font-family: League Spartan;
+    font-size: 1.25rem;
+    line-height: 1.2rem;
+    font-weight: 500;
+    position: relative;
+    text-decoration: none;
+    box-shadow: inset 0 0 0 0 #4cadca;
+    margin: 0 -.25rem;
+    padding: 0 .25rem;
+    transition: color .3s ease-in-out, box-shadow .3s ease-in-out;
+}
+nav a h4::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background-color: #FFFFF2;
+    bottom: 0;
+    left: 0;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform .3s ease-in-out;
+}
+nav a h4:hover::before {
+    transform-origin: left;
+    transform: scaleX(1);
+}
+nav a h4:hover {
+    box-shadow: inset 200px 0 0 0 #2A6679;
+    color: #f4ff5e;
+}
+nav a h4:active {
+    color: #f4ff5e;
+}
+
+/* *** Footer *** */
+footer {
+    background-color: #2A6679;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1em;
+    padding: 2em 1em;
+}
+footer nav ul {
+    padding: 0;
+}
+#footer-caption {
+    width: 360px;
+    font-size: 0.8em;
+    padding: 0 1em 0em 0;
+    line-height: 1.5em;
+}
+#footer-caption span {
+    font-weight: 800;
+}
+#job-title {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6rem;
+    margin: 2em 0 0 0;
+}
