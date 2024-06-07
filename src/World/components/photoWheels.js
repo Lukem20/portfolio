@@ -13,23 +13,23 @@ function createPhotos () {
     const bothGalleries = new Group();
 
     let screenshotPaths = [
-        '/assets/whatDesigner1.JPG',
-        '/assets/bit.jpg',
-        '/assets/abts1.jpg',
-        '/assets/sb2.jpg',
-        '/assets/sisisBarbershop1.JPG',
-        '/assets/hbc1.JPG',
-        '/assets/color.jpg',
-        '/assets/color.jpg',
+        'public/assets/whatDesigner1.JPG',
+        'public/assets/bit.jpg',
+        'public/assets/abts1.jpg',
+        'public/assets/sb2.jpg',
+        'public/assets/sisisBarbershop1.JPG',
+        'public/assets/hbc1.JPG',
+        'public/assets/color.jpg',
+        'public/assets/color.jpg',
 
-        '/assets/bit2.jpg',
-        '/assets/whatDesigner2.JPG',
-        '/assets/abts2.jpg',
-        '/assets/sb1.jpg',
-        '/assets/sisisBarbershop2.JPG',
-        '/assets/hbc2.JPG',
-        '/assets/color.jpg',
-        '/assets/color.jpg',
+        'public/assets/bit2.jpg',
+        'public/assets/whatDesigner2.JPG',
+        'public/assets/abts2.jpg',
+        'public/assets/sb1.jpg',
+        'public/assets/sisisBarbershop2.JPG',
+        'public/assets/hbc2.JPG',
+        'public/assets/color.jpg',
+        'public/assets/color.jpg',
     ];
 
     const wheelRadius = 17;
