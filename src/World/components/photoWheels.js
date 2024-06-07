@@ -1,6 +1,6 @@
-import { createTexture } from '../systems/createTexture.js';
 import {
     TextureLoader,
+    MeshStandardMaterial,
     BufferGeometry,
     BufferAttribute,
     Mesh,
@@ -13,23 +13,23 @@ async function createPhotos () {
     const bothGalleries = new Group();
 
     let screenshotPaths = [
-        './assets/whatDesigner1.JPG',
-        './assets/bit.jpg',
-        './assets/abts1.jpg',
-        './assets/sb2.jpg',
-        './assets/sisisBarbershop1.JPG',
-        './assets/hbc1.JPG',
-        './assets/color.jpg',
-        './assets/color.jpg',
+        '/assets/whatDesigner1.JPG',
+        '/assets/bit.jpg',
+        '/assets/abts1.jpg',
+        '/assets/sb2.jpg',
+        '/assets/sisisBarbershop1.JPG',
+        '/assets/hbc1.JPG',
+        '/assets/color.jpg',
+        '/assets/color.jpg',
 
-        './assets/bit2.jpg',
-        './assets/whatDesigner2.JPG',
-        './assets/abts2.jpg',
-        './assets/sb1.jpg',
-        './assets/sisisBarbershop2.JPG',
-        './assets/hbc2.JPG',
-        './assets/color.jpg',
-        './assets/color.jpg',
+        '/assets/bit2.jpg',
+        '/assets/whatDesigner2.JPG',
+        '/assets/abts2.jpg',
+        '/assets/sb1.jpg',
+        '/assets/sisisBarbershop2.JPG',
+        '/assets/hbc2.JPG',
+        '/assets/color.jpg',
+        '/assets/color.jpg',
     ];
 
     const wheelRadius = 17;
@@ -48,7 +48,8 @@ async function createPhotos () {
     const textureLoader = new TextureLoader();
 
     for (let i = 0; i < numImages; i++) {
-        material = createTexture(screenshotPaths[i], textureLoader);
+        const texture = textureLoader.load(screenshotPaths[i])
+        material = createTexture(texture);
 
         topMesh = new Mesh(roundedRectangleGeometry, material);
         topMesh.position.set(
@@ -89,6 +90,14 @@ async function createPhotos () {
     bothGalleries.add(topGroup);
     bothGalleries.add(bottomGroup);
     return bothGalleries;
+}
+
+function createTexture (texture) {    
+    return new MeshStandardMaterial({ 
+        map: texture,
+        transparent: true,
+        opacity: 1
+    });
 }
 
 // https://discourse.threejs.org/t/roundedrectangle-squircle/28645
