@@ -11,4 +11,4 @@ async function main() {
     photoWheel.start();
 }
 
-await main();
+main();
