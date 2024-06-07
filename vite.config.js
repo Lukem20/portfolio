@@ -37,5 +37,7 @@ export default defineConfig({
     },
     optimizeDeps: {
         entries: 'src/**/*{.hmtl, .css, .js}'
-    }
+    },
+    publicDir: 'src/images',
+
 });
