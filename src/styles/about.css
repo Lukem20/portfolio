@@ -35,7 +35,7 @@
     width: 30vw;
     object-fit: cover;
     /* Make box-shadow same as logo gradient */
-    box-shadow: 0.5rem 0.5rem #f4ff5e;
+    box-shadow: 0.35rem 0.35rem #f4ff5e;
 }
 #intro-text-container {
     padding-top: 3em;
@@ -70,7 +70,7 @@
     min-width: 275px;
     width: 20vw;
     /* Make box-shadow same as logo gradient */
-    box-shadow: 0.5rem 0.5rem #f4ff5e;
+    box-shadow: 0.35rem 0.35rem #f4ff5e;
 }
 #contact-info {
     padding-top: 3em;
