@@ -16,17 +16,16 @@ let loop;
 
 class World {
     constructor(container) {
-        camera = createCamera();
+        const cameraGroup = createCamera();
+        camera = cameraGroup.children[0];
         renderer = createRenderer();
         scene = createScene();
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement);
 
         const ambientLight = createLights();
-        scene.add(ambientLight);
-
         const photoWheels = createPhotos(camera);
-        scene.add(photoWheels);
+        scene.add(photoWheels, camera, ambientLight);
 
         loop.updatables.push(camera);
         loop.updatables.push(photoWheels);

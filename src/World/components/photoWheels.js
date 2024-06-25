@@ -133,9 +133,9 @@ function createPhotos (camera) {
     let hoveredItem = null;
     window.addEventListener('click', (isHovering, hoveredItem) => {
         if (isHovering) {
-            console.log("Hovering ", hoveredItem)
+
         } else {
-            console.log("Not hovering")
+
         }
     });
 
