@@ -11,7 +11,7 @@ function createCamera() {
         60, window.innerWidth / window.innerHeight, 0.1, 1000
     );
 
-    camera.position.z = 12;
+    camera.position.z = 110;
 
     return camera;
 }

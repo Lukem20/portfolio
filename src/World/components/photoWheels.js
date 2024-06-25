@@ -5,14 +5,12 @@ import {
     BufferAttribute,
     Mesh,
     Group,
+    Vector3,
+    Matrix4
 } from 'three';
 
 function createPhotos () {
-    const topGroup = new Group();
-    const bottomGroup = new Group();
-    const bothGalleries = new Group();
-
-    let screenshotPaths = [
+    let photos = [
         '/assets/whatDesigner1.JPG',
         '/assets/bit.jpg',
         '/assets/abts1.jpg',
@@ -21,9 +19,9 @@ function createPhotos () {
         '/assets/hbc1.JPG',
         '/assets/color.jpg',
         '/assets/color.jpg',
-
-        '/assets/bit2.jpg',
+        // Make top and bottom half of this array same project order.
         '/assets/whatDesigner2.JPG',
+        '/assets/bit2.jpg',
         '/assets/abts2.jpg',
         '/assets/sb1.jpg',
         '/assets/sisisBarbershop2.JPG',
@@ -32,64 +30,152 @@ function createPhotos () {
         '/assets/color.jpg',
     ];
 
-    const wheelRadius = 17;
-    const roundedRectangelSize = 5;
-    const cornerRadius = 0.25;
-    const cornerSmoothness = 12;
-    const position = 20.5;
+    const wheelRadius = 175;
+    const wheelPosition = 207;
+    const geometry = {
+        size: 45,
+        cornerRadius: 3,
+        cornerSmoothness: 12,
+    }
 
-    const numImages = screenshotPaths.length;
-    const radianInterval = (2 * Math.PI) / numImages;
-    const roundedRectangleGeometry = RoundedRectangle(roundedRectangelSize, roundedRectangelSize, cornerRadius, cornerSmoothness);
+    const photoCount = photos.length;
+    const radianInterval = (2 * Math.PI) / photoCount;
+    const roundedRectangleGeometry = RoundedRectangle(geometry.size, geometry.size, geometry.cornerRadius, geometry.cornerSmoothness);
 
     let material = null;
-    let topMesh = null;
-    let bottomMesh = null;
+    let texture = null;
+    let photoMeshTop = null;
+    let photoMeshBottom = null;
     const textureLoader = new TextureLoader();
 
-    for (let i = 0; i < numImages; i++) {
-        const texture = textureLoader.load(screenshotPaths[i])
+    const topGroup = new Group();
+    const bottomGroup = new Group();
+    const photoWheels = new Group();
+
+    for (let i = 0; i < photoCount; i++) {
+        texture = textureLoader.load(photos[i])
         material = createTexture(texture);
 
-        topMesh = new Mesh(roundedRectangleGeometry, material);
-        topMesh.position.set(
+        photoMeshTop = new Mesh(roundedRectangleGeometry, material);
+        photoMeshTop.position.set(
             Math.cos(radianInterval * i) * wheelRadius,
             Math.sin(radianInterval * i) * wheelRadius,
             i * -0.0001
         );
 
-        bottomMesh = topMesh.clone();
-        bottomMesh.position.set(
+        photoMeshBottom = photoMeshTop.clone();
+        photoMeshBottom.position.set(
             Math.cos(radianInterval * i) * wheelRadius,
             Math.sin(radianInterval * i) * wheelRadius,
-            i * (-1 * i * 0.01)
+            i * -0.0001
         );
         
-        topGroup.add(topMesh);
-        bottomGroup.add(bottomMesh);
+        topGroup.add(photoMeshTop);
+        bottomGroup.add(photoMeshBottom);
     }
 
-    // Move each photo wheel into position.
-    topGroup.translateY(position);
-    bottomGroup.translateY(-position);
+    // Move each photo wheel into position after all photos are added.
+    topGroup.translateY(wheelPosition);
+    bottomGroup.translateY(-wheelPosition);
     
+    // Rotate wheels on scroll.
+    let spinInProgress = null;
     let scrollSpeed = 0.0;
-    document.addEventListener('wheel', event => {
-        // Normalize scroll speed to be 360 degree
-        scrollSpeed = (event.deltaY / 360) / 2;
-        topGroup.rotateZ(-1.0 * scrollSpeed);
-        bottomGroup.rotateZ(-1.0 * scrollSpeed);
+    const snapPoint = {
+        x: topGroup.children[4].position.x,
+        y: topGroup.children[4].position.y,
+    }
+    snapPoint.theta = Math.atan2(Math.abs(snapPoint.y - topGroup.position.y), Math.abs(snapPoint.x - topGroup.position.x));
 
-        // Adjust photo rotation after scroll movement
-        for (let i = 0; i < numImages; i++) {
+    // const normalPhotoScale = new Matrix4().makeScale(1.0, 1.0, 1.0);
+    // const snappedPhotoScale = new Matrix4().makeScale(1.2, 1.2, 1.2);
+
+    document.addEventListener('wheel', event => {
+        clearTimeout(spinInProgress);
+
+        // Apply scale matrix to photo items
+        // for (let i = 0; i < photoCount; i++) {
+        //     topGroup.children[i].applyMatrix4(normalPhotoScale);
+        //     bottomGroup.children[i].applyMatrix4(normalPhotoScale);
+        // }
+        
+        // Normalize user scroll speed value to be 360 degree.
+        scrollSpeed = (event.deltaY / 360) / 2;
+        topGroup.rotateZ(-scrollSpeed);
+        bottomGroup.rotateZ(-scrollSpeed);
+
+        // Adjust photo wheel items' rotation during scroll movement.
+        for (let i = 0; i < photoCount; i++) {
             topGroup.children[i].rotateZ(scrollSpeed);
             bottomGroup.children[i].rotateZ(scrollSpeed);
         }
+
+        // Adjust timeout time for delay before snapping after the wheel stops spinning.
+        spinInProgress = setTimeout(() => {
+            snapWheelsAfterSpin(topGroup, bottomGroup, snapPoint);
+        }, 350);
     });
 
-    bothGalleries.add(topGroup);
-    bothGalleries.add(bottomGroup);
-    return bothGalleries;
+    photoWheels.add(topGroup);
+    photoWheels.add(bottomGroup);
+
+    return photoWheels;
+}
+
+function snapWheelsAfterSpin (topGroup, bottomGroup, snapPoint) {
+    let closestPhoto = null;
+    let closestPhotoX, closestPhotoY;
+    let worldMatrix = new Matrix4(topGroup.children[2].matrixWorld);
+    worldMatrix = topGroup.children[2].matrixWorld;
+
+    // Default distance to compare after spin has stopped
+    let positionVector = new Vector3().setFromMatrixPosition(worldMatrix);
+    let shortestDistance = Infinity
+
+    topGroup.children.forEach((element, index) => {
+        // Get this photo's position from its world matrix. 
+        worldMatrix = element.matrixWorld;
+        positionVector = new Vector3().setFromMatrixPosition(worldMatrix);
+
+        // Find the smallest distance from the snap point
+        let dx = positionVector.x - snapPoint.x;
+        let dy = positionVector.y - snapPoint.y;
+        let currentDistance = Math.pow(dx, 2) + Math.pow(dy, 2);
+        currentDistance = Math.sqrt(currentDistance);
+
+        if (shortestDistance >= currentDistance) {
+            shortestDistance = currentDistance;
+            closestPhoto = element;
+            closestPhotoX = positionVector.x;
+            closestPhotoY = positionVector.y;
+        }
+    });
+
+    let closestPhototAngle = Math.atan2(Math.abs(closestPhotoY - topGroup.position.y), Math.abs(closestPhotoX - topGroup.position.x));
+    let snapAngle = Math.abs(closestPhototAngle - snapPoint.theta);
+
+    if (closestPhotoX > topGroup.position.x && closestPhotoY <= topGroup.position.y) {          // Q1
+        snapAngle = closestPhototAngle > snapPoint.theta ? snapAngle : -1.0 * snapAngle;
+    } else if (closestPhotoX <= topGroup.position.x && closestPhotoY <= topGroup.position.y) {  // Q2
+        snapAngle = closestPhototAngle > snapPoint.theta ? -1.0 * snapAngle : snapAngle;
+    } else if (closestPhotoX <= topGroup.position.x && closestPhotoY > topGroup.position.y) {   // Q3
+        snapAngle = closestPhototAngle > snapPoint.theta ? snapAngle : -1.0 * snapAngle;
+    } else if (closestPhotoX > topGroup.position.x && closestPhotoY >= topGroup.position.y) {   // Q4
+        snapAngle = closestPhototAngle > snapPoint.theta ? -1.0 * snapAngle : snapAngle;
+    }
+
+    topGroup.rotateZ(snapAngle);
+    bottomGroup.rotateZ(snapAngle);
+
+    for (let i = 0; i < topGroup.children.length; i++) {
+        topGroup.children[i].rotateZ(-snapAngle);
+        bottomGroup.children[i].rotateZ(-snapAngle);
+
+        // if (closestPhoto == topGroup.children[i]) {
+        //     topGroup.children[i].applyMatrix4(snappedPhotoScale);
+        //     bottomGroup.children[12].applyMatrix4(snappedPhotoScale);
+        // } 
+    }
 }
 
 function createTexture (texture) {    
