@@ -8,7 +8,8 @@ import {
     Vector3,
     Matrix4,
     Vector2,
-    Raycaster
+    Raycaster,
+    MathUtils
 } from 'three';
 
 function createPhotos (camera) {
@@ -33,7 +34,7 @@ function createPhotos (camera) {
     ];
 
     const wheelRadius = 180;
-    const wheelPosition = 213;
+    const wheelPosition = 213.5;
     const geometry = {
         size: 80,
         cornerRadius: 4,
@@ -142,11 +143,9 @@ function createPhotos (camera) {
         }
 
         for (const intersect of intersects) {
-            /**
-             * TODO
-             * Scale intersect by hoverScaleMatrix
-            */     
-            //    intersect.object.applyMatrix4(hoverScaleMatrix);
+
+            // TODO - Scale intersect by hoverScaleMatrix
+            // intersect.object.applyMatrix4(hoverScaleMatrix);
         }
     }
 
@@ -200,6 +199,8 @@ function snapWheelsAfterSpin (topGroup, bottomGroup, snapPoint) {
     }
 
     // Rotate both wheels by the angle to snap them into place.
+    // TODO - lerp (slerp?) this rotation to be smooth. This will likely need to
+    // go into a tick/update function and the snapAngle will need to be reset to 0 after.
     topGroup.rotateZ(snapAngle);
     bottomGroup.rotateZ(snapAngle);
 
@@ -208,10 +209,7 @@ function snapWheelsAfterSpin (topGroup, bottomGroup, snapPoint) {
         bottomGroup.children[i].rotateZ(-snapAngle);
     }
 
-    /**
-     * TODO
-     * Scale closestPhoto and its wheel counterpart by snapScaleMatrix
-     */
+    //TODO - Scale closestPhoto and its wheel counterpart by snapScaleMatrix
     // closestPhoto.applyMatrix4(snapScaleMatrix);
 }
 
