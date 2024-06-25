@@ -6,10 +6,12 @@ import {
     Mesh,
     Group,
     Vector3,
-    Matrix4
+    Matrix4,
+    Vector2,
+    Raycaster
 } from 'three';
 
-function createPhotos () {
+function createPhotos (camera) {
     let photos = [
         '/assets/whatDesigner1.JPG',
         '/assets/bit.jpg',
@@ -30,11 +32,11 @@ function createPhotos () {
         '/assets/color.jpg',
     ];
 
-    const wheelRadius = 175;
-    const wheelPosition = 207;
+    const wheelRadius = 180;
+    const wheelPosition = 213;
     const geometry = {
-        size: 45,
-        cornerRadius: 3,
+        size: 80,
+        cornerRadius: 4,
         cornerSmoothness: 12,
     }
 
@@ -51,7 +53,9 @@ function createPhotos () {
     const topGroup = new Group();
     const bottomGroup = new Group();
     const photoWheels = new Group();
+    const allPhotoMeshes = [];
 
+    // Create photo wheel mesh items.
     for (let i = 0; i < photoCount; i++) {
         texture = textureLoader.load(photos[i])
         material = createTexture(texture);
@@ -60,18 +64,20 @@ function createPhotos () {
         photoMeshTop.position.set(
             Math.cos(radianInterval * i) * wheelRadius,
             Math.sin(radianInterval * i) * wheelRadius,
-            i * -0.0001
+            1
         );
 
         photoMeshBottom = photoMeshTop.clone();
         photoMeshBottom.position.set(
             Math.cos(radianInterval * i) * wheelRadius,
             Math.sin(radianInterval * i) * wheelRadius,
-            i * -0.0001
+            1
         );
         
         topGroup.add(photoMeshTop);
         bottomGroup.add(photoMeshBottom);
+        allPhotoMeshes.push(photoMeshTop);
+        allPhotoMeshes.push(photoMeshBottom);
     }
 
     // Move each photo wheel into position after all photos are added.
@@ -87,17 +93,12 @@ function createPhotos () {
     }
     snapPoint.theta = Math.atan2(Math.abs(snapPoint.y - topGroup.position.y), Math.abs(snapPoint.x - topGroup.position.x));
 
-    // const normalPhotoScale = new Matrix4().makeScale(1.0, 1.0, 1.0);
-    // const snappedPhotoScale = new Matrix4().makeScale(1.2, 1.2, 1.2);
-
     document.addEventListener('wheel', event => {
         clearTimeout(spinInProgress);
 
-        // Apply scale matrix to photo items
-        // for (let i = 0; i < photoCount; i++) {
-        //     topGroup.children[i].applyMatrix4(normalPhotoScale);
-        //     bottomGroup.children[i].applyMatrix4(normalPhotoScale);
-        // }
+        for (const mesh of allPhotoMeshes) {
+            mesh.scale.normalize();
+        }
         
         // Normalize user scroll speed value to be 360 degree.
         scrollSpeed = (event.deltaY / 360) / 2;
@@ -110,7 +111,7 @@ function createPhotos () {
             bottomGroup.children[i].rotateZ(scrollSpeed);
         }
 
-        // Adjust timeout time for delay before snapping after the wheel stops spinning.
+        // Adjust timeout time for snapping delay after the wheel stops spinning.
         spinInProgress = setTimeout(() => {
             snapWheelsAfterSpin(topGroup, bottomGroup, snapPoint);
         }, 350);
@@ -119,8 +120,40 @@ function createPhotos () {
     photoWheels.add(topGroup);
     photoWheels.add(bottomGroup);
 
+    // Mouse hover detection
+    const raycaster = new Raycaster();
+    const mouse = new Vector2();
+
+    window.addEventListener('mousemove', (event) => {
+        // Normalized mouse coordinates
+        mouse.x = event.clientX / window.innerWidth * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight * 2 - 1);
+
+    });
+
+    const hoverScaleMatrix = new Matrix4().makeScale(1.2, 1.2, 1.2);
+
+    photoWheels.tick = (delta) => {
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(photoWheels.children);
+
+        for (const allOtherPhotos of allPhotoMeshes) {
+            allOtherPhotos.scale.normalize();
+        }
+
+        for (const intersect of intersects) {
+            /**
+             * TODO
+             * Scale intersect by hoverScaleMatrix
+            */     
+            //    intersect.object.applyMatrix4(hoverScaleMatrix);
+        }
+    }
+
     return photoWheels;
 }
+
+const snapScaleMatrix = new Matrix4().makeScale(1.1, 1.1, 1.1);
 
 function snapWheelsAfterSpin (topGroup, bottomGroup, snapPoint) {
     let closestPhoto = null;
@@ -151,31 +184,35 @@ function snapWheelsAfterSpin (topGroup, bottomGroup, snapPoint) {
         }
     });
 
-    let closestPhototAngle = Math.atan2(Math.abs(closestPhotoY - topGroup.position.y), Math.abs(closestPhotoX - topGroup.position.x));
-    let snapAngle = Math.abs(closestPhototAngle - snapPoint.theta);
+    let angleOfClosestPhoto = Math.atan2(Math.abs(closestPhotoY - topGroup.position.y), Math.abs(closestPhotoX - topGroup.position.x));
+    let snapAngle = Math.abs(angleOfClosestPhoto - snapPoint.theta);
 
+    // Determines whether the wheels need to be rotated cw or ccw 
+    // by which cartesian quadrant it is in.
     if (closestPhotoX > topGroup.position.x && closestPhotoY <= topGroup.position.y) {          // Q1
-        snapAngle = closestPhototAngle > snapPoint.theta ? snapAngle : -1.0 * snapAngle;
+        snapAngle = angleOfClosestPhoto > snapPoint.theta ? snapAngle : -1.0 * snapAngle;
     } else if (closestPhotoX <= topGroup.position.x && closestPhotoY <= topGroup.position.y) {  // Q2
-        snapAngle = closestPhototAngle > snapPoint.theta ? -1.0 * snapAngle : snapAngle;
+        snapAngle = angleOfClosestPhoto > snapPoint.theta ? -1.0 * snapAngle : snapAngle;
     } else if (closestPhotoX <= topGroup.position.x && closestPhotoY > topGroup.position.y) {   // Q3
-        snapAngle = closestPhototAngle > snapPoint.theta ? snapAngle : -1.0 * snapAngle;
+        snapAngle = angleOfClosestPhoto > snapPoint.theta ? snapAngle : -1.0 * snapAngle;
     } else if (closestPhotoX > topGroup.position.x && closestPhotoY >= topGroup.position.y) {   // Q4
-        snapAngle = closestPhototAngle > snapPoint.theta ? -1.0 * snapAngle : snapAngle;
+        snapAngle = angleOfClosestPhoto > snapPoint.theta ? -1.0 * snapAngle : snapAngle;
     }
 
+    // Rotate both wheels by the angle to snap them into place.
     topGroup.rotateZ(snapAngle);
     bottomGroup.rotateZ(snapAngle);
 
     for (let i = 0; i < topGroup.children.length; i++) {
         topGroup.children[i].rotateZ(-snapAngle);
         bottomGroup.children[i].rotateZ(-snapAngle);
-
-        // if (closestPhoto == topGroup.children[i]) {
-        //     topGroup.children[i].applyMatrix4(snappedPhotoScale);
-        //     bottomGroup.children[12].applyMatrix4(snappedPhotoScale);
-        // } 
     }
+
+    /**
+     * TODO
+     * Scale closestPhoto and its wheel counterpart by snapScaleMatrix
+     */
+    // closestPhoto.applyMatrix4(snapScaleMatrix);
 }
 
 function createTexture (texture) {    
