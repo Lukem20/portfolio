@@ -18,23 +18,23 @@ class Resizer {
         });
 
         // Allow user to enter and exit fullscreen
-        window.addEventListener('dblclick', () => {
-            const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement;
-            if (!fullscreenElement) {
-                if(container.requestFullscreen) {
-                    container.requestFullscreen();
-                }
-                else if (container.webkitRequestFullscreen) {
-                    container.webkitRequestFullscreen();
-                }
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                }
-            }
-        });
+        // window.addEventListener('dblclick', () => {
+        //     const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement;
+        //     if (!fullscreenElement) {
+        //         if(container.requestFullscreen) {
+        //             container.requestFullscreen();
+        //         }
+        //         else if (container.webkitRequestFullscreen) {
+        //             container.webkitRequestFullscreen();
+        //         }
+        //     } else {
+        //         if (document.exitFullscreen) {
+        //             document.exitFullscreen();
+        //         } else if (document.webkitExitFullscreen) {
+        //             document.webkitExitFullscreen();
+        //         }
+        //     }
+        // });
     }
 }
 
