@@ -24,10 +24,9 @@ body {
 header {
     display: flex;
     justify-content: space-between;
-    max-width: calc(100% - 2rem);
     padding: 0 2em;
     max-width: 1750px;
-    margin: 0.5em auto 0 auto;
+    height: 100px;
 }
 /* Logo banner */
 #header-title {
@@ -50,6 +49,8 @@ header {
 }
 /* Navigation */
 header nav {
+    display: flex;
+    align-items: center;
     padding: 1.5em 0;
 }
 nav ul {
