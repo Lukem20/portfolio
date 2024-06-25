@@ -27,6 +27,8 @@ class World {
 
         const photoWheels = createPhotos(camera);
         scene.add(photoWheels);
+
+        loop.updatables.push(camera);
         loop.updatables.push(photoWheels);
 
         const resizer = new Resizer(container, camera, renderer);
