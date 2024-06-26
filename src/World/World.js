@@ -25,8 +25,8 @@ class World {
 
         const ambientLight = createLights();
         const photoWheels = createPhotos(camera);
-        scene.add(photoWheels, camera, ambientLight);
 
+        scene.add(photoWheels, camera, ambientLight);
         loop.updatables.push(camera);
         loop.updatables.push(photoWheels);
 

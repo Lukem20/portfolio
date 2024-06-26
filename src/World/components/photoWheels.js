@@ -18,8 +18,8 @@ function createPhotos (camera) {
         '/assets/sb2.jpg',
         '/assets/sisisBarbershop1.JPG',
         '/assets/hbc1.JPG',
-        '/assets/color.jpg',
-        '/assets/color.jpg',
+        '/assets/7ds1.jpg',
+        '/assets/ITBFGLA1.jpg',
         // Make top and bottom half of this array same project order.
         '/assets/whatDesigner2.JPG',
         '/assets/bit2.jpg',
@@ -27,8 +27,8 @@ function createPhotos (camera) {
         '/assets/sb1.jpg',
         '/assets/sisisBarbershop2.JPG',
         '/assets/hbc2.JPG',
-        '/assets/color.jpg',
-        '/assets/color.jpg',
+        '/assets/7ds2.jpg',
+        '/assets/ITBFGLA2.jpg',
     ];
 
     const wheelRadius = 180;

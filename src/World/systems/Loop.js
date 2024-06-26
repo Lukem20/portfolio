@@ -22,9 +22,9 @@ class Loop {
     }
 
     tick() {
-        const delta = clock.getElapsedTime();
+        const deltaTime = clock.getElapsedTime();
         for (const object of this.updatables) {
-            object.tick(delta);
+            object.tick(deltaTime);
         }
     }
 }
