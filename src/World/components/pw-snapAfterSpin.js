@@ -41,9 +41,7 @@ function snapAfterSpin (topGroup, bottomGroup) {
         snapAngle = angleOfClosestPhoto > snapPoint.theta ? -1.0 * snapAngle : snapAngle;
     }
 
-    // Rotate both wheels by the angle to snap them into place.
-    // TODO - lerp (slerp?) this rotation to be smooth. This will likely need to
-    // go into a tick/update function and the snapAngle will need to be reset to 0 after.
+    // ### TODO ### lerp (slerp?) this rotation to be smooth.
     topGroup.rotateZ(snapAngle);
     bottomGroup.rotateZ(snapAngle);
     for (let i = 0; i < topGroup.children.length; i++) {
@@ -51,7 +49,7 @@ function snapAfterSpin (topGroup, bottomGroup) {
         bottomGroup.children[i].rotateZ(-snapAngle);
     }
 
-    // TODO - Scale the snapped photos
+    // ### TODO ### Scale the snapped photos
 }
 
 export { snapAfterSpin };

@@ -24,7 +24,7 @@ class World {
         container.append(renderer.domElement);
 
         const ambientLight = createLights();
-        const photoWheels = createPhotos(camera);
+        const photoWheels = createPhotos(camera, container);
 
         scene.add(photoWheels, camera, ambientLight);
         loop.updatables.push(camera);

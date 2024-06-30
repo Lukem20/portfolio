@@ -10,25 +10,74 @@ import { createMaterial } from './material.js';
 import { RoundedRectangle } from './geometry.js';
 import { snapAfterSpin } from './pw-snapAfterSpin.js';
 
-function createPhotos (camera) {
+function createPhotos (camera, container) {
+    // ### TODO ### - Refactor data to be array of objects that contain the 
+    // path to the image asset and name of project page file to open.
     let photos = [
-        '/assets/whatDesigner1.JPG',
-        '/assets/bit.jpg',
-        '/assets/abts1.jpg',
-        '/assets/sb2.jpg',
-        '/assets/sisisBarbershop1.JPG',
-        '/assets/hbc1.JPG',
-        '/assets/7ds1.jpg',
-        '/assets/ITBFGLA1.jpg',
-        // Make top and bottom half of this array same project order.
-        '/assets/whatDesigner2.JPG',
-        '/assets/bit2.jpg',
-        '/assets/abts2.jpg',
-        '/assets/sb1.jpg',
-        '/assets/sisisBarbershop2.JPG',
-        '/assets/hbc2.JPG',
-        '/assets/7ds2.jpg',
-        '/assets/ITBFGLA2.jpg',
+        {
+            imagePath: '/assets/whatDesigner1.JPG',
+            projectPath: '/projects/wdru.html',
+        },
+        {
+            imagePath: '/assets/bit.jpg',
+            projectPath: '/projects/bit.html',
+        },
+        {
+            imagePath: '/assets/abts1.jpg',
+            projectPath: '/projects/abts.html',
+        },
+        {
+            imagePath: '/assets/sb2.jpg',
+            projectPath: '/projects/sandbox.html',
+        },
+        {
+            imagePath: '/assets/sisisBarbershop1.JPG',
+            projectPath: '/projects/sb.html',
+        },
+        {
+            imagePath: '/assets/hbc1.JPG',
+            projectPath: '/projects/hbc.html',
+        },
+        {
+            imagePath: '/assets/7ds1.jpg',
+            projectPath: '/projects/7ds.html',
+        },
+        {
+            imagePath: '/assets/ITBFGLA1.jpg',
+            projectPath: '/projects/graphics-textbook.html',
+        },
+        {
+            imagePath: '/assets/whatDesigner2.JPG',
+            projectPath: '/projects/wdru.html',
+        },
+        {
+            imagePath: '/assets/bit2.jpg',
+            projectPath: '/projects/bit.html',
+        },
+        {
+            imagePath: '/assets/abts2.jpg',
+            projectPath: '/projects/abts.html',
+        },
+        {
+            imagePath: '/assets/sb1.jpg',
+            projectPath: '/projects/sandbox.html',
+        },
+        {
+            imagePath: '/assets/sisisBarbershop2.JPG',
+            projectPath: '/projects/sb.html',
+        },
+        {
+            imagePath: '/assets/hbc2.JPG',
+            projectPath: '/projects/hbc.html',
+        },
+        {
+            imagePath: '/assets/7ds2.jpg',
+            projectPath: '/projects/7ds.html',
+        },        
+        {
+            imagePath: '/assets/ITBFGLA2.jpg',
+            projectPath: '/projects/graphics-textbook.html',
+        },
     ];
 
     const wheelRadius = 180;
@@ -58,25 +107,28 @@ function createPhotos (camera) {
 
     // Create meshes and places them in a circle.
     for (let i = 0; i < photos.length; i++) {
-        texture = textureLoader.load(photos[i])
+        texture = textureLoader.load(photos[i].imagePath);
         material = createMaterial(texture);
 
         photoMeshTop = new Mesh(roundedRectangleGeometry, material);
         photoMeshTop.name = photos[i];
+        // ### TODO ### Store project page file details to mesh object
         photoMeshTop.position.set(
             Math.cos(radianInterval * i) * wheelRadius,
             Math.sin(radianInterval * i) * wheelRadius,
             1
         );
-        allPhotoMeshes.push(photoMeshTop);
 
         photoMeshBottom = photoMeshTop.clone();
         photoMeshBottom.name = photos[i];
+        // ### TODO ### Store project page file details to mesh object
         photoMeshBottom.position.set(
             Math.cos(radianInterval * i) * wheelRadius,
             Math.sin(radianInterval * i) * wheelRadius,
             1
         );
+
+        allPhotoMeshes.push(photoMeshTop);
         allPhotoMeshes.push(photoMeshBottom);
         
         topGroup.add(photoMeshTop);
@@ -106,7 +158,7 @@ function createPhotos (camera) {
             mesh.rotateZ(scrollSpeed);
         }
 
-        // Adjust timeout time for snapping delay after the wheel stops spinning.
+        // Adjust timeout for snapping delay after the wheel stops spinning.
         spinInProgress = setTimeout(() => {
             snapAfterSpin(topGroup, bottomGroup);
         }, 350);
@@ -114,31 +166,25 @@ function createPhotos (camera) {
 
     // --- Mouse Event ---
     const mouse = new Vector2();
-    window.addEventListener('mousemove', (event) => {
-        // Normalized mouse coordinates
+    container.addEventListener('mousemove', (event) => {
+        // Normalize mouse coordinates
         mouse.x = event.clientX / window.innerWidth * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight * 2 - 1);
     });
 
-    /**
-     * TODO
-     * Need to store details in the mesh object about what project page should
-     * open when that mesh is clicked. 
-     * 
-     * Current strategy is to couple the hovering and clicking logic together,
-     * but when this event is triggered, isHovering is always true and hoveredItem is undefined (not null);
-     */
     // --- Click Event ---
-    let isHovering = false;
-    let hoveredItem = null;
-    window.addEventListener('click', (isHovering, hoveredItem) => {
+    var isHovering = false;
+    var hoveredItem = null;
+
+    container.addEventListener('click', () => {
         if (isHovering) {
-
-        } else {
-
-        }
+            // ### TODO ### Open project page from mesh details 
+            console.log("Mesh clicked", hoveredItem);
+            window.location.href = hoveredItem.name.projectPath;
+        } 
     });
 
+    // ### TODO ### Debug the raycaster, it is offset
     const raycaster = new Raycaster();
     const photoWheels = new Group();
     photoWheels.add(topGroup);
@@ -146,24 +192,24 @@ function createPhotos (camera) {
 
     photoWheels.tick = () => {
         raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(photoWheels.children);
+        const rayIntersects = raycaster.intersectObjects(photoWheels.children);
 
-            // TODO - Lerp scaling
+            // ### TODO ### Lerp scaling
 
-        // Reset photos scale back to normal
-        for (const allOtherPhotos of allPhotoMeshes) {
-            allOtherPhotos.scale.set(1, 1, 1);
+        for (const resetMeshScale of allPhotoMeshes) {
+            resetMeshScale.scale.set(1, 1, 1);
         }
 
-        // If no raycast intersections, we are not hovering
-        if (!intersects.length) {
+        if (!rayIntersects.length) {
+            document.body.style.cursor = "default";
             isHovering = false;
             return;
         } else {
-            for (const intersect of intersects) {
+            for (const intersect of rayIntersects) {
+                document.body.style.cursor = "pointer";
+                isHovering = true;
                 hoveredItem = intersect.object;
                 hoveredItem.scale.set(1.1, 1.1, 1.1);
-                isHovering = true;
             }
         }
     }
