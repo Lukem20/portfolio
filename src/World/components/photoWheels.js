@@ -17,66 +17,82 @@ function createPhotos (camera, container) {
         {
             imagePath: '/assets/whatDesigner1.JPG',
             projectPath: '/projects/wdru.html',
+            projectTitle: 'What Designer Are You?'
         },
         {
             imagePath: '/assets/bit.jpg',
             projectPath: '/projects/bit.html',
+            projectTitle: 'Brand Identity Timeline'
         },
         {
             imagePath: '/assets/abts1.jpg',
             projectPath: '/projects/abts.html',
+            projectTitle: 'Augemented Reality Bike Map'
         },
         {
             imagePath: '/assets/sb2.jpg',
             projectPath: '/projects/sandbox.html',
+            projectTitle: 'Three.js Sandbox Environment'
         },
         {
             imagePath: '/assets/sisisBarbershop1.JPG',
             projectPath: '/projects/sb.html',
+            projectTitle: "Sisi's Barbershop"
         },
         {
             imagePath: '/assets/hbc1.JPG',
             projectPath: '/projects/hbc.html',
+            projectTitle: 'The Healdsburg Crush'
         },
         {
             imagePath: '/assets/7ds1.jpg',
             projectPath: '/projects/7ds.html',
+            projectTitle: 'Seven Deadly Sins of Social Media & Technology'
         },
         {
             imagePath: '/assets/ITBFGLA1.jpg',
             projectPath: '/projects/graphics-textbook.html',
+            projectTitle: 'The Interactive Textbook for Geometric Linear Algebra'
         },
         {
             imagePath: '/assets/whatDesigner2.JPG',
             projectPath: '/projects/wdru.html',
+            projectTitle: 'What Designer Are You?'
         },
         {
             imagePath: '/assets/bit2.jpg',
             projectPath: '/projects/bit.html',
+            projectTitle: 'Brand Identity Timeline'
         },
         {
             imagePath: '/assets/abts2.jpg',
             projectPath: '/projects/abts.html',
+            projectTitle: 'Augemented Reality Bike Map'
         },
         {
             imagePath: '/assets/sb1.jpg',
             projectPath: '/projects/sandbox.html',
+            projectTitle: 'Three.js Sandbox Environment'
         },
         {
             imagePath: '/assets/sisisBarbershop2.JPG',
             projectPath: '/projects/sb.html',
+            projectTitle: "Sisi's Barbershop"
         },
         {
             imagePath: '/assets/hbc2.JPG',
             projectPath: '/projects/hbc.html',
+            projectTitle: 'The Healdsburg Crush'
         },
         {
             imagePath: '/assets/7ds2.jpg',
             projectPath: '/projects/7ds.html',
+            projectTitle: 'Seven Deadly Sins of Social Media & Technology'
         },        
         {
             imagePath: '/assets/ITBFGLA2.jpg',
             projectPath: '/projects/graphics-textbook.html',
+            projectTitle: 'The Interactive Textbook for Geometric Linear Algebra'
         },
     ];
 

@@ -7,6 +7,7 @@ function snapAfterSpin (topGroup, bottomGroup) {
     }
     snapPoint.theta = Math.atan2(Math.abs(snapPoint.y - topGroup.position.y), Math.abs(snapPoint.x - topGroup.position.x));
     
+    let closestPhoto;
     let closestPhotoX = 0.0;
     let closestPhotoY = 0.0;
     let shortestDistance = Infinity
@@ -24,6 +25,7 @@ function snapAfterSpin (topGroup, bottomGroup) {
             shortestDistance = currentDistance;
             closestPhotoX = positionVector.x;
             closestPhotoY = positionVector.y;
+            closestPhoto = element;
         }
     });
 
@@ -48,6 +50,10 @@ function snapAfterSpin (topGroup, bottomGroup) {
         topGroup.children[i].rotateZ(-snapAngle);
         bottomGroup.children[i].rotateZ(-snapAngle);
     }
+
+    const projectTitle = document.getElementById('project-title');
+    projectTitle.innerHTML = `${closestPhoto.name.projectTitle}`
+
 
     // ### TODO ### Scale the snapped photos
 }
