@@ -66,9 +66,9 @@ nav a h4 {
     font-family: League Spartan;
     font-size: 1.25rem;
     line-height: 1.2rem;
+    letter-spacing: 0.03em;
     font-weight: 500;
     position: relative;
-    text-decoration: none;
     box-shadow: inset 0 0 0 0 #4cadca;
     margin: 0 -.25rem;
     padding: 0 .25rem;
@@ -116,6 +116,7 @@ footer nav ul {
     font-size: 0.8em;
     padding: 0 1em 0em 0;
     line-height: 1.5em;
+    letter-spacing: 0.08rem;
 }
 #footer-caption span {
     font-weight: 800;
@@ -125,4 +126,33 @@ footer nav ul {
     text-transform: uppercase;
     letter-spacing: 0.6rem;
     margin: 2em 0 0 0;
+}
+
+/* Text Styles */
+#intro-section p {
+    letter-spacing: 0.105rem;
+    font-weight: 100;
+    line-height: 1.8rem;
+    font-size: 1.12rem;
+}
+.first-p::first-letter {
+    initial-letter: 2;
+    color: #f4ff5e;
+    font-weight: bold;
+    margin-right: .75em;
+}
+
+a:hover{
+    color: #f4ff5e;
+    text-decoration-color: #FFFFF2;
+}
+a:active {
+    text-decoration-color: #f4ff5e;
+}
+
+h2 {
+    font-family: League Spartan;
+    font-size: 4rem;
+    font-weight: 425;
+    margin: 0;
 }

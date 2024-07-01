@@ -5,13 +5,7 @@
 }
 #about section {
     width: 100%;
-    margin: 0 auto 4em auto;
-}
-#about h2 {
-    font-family: League Spartan;
-    font-size: 3rem;
-    font-weight: 425;
-    margin: 0;
+    margin: 0 auto 10em auto;
 }
 #about h3 {
     font-family: League Spartan;
