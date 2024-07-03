@@ -74,6 +74,9 @@
 #contact-info h3 {
     line-height: 2rem;
 }
+#contact-info b {
+    letter-spacing: 0.08em;
+}
 #icon-container {
     display: flex;
     padding-top: 1em;

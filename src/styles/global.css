@@ -100,7 +100,6 @@ nav a h4:hover::before {
     transform: scaleX(1);
 }
 nav a h4:hover {
-    /* box-shadow: inset 200px 0 0 0 #2A6679; */
     color: #f4ff5e;
 }
 nav a h4:active {
@@ -116,6 +115,18 @@ footer {
     align-items: center;
     gap: 1em;
     padding: 2em 1em;
+}
+#footer-logo {
+    height: 90px;
+    width: 90px;
+}
+#footer-logo > * {
+    fill: #FFFFF2  ;
+    transition: fill .3s ease-in-out;
+}
+#footer-logo:hover > * {
+    fill: #f4ff5e;
+    transition: fill .3s ease-in-out;
 }
 footer nav ul {
     padding: 0;
@@ -150,10 +161,15 @@ footer nav ul {
     font-weight: bold;
     margin-right: .75em;
 }
-
+a {
+    color: #FFFFF2;
+    transition: .2s ease-in-out;
+}
 a:hover{
     color: #f4ff5e;
     text-decoration-color: #FFFFF2;
+    transition: .2s ease-in-out;
+
 }
 a:active {
     text-decoration-color: #f4ff5e;
