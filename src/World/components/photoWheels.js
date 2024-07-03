@@ -11,8 +11,6 @@ import { RoundedRectangle } from './geometry.js';
 import { snapAfterSpin } from './pw-snapAfterSpin.js';
 
 function createPhotos (camera, container) {
-    // ### TODO ### - Refactor data to be array of objects that contain the 
-    // path to the image asset and name of project page file to open.
     let photos = [
         {
             imagePath: '/assets/whatDesigner1.JPG',
@@ -128,7 +126,6 @@ function createPhotos (camera, container) {
 
         photoMeshTop = new Mesh(roundedRectangleGeometry, material);
         photoMeshTop.name = photos[i];
-        // ### TODO ### Store project page file details to mesh object
         photoMeshTop.position.set(
             Math.cos(radianInterval * i) * wheelRadius,
             Math.sin(radianInterval * i) * wheelRadius,
@@ -137,7 +134,6 @@ function createPhotos (camera, container) {
 
         photoMeshBottom = photoMeshTop.clone();
         photoMeshBottom.name = photos[i];
-        // ### TODO ### Store project page file details to mesh object
         photoMeshBottom.position.set(
             Math.cos(radianInterval * i) * wheelRadius,
             Math.sin(radianInterval * i) * wheelRadius,
@@ -194,7 +190,6 @@ function createPhotos (camera, container) {
 
     container.addEventListener('click', () => {
         if (isHovering) {
-            // ### TODO ### Open project page from mesh details 
             console.log("Mesh clicked", hoveredItem);
             window.location.href = hoveredItem.name.projectPath;
         } 

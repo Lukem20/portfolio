@@ -40,21 +40,24 @@ header {
     text-decoration: none;
 }
 #header-title h1 {
-    font-size: 2.75rem;
-    font-weight: bold;
+    font-size: 2.2rem;
     line-height: 0.8em;
-    font-weight: 600;
-    letter-spacing: normal;
+    letter-spacing: 0.01em;
+    font-weight: 320;
     margin: 0;
+    transition: .2s ease-in-out;
+}
+#header-title h1:hover {
+    color: #f4ff5e;
+    transition: .2s ease-in-out;
 }
 #header-logo {
     font-family: League Spartan;
     font-size: 2.5rem;
     line-height: 0.8em;
-    font-weight: 500;
     letter-spacing: normal;
-    height: 45px;
-    width: 45px;
+    height: 34px;
+    width: 34px;
 }
 /* Navigation */
 header nav {
