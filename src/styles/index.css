@@ -3,8 +3,10 @@ body {
     overscroll-behavior: none;
 }
 
-main {
+#app {
     height: 85.75%;
+    width: 100%;
+    max-width: none;
 }
 
 #scene-container {

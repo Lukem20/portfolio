@@ -20,16 +20,16 @@
     align-items: center;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: flex-start;
 }
 #intro-section img {
     height: 50%;
     max-height: 500px;
-    min-height: 250px;
-    min-width: 200px;
+    min-height: 275px;
+    min-width: 250px;
     width: 30vw;
     object-fit: cover;
-    /* Make box-shadow same as logo gradient */
-    box-shadow: 0.35rem 0.35rem #f4ff5e;
+    box-shadow: 0.35rem 0.35rem var(--main-cta-color);
 }
 #intro-text-container {
     padding-top: 3em;
@@ -58,13 +58,13 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 3em;
+    gap: 4em;
 }
 #contact-header img {
-    min-width: 275px;
-    width: 20vw;
-    /* Make box-shadow same as logo gradient */
-    box-shadow: 0.35rem 0.35rem #f4ff5e;
+    min-width: 100px;
+    width: 250px;
+    height: 250px;
+    box-shadow: 0.35rem 0.35rem var(--main-cta-color);
 }
 #contact-info {
     padding-top: 3em;
@@ -74,8 +74,10 @@
 #contact-info h3 {
     line-height: 2rem;
 }
-#contact-info b {
-    letter-spacing: 0.1em;
+#email {
+    letter-spacing: 0.02em;
+    font-size: 1.6rem;
+    text-transform: uppercase;
 }
 #icon-container {
     display: flex;
@@ -85,9 +87,9 @@
 .icon {
     width: 10vw;
     max-width: 100px;
-    fill: #FFFFF2;
+    fill: var(--text-color);
 }
 .icon:hover {
-    fill: #f4ff5e;
+    fill: var(--main-cta-color);
     transition: 0.3s ease;
 }

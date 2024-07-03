@@ -1,3 +1,4 @@
+/* *** Global Fonts *** */
 @font-face {
     font-family: 'League Spartan';
     src: url("/LeagueSpartan-VF.woff2");
@@ -7,55 +8,59 @@
     src: url("/Manrope-VF.ttf");
 }
 
+/* *** Global Styles *** */
 * {
     font-family: Manrope, system-ui, sans-serif;
-    color: #FFFFF2;
+    color: var(--text-color);
 }
 html {
     margin: 0;
+    --main-bg-color: #22252D;
+    --text-color: #FFFFF2;
+    --main-cta-color: #F4FF5E;
 }
 body {
     margin: 0;
-    background-color: #22252D;
+    background-color: var(--main-bg-color);
     overflow-x: hidden;
+}
+
+/* *** Main Page Content *** */
+main {
+    max-width: 1500px;
 }
 
 /* *** Header *** */
 header {
     display: flex;
     justify-content: space-between;
-    padding: 0 2em;
-    max-width: 1750px;
+    padding: 0 2.2em;
     height: 100px;
+    max-width: 1500px;
+    margin: 0 auto;
 }
-/* Logo banner */
+/* Logo */
 .center-logo {
     display: flex;
     align-items: center;
 }
 #header-title {
     display: flex;
-    gap: 0.5em;
+    gap: 0.6em;
     align-items: center;
     text-decoration: none;
 }
 #header-title h1 {
-    font-size: 2.2rem;
-    line-height: 0.8em;
-    letter-spacing: 0.01em;
-    font-weight: 320;
-    margin: 0;
+    font-size: 2.1rem;
+    letter-spacing: 0.1px;
+    font-weight: 400;
     transition: .2s ease-in-out;
 }
-#header-title h1:hover {
-    color: #f4ff5e;
+#header-title:hover h1 {
+    color: var(--main-cta-color);
     transition: .2s ease-in-out;
 }
 #header-logo {
-    font-family: League Spartan;
-    font-size: 2.5rem;
-    line-height: 0.8em;
-    letter-spacing: normal;
     height: 34px;
     width: 34px;
 }
@@ -63,13 +68,12 @@ header {
 header nav {
     display: flex;
     align-items: center;
-    padding: 1.5em 0;
 }
 nav ul {
     list-style: none;
     text-transform: uppercase;
     display: flex;
-    gap: 2.3em;
+    gap: 2.5em;
 }
 nav a {
     text-decoration: none;
@@ -77,25 +81,23 @@ nav a {
 nav a h4 {
     font-family: League Spartan;
     font-size: 1.25rem;
-    line-height: 1.2rem;
-    letter-spacing: 0.03em;
-    font-weight: 500;
+    letter-spacing: 0.7px;
+    font-weight: 520;
     position: relative;
-    /* box-shadow: inset 0 0 0 0 #4cadca; */
-    margin: 0 -.25rem;
-    padding: 0 .25rem;
-    transition: color .3s ease-in-out; /* box-shadow .3s ease-in-out */
+    margin: 0 -.1rem;
+    padding: 0 .1rem;
+    transition: color .3s ease-in-out;
 }
 nav a h4::before {
     content: '';
     position: absolute;
     width: 100%;
     height: 3px;
-    background-color: #FFFFF2;
+    background-color: var(--text-color);
     bottom: 0;
     left: 0;
-    transform-origin: right;
-    transform: scaleX(0);
+    transform-origin: left;
+    transform: scaleX(0.35);
     transition: transform .3s ease-in-out;
 }
 nav a h4:hover::before {
@@ -103,11 +105,9 @@ nav a h4:hover::before {
     transform: scaleX(1);
 }
 nav a h4:hover {
-    color: #f4ff5e;
+    color: var(--main-cta-color);
 }
-nav a h4:active {
-    color: #ffc773;
-}
+
 
 /* *** Footer *** */
 footer {
@@ -118,17 +118,19 @@ footer {
     align-items: center;
     gap: 1em;
     padding: 2em 1em;
+    max-width: 1500px;
+    margin: 0 auto;
 }
 #footer-logo {
     height: 90px;
     width: 90px;
 }
 #footer-logo > * {
-    fill: #FFFFF2  ;
+    fill: var(--text-color)  ;
     transition: fill .3s ease-in-out;
 }
 #footer-logo:hover > * {
-    fill: #f4ff5e;
+    fill: var(--main-cta-color);
     transition: fill .3s ease-in-out;
 }
 footer nav ul {
@@ -136,8 +138,10 @@ footer nav ul {
 }
 #footer-caption {
     width: 360px;
-    font-size: 0.8em;
     padding: 0 1em 0em 0;
+}
+#footer-caption p {
+    font-size: 0.8em;
     line-height: 1.5em;
     letter-spacing: 0.08rem;
 }
@@ -151,36 +155,40 @@ footer nav ul {
     margin: 2em 0 0 0;
 }
 
-/* Text Styles */
-#intro-section p {
-    letter-spacing: 0.105rem;
+/* *** Text Styles *** */
+p {
+    letter-spacing: 0.08rem;
     font-weight: 100;
     line-height: 1.8rem;
     font-size: 1.12rem;
 }
 .first-p::first-letter {
     initial-letter: 2;
-    color: #f4ff5e;
+    color: var(--main-cta-color);
     font-weight: bold;
     margin-right: .75em;
 }
+/* Links */
 a {
-    color: #FFFFF2;
+    color: var(--text-color);
     transition: .2s ease-in-out;
 }
 a:hover{
-    color: #f4ff5e;
-    text-decoration-color: #FFFFF2;
+    color: var(--main-cta-color);
+    text-decoration-color: var(--text-color);
     transition: .2s ease-in-out;
 
 }
 a:active {
-    text-decoration-color: #f4ff5e;
+    text-decoration-color: var(--main-cta-color);
 }
-
+/* Headings */
 h2 {
     font-family: League Spartan;
     font-size: 4rem;
     font-weight: 425;
     margin: 0;
+}
+h3 {
+    font-family: League Spartan;
 }
