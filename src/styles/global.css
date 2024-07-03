@@ -29,10 +29,15 @@ header {
     height: 100px;
 }
 /* Logo banner */
+.center-logo {
+    display: flex;
+    align-items: center;
+}
 #header-title {
     display: flex;
     gap: 0.5em;
     align-items: center;
+    text-decoration: none;
 }
 #header-title h1 {
     font-size: 2.75rem;
@@ -40,6 +45,7 @@ header {
     line-height: 0.8em;
     font-weight: 600;
     letter-spacing: normal;
+    margin: 0;
 }
 #header-logo {
     font-family: League Spartan;
