@@ -1,4 +1,27 @@
+.banner-section {
+    width: 100%;
+}
+
 .project-details-section {
     display: flex;
-    justify-content: space-around;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 3em;
+    width: 100%;
+    padding: 0 2em;
+
+}
+.project-details-section article {
+    width: 55%;
+
+}
+.project-details-section aside {
+    width: 40%;
+}
+.role {
+
+}
+
+.carousel-section {
+
 }
