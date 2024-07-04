@@ -34,6 +34,7 @@
         </header>
 
         <main id="about">
+
             <section id="intro-section">
                 <div>
                     <h2>About</h2>
@@ -54,6 +55,7 @@
                     </p>
                 </div>
             </section>
+
             <section id="skill-section">
                 <div>
                     <h3 class="skill-header">Design Skills</h3>
@@ -78,11 +80,76 @@
                     </ul>
                 </div>
             </section>
+
             <!-- <section>
                 <h4>When I'm not behind the bright lumens of my laptop screen,</h4>
                 <h3>I like to climb rocks, go backpacking, and learn about native plants.</h3>
-                <p>My camera roll is full of rocks, plants, mushrooms, and critters.</p>
+                <p>
+                    My camera roll is full of plants, mushrooms, and critters. I use <a>iNaturalist</a> to post and help identify whatever it is I photographed. 
+                    Not only is it fun and feels like I'm completing some type of real-life Pokedex, the data is used to help scientists with their research.
+                </p>
+                <div class="swiper-wrapper">
+                    <article class="image-swipe-container">
+                        <div class="swiper">
+                            <h4>Title</h4>
+                            <div class="swiper-slides">
+                                <figure id="" class="swiper-slide-item">
+                                    <img src="" alt="" />
+                                </figure>
+                                <figure id="" class="swiper-slide-item">
+                                    <img src="" alt="" />
+                                </figure>
+                                <figure id="" class="swiper-slide-item">
+                                    <img src="" alt="" />
+                                </figure>
+                                <figure id="" class="swiper-slide-item">
+                                    <img src="" alt="" />
+                                </figure>
+                                <figure id="" class="swiper-slide-item">
+                                    <img src="" alt="" />
+                                </figure>
+                            </div>
+                            <div class="swiper-indicators">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="image-swipe-container">
+                        <div class="swiper">
+                            <h4>Title</h4>
+                            <div class="swiper-slides">
+                                <figure id="" class="swiper-slide-item">
+                                    <img src="" alt="" />
+                                </figure>
+                                <figure id="" class="swiper-slide-item">
+                                    <img src="" alt="" />
+                                </figure>
+                                <figure id="" class="swiper-slide-item">
+                                    <img src="" alt="" />
+                                </figure>
+                                <figure id="" class="swiper-slide-item">
+                                    <img src="" alt="" />
+                                </figure>
+                                <figure id="" class="swiper-slide-item">
+                                    <img src="" alt="" />
+                                </figure>
+                            </div>
+                            <div class="swiper-indicators">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
             </section> -->
+
             <section id="contact">
                 <div id="contact-header">
                     <h2>Contact</h2>
@@ -91,7 +158,10 @@
                 <div id="contact-info">
                     <h3>Let's work together!</h3>
                     <p>Drop me an email if you have an exciting project you would like to discuss, you're hiring for a position that would be a good fit, or if you just want to chat!</p>
-                    <p id="email"><b>lukemoore237@gmail.com</b></p>
+                    <div class="email-container">
+                        <p><b id="email">lukemoore237@gmail.com</b></p>
+                        <button onclick="copyEmail()" onmouseout="outFunc()" id="copyButton">Copy</button>
+                    </div>
                     <div id="icon-container">
                         <a href="https://www.linkedin.com/in/lukemoore-profile/" target=”_blank”>
                             <svg class="icon" viewBox="0 0 38 38">
@@ -125,12 +195,26 @@
                                 </g>
                             </svg>
                         </a>
+                        <a href="https://www.inaturalist.org/observations?place_id=any&user_id=lukemoore&verifiable=any" target="_blank">
+                            <svg class="icon" viewBox="0 0 629 629">
+                                <circle cx="314.5" cy="314.5" r="314.5" fill="#FFFFF2"/>
+                                <path d="M147 166H483V463H147V166Z" fill="url(#pattern0_406_132)"/>
+                                <defs>
+                                    <pattern id="pattern0_406_132" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                        <use xlink:href="#image0_406_132" transform="scale(0.00297619 0.003367)"/>
+                                    </pattern>
+                                    <image fill="#22252D" id="image0_406_132" width="336" height="297" xlink:href="data:image/png;base64,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"/>
+                                </defs>
+                            </svg>
+                        </a>
                     </div>
                 </div>
             </section>
+
         </main>
 
         <footer>
+
             <section class="footer-logo">
                 <a href="./index.html">
                     <svg id="footer-logo" viewBox="0 0 128 128" fill="none" alt="LM initials logo. Logo is a rounded square where the L on the left wraps around and under the M.">
@@ -144,6 +228,7 @@
                     </svg>
                 </a>            
             </section>
+
             <nav>
                 <ul>
                     <li><a href="./index.html"><h4>Home</h4></a></li>
@@ -151,6 +236,7 @@
                     <li><a href="./about.html#contact"><h4>Contact</h4></a></li>
                 </ul>
             </nav>
+
             <section id="footer-caption">
                 <p>Set in <a href="https://www.gent.media/manrope" target="_blank">Manrope</a> and <a href="https://www.theleagueofmoveabletype.com/league-spartan" target="_blank">League Spartan</a> available
                     under <a href="https://openfontlicense.org/" target="_blank">SIL Open Font License</a> Version 1.1.
@@ -161,7 +247,21 @@
                     <span>Copyright © 2023 Luke Moore</span></p>
                 <h6 id="job-title">Creative Developer</h6>
             </section>
+
         </footer>
     
+        <script>
+            function copyEmail() {
+                let copyText = document.getElementById("email");
+                let button = document.getElementById("copyButton");
+                navigator.clipboard.writeText(copyText.innerText.toLowerCase());
+                button.innerHTML = "Copied!";
+            }
+            
+            function outFunc() {
+                let button = document.getElementById("copyButton");
+                button.innerHTML = "Copy";
+            }
+        </script>
     </body>
 </html>
