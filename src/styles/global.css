@@ -56,12 +56,12 @@ header {
     font-size: 2.1rem;
     letter-spacing: 0.1px;
     font-weight: 400;
-    transition: .2s ease-in-out;
+    transition: .1s ease-in-out;
     line-height: 0.9em;
 }
 .logo-section:hover h1 {
     color: var(--main-cta-color);
-    transition: .2s ease-in-out;
+    transition: .1s ease-in-out;
 }
 #header-logo {
     height: 34px;
@@ -76,34 +76,34 @@ nav ul {
     list-style: none;
     text-transform: uppercase;
     display: flex;
-    gap: 2.5em;
+    gap: 2.7em;
 }
 nav a {
     font-family: League Spartan;
-    font-size: 1.25rem;
-    letter-spacing: 0.7px;
+    font-size: 1rem;
     font-weight: 520;
     text-decoration: none;
     position: relative;
     margin: 0 -.1rem;
     padding: 0 .1rem;
-    transition: color .3s ease-in-out;
+    transition: color .18s ease-in-out;
 }
 nav a::before {
     content: '';
     position: absolute;
     width: 100%;
-    height: 3px;
+    height: 2px;
     background-color: var(--text-color);
-    bottom: 0;
+    bottom: -2px;
     left: 0;
     transform-origin: left;
     transform: scaleX(0.35);
-    transition: transform .3s ease-in-out;
+    transition: transform .18s ease-in-out;
 }
 nav a:hover::before {
     transform-origin: left;
     transform: scaleX(1);
+
 }
 nav a:hover {
     color: var(--main-cta-color);
@@ -193,6 +193,8 @@ h2 {
     font-size: 4rem;
     font-weight: 425;
     margin: 0;
+    line-height: 1em;
+    margin-bottom: 0.25em;
 }
 h3 {
     font-family: League Spartan;

@@ -1,7 +1,7 @@
 #about {
     max-width: 1500px;
     line-height: 1.75;
-    margin: 2em auto 6em auto;
+    margin: 4em auto 6em auto;
 }
 #about section {
     width: 100%;
@@ -12,6 +12,8 @@
     font-size: 2rem;
     font-weight: 400;
     margin: 0;
+    width: 330px;
+    line-height: 1.3em;
 }
 
 #intro-section {
@@ -24,10 +26,9 @@
 }
 #intro-section img {
     height: 50%;
-    max-height: 500px;
-    min-height: 275px;
-    min-width: 250px;
-    width: 30vw;
+    max-height: 600px;
+    min-width: 300px;
+    width: 100%;
     object-fit: cover;
     box-shadow: 0.35rem 0.35rem var(--main-cta-color);
 }
@@ -41,9 +42,9 @@
 
 #skill-section {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     flex-wrap: wrap;
-    gap: 1.925em
+    gap: 15vw;
 }
 #skill-section div {
     width: 300px
