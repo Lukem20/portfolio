@@ -67,9 +67,9 @@
     gap: 4em;
 }
 #contact-header img {
-    min-width: 100px;
-    width: 250px;
-    height: 250px;
+    min-width: 110px;
+    max-width: 300px;
+    width: 40vw;
     box-shadow: 0.35rem 0.35rem var(--main-cta-color);
 }
 #contact-info {
@@ -84,13 +84,13 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1.2em;
+    gap: 0.55em;
 }
 .email-container p {
     margin: 0;
 }
 #email {
-    letter-spacing: 0.02em;
+    letter-spacing: 0.04em;
     font-size: 1.4rem;
     text-transform: uppercase;
 }
@@ -113,7 +113,7 @@
 .icon {
     width: 5vw;
     max-width: 120px;
-    min-width: 35px;
+    min-width: 50px;
     fill: var(--text-color);
 }
 .icon:hover {
