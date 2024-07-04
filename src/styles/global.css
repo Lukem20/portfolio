@@ -18,6 +18,7 @@ html {
     --main-bg-color: #22252D;
     --text-color: #FFFFF2;
     --main-cta-color: #F4FF5E;
+    --footer-bg-color: #445359;
 }
 body {
     margin: 0;
@@ -28,6 +29,7 @@ body {
 /* *** Main Page Content *** */
 main {
     max-width: 1500px;
+    margin: 0 auto;
 }
 
 /* *** Header *** */
@@ -111,7 +113,7 @@ nav a h4:hover {
 
 /* *** Footer *** */
 footer {
-    background-color: #445359;
+    background-color: var(--footer-bg-color);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -157,9 +159,9 @@ footer nav ul {
 
 /* *** Text Styles *** */
 p {
-    letter-spacing: 0.08rem;
+    letter-spacing: 0.06rem;
     font-weight: 100;
-    line-height: 1.8rem;
+    line-height: 1.85rem;
     font-size: 1.12rem;
 }
 .first-p::first-letter {
