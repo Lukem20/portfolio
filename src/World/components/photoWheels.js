@@ -99,7 +99,7 @@ function createPhotos (camera, container) {
     const radianInterval = (2 * Math.PI) / photos.length;
     const geometry = {
         size: 45,
-        cornerRadius: 4,
+        cornerRadius: 2.5,
         cornerSmoothness: 12,
     }
 
