@@ -26,19 +26,14 @@ body {
     overflow-x: hidden;
 }
 
-/* *** Main Page Content *** */
-main {
-    max-width: 1500px;
-    margin: 0 auto;
-}
-
 /* *** Header *** */
 header {
     display: flex;
     justify-content: space-between;
     padding: 0 4em 0 3em;
     height: 100px;
-    max-width: 1500px;
+    width: 80vw;
+    max-width: 2000px;
     margin: 0 auto;
 }
 /* Logo */
@@ -108,6 +103,13 @@ nav a:hover {
     color: var(--main-cta-color);
 }
 
+/* *** Main Page Content *** */
+main {
+    width: 80vw;
+    margin: 0 auto;
+    max-width: 2000px;
+}
+
 /* *** Footer *** */
 footer {
     background-color: var(--footer-bg-color);
@@ -117,8 +119,8 @@ footer {
     align-items: center;
     gap: 1em;
     padding: 2em 1em;
-    max-width: 1500px;
-    margin: 0 auto;
+    width: 80vw;
+    margin: 0 auto 3em auto;
 }
 /* Logo*/
 #footer-logo {
@@ -189,7 +191,7 @@ a:active {
 /* Headings */
 h2 {
     font-family: League Spartan;
-    font-size: 4rem;
+    font-size: 3.5rem;
     font-weight: 425;
     margin: 0;
     line-height: 1em;
@@ -197,4 +199,8 @@ h2 {
 }
 h3 {
     font-family: League Spartan;
+}
+/* Images */
+.cta-border {
+    box-shadow: 0.35rem 0.35rem var(--main-cta-color);
 }

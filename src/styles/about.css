@@ -30,7 +30,6 @@
     min-width: 300px;
     width: 100%;
     object-fit: cover;
-    box-shadow: 0.35rem 0.35rem var(--main-cta-color);
 }
 #intro-text-container {
     padding-top: 3em;
@@ -71,7 +70,6 @@
     min-width: 110px;
     max-width: 300px;
     width: 40vw;
-    box-shadow: 0.35rem 0.35rem var(--main-cta-color);
 }
 #contact-info {
     padding-top: 3em;
