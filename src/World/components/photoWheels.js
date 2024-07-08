@@ -90,7 +90,7 @@ function createPhotos (camera, container) {
         {
             imagePath: '/assets/ITBFGLA2.jpg',
             projectPath: '/projects/graphics-textbook.html',
-            projectTitle: 'The Interactive Textbook for Geometric Linear Algebra'
+            projectTitle: 'The Interactive Graphics Textbook'
         },
     ];
 
