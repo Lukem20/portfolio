@@ -13,9 +13,9 @@ import { snapAfterSpin } from './pw-snapAfterSpin.js';
 function createPhotos (camera, container) {
     let photos = [
         {
-            imagePath: '/assets/whatDesigner1.JPG',
-            projectPath: '/projects/wdru.html',
-            projectTitle: 'What Designer Are You?'
+            imagePath: '/assets/.JPG',
+            projectPath: '/projects/haunted-house.html',
+            projectTitle: 'Haunted House'
         },
         {
             imagePath: '/assets/bit.jpg',
@@ -45,17 +45,17 @@ function createPhotos (camera, container) {
         {
             imagePath: '/assets/7ds1.jpg',
             projectPath: '/projects/7ds.html',
-            projectTitle: 'Seven Deadly Sins of Social Media & Technology'
+            projectTitle: 'The Seven Deadly Sins'
         },
         {
             imagePath: '/assets/ITBFGLA1.jpg',
             projectPath: '/projects/graphics-textbook.html',
-            projectTitle: 'The Interactive Textbook for Geometric Linear Algebra'
+            projectTitle: 'The Interactive Graphics Textbook'
         },
         {
-            imagePath: '/assets/whatDesigner2.JPG',
-            projectPath: '/projects/wdru.html',
-            projectTitle: 'What Designer Are You?'
+            imagePath: '/assets/.JPG',
+            projectPath: '/projects/haunted-house.html',
+            projectTitle: 'Haunted House'
         },
         {
             imagePath: '/assets/bit2.jpg',
@@ -85,7 +85,7 @@ function createPhotos (camera, container) {
         {
             imagePath: '/assets/7ds2.jpg',
             projectPath: '/projects/7ds.html',
-            projectTitle: 'Seven Deadly Sins of Social Media & Technology'
+            projectTitle: 'Seven Deadly Sins'
         },        
         {
             imagePath: '/assets/ITBFGLA2.jpg',
