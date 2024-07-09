@@ -1,11 +1,15 @@
 /* *** Global Fonts *** */
 @font-face {
     font-family: 'League Spartan';
-    src: url("/LeagueSpartan-VF.woff2");
+    src: url("../assets/fonts/LeagueSpartan-VF.woff2") format('woff2');
+    font-display: swap;
+    font-style: normal;
 }
 @font-face {
-    font-family: 'Manrope';
-    src: url("/Manrope-VF.ttf");
+    font-family: 'Roslindale';
+    src: url("../assets/fonts/RoslindaleVariable[opsz\,slnt\,wdth\,wght].woff2") format('woff2');
+    font-display: swap;
+    font-style: normal;
 }
 
 /* *** Global Styles *** */
@@ -20,7 +24,7 @@ html {
 }
 body {
     /* New font for everything */
-    font: 100%/1.5 'Manrope', serif;
+    font: 100%/1.5 'Roslindale', serif;
     font-kerning: normal;
     margin: 0 auto;
     padding: 2em;
@@ -33,9 +37,9 @@ body {
     /* Paragraphs */
     p {
         margin: 0;
-        font-weight: 200;
-        line-height: 1.85rem;
-        font-size: 1.12rem;
+        font-weight: 225;
+        line-height: 1.8em;
+        font-size: 1.1em;
     }
         p + p { text-indent: 1em; }
         .tall-first-letter::first-letter {
@@ -48,12 +52,12 @@ body {
     /* Links */
     a {
         color: var(--text-color);
-        transition: .2s ease-in-out;
+        transition: .125s ease-in-out;
     }
     a:hover{
         color: var(--main-cta-color);
         text-decoration-color: var(--text-color);
-        transition: .2s ease-in-out;
+        transition: .125s ease-in-out;
 
     }
     a:active {
@@ -64,35 +68,39 @@ body {
     h1 {
         font-family: 'League Spartan', sans-serif;
         font-size: 4.096em;
-        font-weight: 425;
-        line-height: 1em;
+        font-weight: 500;
+        line-height: 1.05em;
         margin: 0;
-        margin-bottom: 0.25em;
+        margin-bottom: 0.5em;
     }
     h2 {
         font-size: 2.618em;
+        font-weight: 675;
+        letter-spacing: 0.02em;
         margin: 0;
-
+        margin-bottom: 0.5em;
     }
     h3 {
         font-size: 1.931em;
+        font-weight: 650;
+        letter-spacing: 0.015em;
         margin: 0;
-
+        margin-bottom: 0.45em;
     }
     h4 {
         font-size: 1.618em;
         margin: 0;
-
+        margin-bottom: 0.35em;
     }
     h5 {
         font-size: 1.194em;
         margin: 0;
-
+        margin-bottom: 0.25em;
     }
     h6 {
         font-size: 1em;
         margin: 0;
-
+        margin-bottom: 0.25em;
     }
 
 /* *** Header *** */
@@ -108,17 +116,18 @@ header {
     /* Logo */
     .logo-section a {
         display: flex;
+        align-items: center;
         gap: 0.6em;
         text-decoration: none;
     }
         .logo-title {
             color: var(--text-color);
             margin: 0;
-            font-family: 'League Spartan', sans-serif;
-            font-size: 2.7em;
-            font-weight: 450;
-            line-height: 0.9em;
-            letter-spacing: -0.015em;
+            font-family: 'Roslindale', serif;
+            font-size: 2em;
+            font-variation-settings: 'wdth' 95;
+            letter-spacing: 0.015em;
+            font-weight: 600;
             transition: .1s ease-in-out;
         }
         .logo-title:hover {
@@ -126,8 +135,8 @@ header {
             transition: .1s ease-in-out;
         }
         #logo-img {
-            height: 31px;
-            width: 31px;
+            height: 32px;
+            width: 32px;
         }
 
     /* Navigation */
@@ -195,6 +204,7 @@ footer {
 }
     /* Logo*/
     #footer-logo {
+        padding-top: 1em;
         height: 90px;
         width: 90px;
     }
@@ -227,6 +237,8 @@ footer {
         font-weight: 600;
     }
     #job-title {
+        font-family: 'League Spartan', sans-serif;
+        font-weight: 500;
         font-size: 0.65rem;
         text-transform: uppercase;
         letter-spacing: 0.6rem;
