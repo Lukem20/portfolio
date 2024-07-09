@@ -1,8 +1,8 @@
-#about {
+.about {
     max-width: 1500px;
     margin: 0 auto;
 }
-    #about section {
+    .about section {
         width: 100%;
         margin: 0 auto 10em auto;
     }
@@ -27,7 +27,7 @@
         }
         .intro-text {
             width: 30vw;
-            min-width: 290px;
+            min-width: 300px;
         }
 
     /* Skills */
@@ -37,20 +37,74 @@
         flex-wrap: wrap;
         gap: 15vw;
     }
-        #skill-section div {
-            max-width: 300px
+        #skill-section aside {
+            min-width: 300px
         }
+            .skill-list {
+                display: flex;
+                gap: 3em;
+            }
             #skill-section div ul {
                 padding-left: 1em;
                 margin: 0;
             }
 
-    /* Image Swiper Section */
-    .swiper-wrapper {
+    /* For Fun Section */
+    #for-fun-section {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-around;
+        justify-content: center;
+        gap: 2em;
     }
+        #for-fun-section > * {
+            width: 45%;
+            min-width: 300px;
+        }
+            .swiper {
+                position: relative;
+                border-radius: 5px;
+            }
+                .swiper nav {
+                  position: absolute;
+                  display: flex;
+                  justify-content: space-between;
+                  width: 110%;
+                  inset: 0 -5%;
+                  z-index: 0;
+                  button {
+                    border: 1px solid var(--main-cta-color);
+                    background-color: var(--main-bg-color);
+                    color: var(--text-color);
+                    cursor: pointer;
+                    transition: 0.2s ease opacity;
+                    &:first-child {
+                        opacity: 0;
+                    }
+                  }  
+                }
+                .swiper-slides {
+                    z-index: 1;
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    overflow-x: scroll;
+                    scroll-snap-type: x mandatory;
+                    overscroll-behavior-x: contain;
+                }
+                    .swiper-slide-item {
+                        margin: 0;
+                        scroll-snap-align: start;
+                        flex-shrink: 0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 300px;
+                    }
+                    .swiper-slide-item > img {
+                        max-width: 100%;
+                        height: 300px;
+                        object-fit: contain;
+                    }
 
     /* Contact Section */
     #contact {
@@ -79,17 +133,22 @@
             flex-wrap: wrap;
             align-items: center;
             gap: 1em;
+            padding-top: 1em;
         }
             #email {
-                letter-spacing: 0.04em;
+                font-family: 'League Spartan', sans-serif;
+                font-weight: 500;
+                letter-spacing: 0.05em;
                 text-transform: uppercase;
             }
             #copyButton {
+                font-family: 'League Spartan', serif;
+                font-size: 1em;
                 color: var(--main-cta-color);
                 border: 2px solid var(--main-cta-color);
                 background-color: var(--main-bg-color);
                 border-radius: 4px;
-                padding: 6px 12px;
+                padding: 8px 12px;
                 cursor: pointer;
             }
             #copyButton:hover {
