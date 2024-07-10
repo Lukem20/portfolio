@@ -7,7 +7,7 @@
 }
 @font-face {
     font-family: 'Roslindale';
-    src: url("../assets/fonts/RoslindaleVariable[opsz\,slnt\,wdth\,wght].woff2") format('woff2');
+    src: url("../assets/fonts/RoslindaleVariable.woff2") format('woff2');
     font-display: swap;
     font-style: normal;
 }
