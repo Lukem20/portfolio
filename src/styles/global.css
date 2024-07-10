@@ -82,13 +82,16 @@ body {
     }
     h3 {
         font-size: 1.931em;
-        font-weight: 650;
+        font-weight: 600;
         letter-spacing: 0.015em;
         margin: 0;
         margin-bottom: 0.45em;
     }
     h4 {
         font-size: 1.618em;
+        font-weight: 450;
+        letter-spacing: 0.015em;
+
         margin: 0;
         margin-bottom: 0.35em;
     }
