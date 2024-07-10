@@ -290,9 +290,6 @@
 
                 function updateButtonsVisibility() {
                     const { scrollLeft, clientWidth, scrollWidth } = slider;
-                    console.log("scrollleft", scrollLeft);
-                    console.log("client Width", clientWidth);
-                    console.log("scroll Width", scrollWidth);
 
                     prevButton.style.opacity = scrollLeft === 0 ? '0' : '1';
                     prevButton.style.pointerEvents = scrollLeft === 0 ? 'none' : 'auto';
