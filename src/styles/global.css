@@ -71,34 +71,43 @@ body {
         font-weight: 500;
         line-height: 1.05em;
         margin: 0;
-        margin-bottom: 0.5em;
+        margin-bottom: 0.75em;
     }
     h2 {
         font-size: 2.618em;
-        font-weight: 675;
-        letter-spacing: 0.02em;
+        font-weight: 525;
+        font-stretch: 88%;
+        line-height: 1.25em;
+        letter-spacing: 0.01em;
         margin: 0;
-        margin-bottom: 0.5em;
+        margin-bottom: 0.8em;
     }
     h3 {
         font-size: 1.931em;
-        font-weight: 600;
+        font-weight: 475;
+        font-stretch: 88%;
+        line-height: 1.3em;
         letter-spacing: 0.015em;
         margin: 0;
-        margin-bottom: 0.45em;
+        margin-bottom: 0.7em;
     }
     h4 {
         font-size: 1.618em;
         font-weight: 450;
+        font-stretch: 88%;
+        line-height: 1.3em;
         letter-spacing: 0.015em;
-
         margin: 0;
-        margin-bottom: 0.35em;
+        margin-bottom: 0.65em;
     }
     h5 {
-        font-size: 1.194em;
+        font-size: 1.192em;
+        font-weight: 400;
+        font-stretch: 88%;
+        line-height: 1.3em;
+        letter-spacing: 0.025em;
         margin: 0;
-        margin-bottom: 0.25em;
+        margin-bottom: 0.6em;
     }
     h6 {
         font-size: 1em;
@@ -111,10 +120,10 @@ header {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 1em;
+    gap: 1.2em;
     width: 90vw;
     max-width: 2000px;
-    margin: 0 auto 4em auto;
+    margin: 1em auto 4em auto;
 }
     /* Logo */
     .logo-section a {
@@ -125,12 +134,13 @@ header {
     }
         .logo-title {
             color: var(--text-color);
-            margin: 0;
             font-family: 'Roslindale', serif;
             font-size: 2em;
-            font-variation-settings: 'wdth' 95;
-            letter-spacing: 0.015em;
             font-weight: 600;
+            font-stretch: 90%;
+            letter-spacing: 0.015em;
+            line-height: 1.15em;
+            margin: 0;
             transition: .1s ease-in-out;
         }
         .logo-title:hover {
@@ -195,7 +205,7 @@ main {
 
 /* *** Footer *** */
 footer {
-    width: 80vw;
+    max-width: 2000px;
     background-color: var(--footer-bg-color);
     padding: 1em;
     display: flex;
@@ -228,6 +238,7 @@ footer {
     /* Footer details & copyright */
     #footer-caption {
         width: 21.75em;
+        padding: 1em 0;
     }
     #footer-caption small {
         font-size: 0.8em;

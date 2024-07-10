@@ -10,7 +10,7 @@
     /* Introduction */
     #intro-section {
         display: flex;
-        gap: 4em;
+        gap: 5em;
         flex-wrap: wrap;
         justify-content: center;
         align-items: flex-start;
@@ -33,21 +33,18 @@
     /* Skills */
     #skill-section {
         display: flex;
-        justify-content: center;
         flex-wrap: wrap;
-        gap: 15vw;
+        justify-content: space-around;
+        gap: 5em;
     }
-        #skill-section aside {
-            min-width: 300px
+        .skill-list {
+            display: flex;
+            gap: 3em;
         }
-            .skill-list {
-                display: flex;
-                gap: 3em;
-            }
-            #skill-section div ul {
-                padding-left: 1em;
-                margin: 0;
-            }
+        #skill-section div ul {
+            padding-left: 1em;
+            margin: 0;
+        }
 
     /* For Fun Section */
     #for-fun-section {
@@ -115,7 +112,7 @@
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
-        gap: 3.5em;
+        gap: 5em;
     }
         #contact-header img {
             max-width: 300px;
@@ -133,7 +130,7 @@
             flex-wrap: wrap;
             align-items: center;
             gap: 1em;
-            padding-top: 1em;
+            padding-top: 1.25em;
         }
             #email {
                 font-family: 'League Spartan', sans-serif;
@@ -157,9 +154,11 @@
 
         /* Social Icons */
         #icon-container {
+            max-width: 600px;
             display: flex;
+            justify-content: space-around;
             padding-top: 3em;
-            gap: 2em;
+            gap: 1em;
         }
             .icon {
                 width: 5vw;
