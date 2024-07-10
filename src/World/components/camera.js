@@ -18,7 +18,7 @@ function createCamera() {
     const camera = new PerspectiveCamera(
         60, window.innerWidth / window.innerHeight, 0.1, 1000
     );
-    camera.position.z = 110;
+    camera.position.z = 120;
 
     const cameraGroup = new Group();
     cameraGroup.add(camera);

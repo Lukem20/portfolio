@@ -147,8 +147,8 @@ function createPhotos (camera, container) {
         bottomGroup.add(photoMeshBottom);
     }
 
-    topGroup.translateY(wheelPosition);
-    bottomGroup.translateY(-wheelPosition);
+    topGroup.translateY(wheelPosition - 16);
+    bottomGroup.translateY(-wheelPosition - 11);
     
     // --- Rotate Wheel Event ---
     let spinInProgress = null;
