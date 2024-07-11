@@ -11,6 +11,12 @@
     font-display: swap;
     font-style: normal;
 }
+@font-face {
+    font-family: 'Inter-tight';
+    src: url(../assets/fonts/InterTight-VF.woff2) format('woff2');
+    font-display: swap;
+    font-style: normal;
+}
 
 /* *** Global Styles *** */
 * {
@@ -66,7 +72,7 @@ body {
 
     /* Headings */
     h1 {
-        font-family: 'League Spartan', sans-serif;
+        font-family: 'Inter-tight', sans-serif;
         font-size: 4.096em;
         font-weight: 500;
         line-height: 1.05em;
@@ -166,7 +172,7 @@ header {
             margin: auto;
         }
             nav li a {
-                font-family: League Spartan;
+                font-family: 'Inter-tight', sans-serif;
                 font-size: 1rem;
                 font-weight: 520;
                 text-decoration: none;
@@ -251,7 +257,7 @@ footer {
         font-weight: 600;
     }
     #job-title {
-        font-family: 'League Spartan', sans-serif;
+        font-family: 'Inter-tight', sans-serif;
         font-weight: 500;
         font-size: 0.65rem;
         text-transform: uppercase;
