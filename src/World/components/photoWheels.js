@@ -16,7 +16,7 @@ function createPhotos (camera, container) {
         {
             imagePath: '/assets/.JPG',
             projectPath: '/projects/haunted-house.html',
-            projectTitle: 'Haunted House'
+            projectTitle: 'Three.js Haunted House'
         },
         {
             imagePath: '/assets/bit.jpg',
@@ -26,7 +26,7 @@ function createPhotos (camera, container) {
         {
             imagePath: '/assets/abts1.jpg',
             projectPath: '/projects/abts.html',
-            projectTitle: 'Augemented Reality Bike Map'
+            projectTitle: 'Augmented Reality Bike Map'
         },
         {
             imagePath: '/assets/sb2.jpg',
@@ -51,12 +51,12 @@ function createPhotos (camera, container) {
         {
             imagePath: '/assets/ITBFGLA1.jpg',
             projectPath: '/projects/graphics-textbook.html',
-            projectTitle: 'The Interactive Graphics Textbook'
+            projectTitle: 'Interactive Graphics Textbook'
         },
         {
             imagePath: '/assets/.JPG',
             projectPath: '/projects/haunted-house.html',
-            projectTitle: 'Haunted House'
+            projectTitle: 'Three.js Haunted House'
         },
         {
             imagePath: '/assets/bit2.jpg',
@@ -66,7 +66,7 @@ function createPhotos (camera, container) {
         {
             imagePath: '/assets/abts2.jpg',
             projectPath: '/projects/abts.html',
-            projectTitle: 'Augemented Reality Bike Map'
+            projectTitle: 'Augmented Reality Bike Map'
         },
         {
             imagePath: '/assets/sb1.jpg',
@@ -91,7 +91,7 @@ function createPhotos (camera, container) {
         {
             imagePath: '/assets/ITBFGLA2.jpg',
             projectPath: '/projects/graphics-textbook.html',
-            projectTitle: 'The Interactive Graphics Textbook'
+            projectTitle: 'Interactive Graphics Textbook'
         },
     ];
 
