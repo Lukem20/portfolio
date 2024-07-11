@@ -18,7 +18,6 @@ export default defineConfig({
                 healdsburgcrush: resolve(root, '/projects/hbc.html'),
                 sandbox: resolve(root, '/projects/sandbox.html'),
                 sisisbarbershop: resolve(root, '/projects/sb.html'),
-                whatdesignerareyou: resolve(root, '/projects/wdru.html'),
             }
         },
         outDir,
