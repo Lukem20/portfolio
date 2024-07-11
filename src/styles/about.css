@@ -1,6 +1,7 @@
 .about {
     max-width: 1500px;
     margin: 0 auto;
+    margin-top: 2em;
 }
     .about section {
         width: 100%;
@@ -10,7 +11,6 @@
     /* Introduction */
     #intro-section {
         display: flex;
-        gap: 5em;
         flex-wrap: wrap;
         justify-content: center;
         align-items: flex-start;
@@ -18,12 +18,18 @@
         #intro-section h3 {
             max-width: 380px;
         }
+        .intro-img-section {
+            margin-right: 3vw;
+        }
         #intro-section img {
             height: 50%;
             max-height: 600px;
             min-width: 250px;
             width: 100%;
             object-fit: cover;
+        }
+        .intro {
+            margin-top: 4.75em;
         }
         .intro-text {
             max-width: 600px;
