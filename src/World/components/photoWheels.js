@@ -4,6 +4,7 @@ import {
     Group,
     Vector2,
     Raycaster,
+    SRGBColorSpace,
     MathUtils
 } from 'three';
 import { createMaterial } from './material.js';
@@ -122,6 +123,7 @@ function createPhotos (camera, container) {
     // Create meshes and places them in a circle.
     for (let i = 0; i < photos.length; i++) {
         texture = textureLoader.load(photos[i].imagePath);
+        texture.colorSpace = SRGBColorSpace;
         material = createMaterial(texture);
 
         photoMeshTop = new Mesh(roundedRectangleGeometry, material);
@@ -150,7 +152,7 @@ function createPhotos (camera, container) {
     topGroup.translateY(wheelPosition - 16);
     bottomGroup.translateY(-wheelPosition - 11);
     
-    // --- Rotate Wheel Event ---
+    // --- Scroll Event ---
     let spinInProgress = null;
     let scrollSpeed = 0.0;
 
@@ -176,6 +178,49 @@ function createPhotos (camera, container) {
         }, 350);
     });
 
+    // --- Swipe Event ---
+    let xDown = null;                                                        
+    let yDown = null;
+    scrollSpeed = 0.0;
+
+    document.addEventListener('touchstart',handleTouchStart, false);        
+
+    function handleTouchStart(event) {
+        event.preventDefault();
+        const firstTouch = evt.touches[0];                                      
+        xDown = firstTouch.clientX;                                      
+        yDown = firstTouch.clientY;                                      
+    };  
+
+    document.addEventListener('touchmove', event => {
+        console.log('Touch Move', event)
+        if ( !xDown || !yDown ) { return; }
+
+        let xUp = event.touches[0].clientX;                                    
+        let yUp = event.touches[0].clientY;
+
+        let xDiff = xDown - xUp;
+        let yDiff = yDown - yUp;
+                                                                            
+        if ( Math.abs(xDiff) > Math.abs(yDiff) ) {
+            if ( xDiff > 0 ) {
+                /* right swipe */ 
+                scrollSpeed 
+            } else {
+                /* left swipe */
+            }                       
+        } else {
+            if ( yDiff > 0 ) {
+                /* down swipe */ 
+            } else { 
+                /* up swipe */
+            }                                                                 
+        }
+        /* reset values */
+        xDown = null;
+        yDown = null;          
+    });                                                 
+
     // --- Mouse Event ---
     const mouse = new Vector2();
     container.addEventListener('mousemove', (event) => {
@@ -195,7 +240,6 @@ function createPhotos (camera, container) {
         } 
     });
 
-    // ### TODO ### Debug the raycaster, it is offset
     const raycaster = new Raycaster();
     const photoWheels = new Group();
     photoWheels.add(topGroup);

@@ -23,10 +23,10 @@ class World {
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement);
 
-        const ambientLight = createLights();
+        const light = createLights();
         const photoWheels = createPhotos(camera, container);
 
-        scene.add(photoWheels, camera, ambientLight);
+        scene.add(photoWheels, camera, light);
         loop.updatables.push(camera);
         loop.updatables.push(photoWheels);
 
