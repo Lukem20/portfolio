@@ -1,6 +1,9 @@
 .project {
     margin-top: 4em;
 }
+section {
+    margin-bottom: 10em;
+}
 /* *** Banner *** */
 .banner-section {
     position: relative;
@@ -9,10 +12,10 @@
 }
 .project-title {
     font-family: 'Inter-tight', sans-serif;
-    font-size: 4vw;
+    font-size:calc(1em + 1.5vw);
     position: absolute;
     top: -3%;
-    left: 3%;
+    left: 0.5%;
     z-index: 1;
     width: fit-content;
     margin: 0;
@@ -20,8 +23,8 @@
     background-color: var(--footer-bg-color);
 }
 #project-banner {
-    width: 90%;
-    margin: 0 auto;
+    width: 97%;
+    margin: 0 0 0 auto;
     max-height: 800px;
     object-fit: cover;
 }
@@ -29,15 +32,19 @@
 /* *** Details *** */
 .project-details-section {
     display: flex;
+    gap: 5em;
     flex-direction: column;
     align-items: center;
 }
-.project-text-container {
-    width: 100%;
-    margin: 4em 0;
+.details-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3em;
 }
-.project-details-text {
-    max-width: 900px;
+.details-text {
+    max-width: 700px;
+    min-width: 300px;
+    flex: 1;
 }
 .role {
     font-family: 'Inter-tight', sans-serif;
@@ -51,20 +58,21 @@
 .project-details {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    flex-direction: row-reverse;
     align-items: flex-start;
     width: 100%;
-    gap: 1em;
+    gap: 5em;
 }
 
 .project-details > * {
     width: 50%;
 }
 .details-list {
-    flex: 0.6;
+    flex: 0.8;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
-    gap: 8vh;
+    gap:  min(calc(2em + 5vw), 8em);  
 }
 .details-list * {
     margin: 0;
@@ -76,7 +84,10 @@
 }
 
 .details-photos {
+    flex: 1;
+    width: 65%;
     min-width: 300px;
+    max-width: 1000px;
     display: flex;
     flex-direction: column;
 }
@@ -93,7 +104,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    gap: 1em;
+    gap: 0.5em;
 }
 .picture-row img {
     flex: 0.25;
@@ -101,7 +112,7 @@
     object-fit: contain;
 }
 .picture-full {
-    margin-top: 1em;
+    margin-top: 0.5em;
     display: flex;
     justify-content: center;
     gap: 0.5em;
@@ -116,13 +127,12 @@
 
 /* *** Next Project *** */
 .next-project-section {
-    padding: 4em 0;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 .next-project-section h2 {
-
+    margin-top: 0;
 }
 .next-project {
     position: relative;

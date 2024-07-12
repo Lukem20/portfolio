@@ -85,8 +85,7 @@ body {
         font-stretch: 88%;
         line-height: 1.25em;
         letter-spacing: 0.01em;
-        margin: 0;
-        margin-bottom: 0.8em;
+        margin: 1em 0 .6em 0;
     }
     h3 {
         font-size: 1.931em;
@@ -132,6 +131,9 @@ header {
     margin: 1em auto 0em auto;
 }
     /* Logo */
+    .logo-section {
+        margin: 0;
+    }
     .logo-section a {
         display: flex;
         align-items: center;
@@ -196,11 +198,11 @@ header {
                 left: 0;
                 background-color: var(--text-color);
                 transform-origin: left;
-                transform: scaleX(0.35);
+                transform: scaleX(0);
                 transition: transform .18s ease-in-out;
             }
             nav li a:hover::before {
-                transform-origin: left;
+                transform-origin: right;
                 transform: scaleX(1);
             }
 
@@ -269,4 +271,9 @@ footer {
 /* *** Utility Classes *** */
 .cta-border {
     box-shadow: 0.35rem 0.35rem var(--main-cta-color);
+}
+
+.current-page::before {
+    transform: scaleX(1);
+    background-color: var(--main-cta-color);
 }
