@@ -2,7 +2,7 @@
     margin-top: 4em;
 }
 section {
-    margin-bottom: 10em;
+    margin-bottom: 8em;
 }
 /* *** Banner *** */
 .banner-section {
@@ -26,6 +26,7 @@ section {
     width: 97%;
     margin: 0 0 0 auto;
     max-height: 800px;
+    min-height: 300px;
     object-fit: cover;
 }
 
@@ -37,12 +38,14 @@ section {
     align-items: center;
 }
 .details-container {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
     gap: 3em;
 }
 .details-text {
-    max-width: 700px;
+    max-width: 625px;
     min-width: 300px;
     flex: 1;
 }
@@ -52,13 +55,13 @@ section {
     font-weight: 600;
     font-size: 0.8em;
     letter-spacing: 0.1em;
-    width: fit-content;
     margin: 1em 0;
 }
 .project-details {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row-reverse;
+    justify-content: space-evenly;
     align-items: flex-start;
     width: 100%;
     gap: 5em;
@@ -103,12 +106,12 @@ section {
 .picture-row {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-between;
     gap: 0.5em;
 }
 .picture-row img {
     flex: 0.25;
-    min-width: 250px;
+    min-width: 300px;
     object-fit: contain;
 }
 .picture-full {
@@ -116,10 +119,10 @@ section {
     display: flex;
     justify-content: center;
     gap: 0.5em;
-
 }
 .picture-full img {
     width: 49.75%;
+    min-width: 300px;
     min-height: 350px;
     object-fit: cover;
 }
@@ -136,6 +139,7 @@ section {
 }
 .next-project {
     position: relative;
+    width: 50%;
     margin-top: 1em;
 }
 .next-project a:hover h3 {
@@ -153,7 +157,8 @@ section {
     left: -3%;
 }
 .next-project img {
+    max-height: 600px;
     width: 100%;
-    height: 400px;
+    min-width: 300px;
     object-fit: cover;
 }
