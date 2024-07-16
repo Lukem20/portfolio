@@ -1,4 +1,4 @@
-import { Vector3 } from "three";
+import { Euler, Quaternion, Vector3 } from "three";
 
 function snapAfterSpin (topGroup, bottomGroup) {
     const snapPoint = {
@@ -43,13 +43,32 @@ function snapAfterSpin (topGroup, bottomGroup) {
         snapAngle = angleOfClosestPhoto > snapPoint.theta ? -1.0 * snapAngle : snapAngle;
     }
 
+    let eulerAngle = new Euler(0, 0, snapAngle)
+    let quaternionSnapAngle = new Quaternion(0,0,0,0);
+    quaternionSnapAngle.setFromEuler(eulerAngle);
+
+
     // ### TODO ### lerp (slerp?) this rotation to be smooth.
-    topGroup.rotateZ(snapAngle);
-    bottomGroup.rotateZ(snapAngle);
-    for (let i = 0; i < topGroup.children.length; i++) {
-        topGroup.children[i].rotateZ(-snapAngle);
-        bottomGroup.children[i].rotateZ(-snapAngle);
-    }
+    // console.log("Group before spin:", topGroup.quaternion);
+    // console.log("Snap", quaternionSnapAngle);
+
+    topGroup.quaternion.slerp(quaternionSnapAngle, 0.02);
+    bottomGroup.quaternion.slerp(quaternionSnapAngle, 0.02);
+
+    // for (let i = 0; i < topGroup.children.length; i++) {
+    //     topGroup.children[i].quaternion.slerp(-quaternionSnapAngle, 0.5);
+    //     bottomGroup.children[i].quaternion.slerp(-quaternionSnapAngle, 0.5);
+    // }
+
+    // topGroup.rotateZ(snapAngle);
+    // bottomGroup.rotateZ(snapAngle);
+
+    // for (let i = 0; i < topGroup.children.length; i++) {
+    //     topGroup.children[i].rotateZ(-snapAngle);
+    //     bottomGroup.children[i].rotateZ(-snapAngle);
+    // }
+
+    // console.log("Group after spin:", topGroup.quaternion);
 
     const projectTitle = document.getElementById('project-title');
     projectTitle.innerHTML = `${closestPhoto.name.projectTitle}`
