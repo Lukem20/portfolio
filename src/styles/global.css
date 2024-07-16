@@ -29,7 +29,6 @@ html {
     --footer-bg-color: #404E54;
 }
 body {
-    /* New font for everything */
     font: 100%/1.5 'Roslindale', serif;
     font-kerning: normal;
     margin: 0 auto;
@@ -37,6 +36,21 @@ body {
     text-align: left;
     background-color: var(--main-bg-color);
     overflow-x: hidden;
+}
+
+/* Scroll Bar */
+body::-webkit-scrollbar {
+    width: 1em;
+}
+body::-webkit-scrollbar-track {
+    background: var(--footer-bg-color);
+}
+body::-webkit-scrollbar-thumb {
+    background: var(--main-bg-color);
+    border: 1px solid var(--main-cta-color);
+}
+body::-webkit-scrollbar-thumb:hover {
+    background-color: var(--footer-bg-color);
 }
 
 /* *** Text *** */
