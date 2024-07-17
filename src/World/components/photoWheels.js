@@ -281,7 +281,7 @@ function createPhotos (camera, container) {
     photoWheels.add(topGroup);
     photoWheels.add(bottomGroup);
 
-    const lerpFactor = 0.25;
+    const lerpFactor = 0.3;
 
     photoWheels.tick = () => {
         raycaster.setFromCamera(mouse, camera);
