@@ -8,7 +8,7 @@ import {
     MathUtils,
     Euler, 
     Quaternion, 
-    Vector3
+    Vector3,
 } from 'three';
 import { createMaterial } from './material.js';
 import { RoundedRectangle } from './geometry.js';
@@ -97,19 +97,16 @@ function createPhotos (camera, container) {
         },
     ];
 
-    // Wheel & Gemoetry Sizes
-    const wheelRadius = 175;
-    const wheelPosition = 208;
-    const radianInterval = (2 * Math.PI) / photos.length;
+    let texture = null;
+    let material = null;
+    const textureLoader = new TextureLoader();
+
     const geometry = {
         size: 43,
         cornerRadius: 2.5,
         cornerSmoothness: 12,
     }
 
-    let material = null;
-    let texture = null;
-    const textureLoader = new TextureLoader();
     const roundedRectangleGeometry = RoundedRectangle(
         geometry.size,
         geometry.size,
@@ -117,11 +114,13 @@ function createPhotos (camera, container) {
         geometry.cornerSmoothness
     );
 
-    // List for all mesh instances
     let photoMeshTop = null;
     let photoMeshBottom = null;
     const allPhotoMeshes = [];
 
+    const wheelRadius = 175;
+    const wheelPosition = 208;
+    const radianInterval = (2 * Math.PI) / photos.length;
     const topGroup = new Group();
     const bottomGroup = new Group();
 
@@ -154,7 +153,6 @@ function createPhotos (camera, container) {
         bottomGroup.add(photoMeshBottom);
     }
 
-    // Move wheels into position
     topGroup.translateY(wheelPosition - 14);
     bottomGroup.translateY(-wheelPosition - 11);
     
@@ -169,18 +167,16 @@ function createPhotos (camera, container) {
             mesh.scale.set(1, 1, 1);
         }
         
-        // Normalize scroll speed
         scrollSpeed = (event.deltaY / 360) / 2;
-
         topGroup.rotateZ(-scrollSpeed);
         bottomGroup.rotateZ(-scrollSpeed);
+
         for (const mesh of allPhotoMeshes) {
             mesh.rotateZ(scrollSpeed);
         }
 
-        // Adjust timeout for snapping delay
         spinInProgress = setTimeout(() => {
-            snapAfterSpin(topGroup, bottomGroup);
+            snapAfterSpin(topGroup, bottomGroup, allPhotoMeshes);
         }, 350);
     });
 
@@ -200,69 +196,70 @@ function createPhotos (camera, container) {
     document.addEventListener('touchmove', event => {
         clearTimeout(spinInProgress);
 
-        if ( !xDown || !yDown ) { return; }
+        if (!xDown || !yDown) { return; }
 
         let xUp = event.touches[0].clientX;                                    
         let yUp = event.touches[0].clientY;
-
         let xDiff = xDown - xUp;
         let yDiff = yDown - yUp;
-        swipeSpeed = (Math.sqrt((Math.pow(xDiff, 2) + Math.pow(yDiff, 2))) / 360) / 2;
-                                                                            
-        if ( Math.abs(xDiff) > Math.abs(yDiff) ) {
-            if ( xDiff > 0 ) {
-                /* right swipe */ 
-                console.log("RIGHT", swipeSpeed); 
 
+        swipeSpeed = (Math.sqrt(( Math.pow(xDiff, 2) + Math.pow(yDiff, 2) )) / 360) / 2;
+                                                                            
+        if (Math.abs(xDiff) > Math.abs(yDiff)) {
+            if (xDiff > 0) {
+                /* right swipe */ 
                 topGroup.rotateZ(-swipeSpeed);
                 bottomGroup.rotateZ(-swipeSpeed);
+
                 for (const mesh of allPhotoMeshes) {
                     mesh.rotateZ(swipeSpeed);
                 }
             } else {
                 /* left swipe */
-                console.log("LEFT", swipeSpeed);
+                topGroup.rotateZ(swipeSpeed);
+                bottomGroup.rotateZ(swipeSpeed);
 
-                topGroup.rotateZ(-swipeSpeed);
-                bottomGroup.rotateZ(-swipeSpeed);
                 for (const mesh of allPhotoMeshes) {
-                    mesh.rotateZ(swipeSpeed);
+                    mesh.rotateZ(-swipeSpeed);
                 }
             }                       
         } else {
             if ( yDiff > 0 ) {
                 /* down swipe */ 
-                console.log("DOWN", swipeSpeed);
+                topGroup.rotateZ(swipeSpeed);
+                bottomGroup.rotateZ(swipeSpeed);
 
+                for (const mesh of allPhotoMeshes) {
+                    mesh.rotateZ(-swipeSpeed);
+                }
             } else { 
                 /* up swipe */
-                console.log("UP", swipeSpeed);
+                topGroup.rotateZ(-swipeSpeed);
+                bottomGroup.rotateZ(-swipeSpeed);
 
+                for (const mesh of allPhotoMeshes) {
+                    mesh.rotateZ(swipeSpeed);
+                }
             }                                                                 
         }
 
-        topGroup.rotateZ(-swipeSpeed);
-        bottomGroup.rotateZ(-swipeSpeed);
-        for (const mesh of allPhotoMeshes) {
-            mesh.rotateZ(swipeSpeed);
-        }
-
+        /* Reset the swipeSpeed calculation so the wheels don't accelerate */
         xDown = xUp;
         yDown = yUp;
 
         spinInProgress = setTimeout(() => {
-            snapAfterSpin(topGroup, bottomGroup);
+            snapAfterSpin(topGroup, bottomGroup, allPhotoMeshes);
         }, 350);
     });       
     
     document.addEventListener("touchend", (event) => {
-        /* reset values */
         xDown = null;
         yDown = null;
     })
 
     // --- Mouse Event ---
     const mouse = new Vector2();
+
     container.addEventListener('mousemove', (event) => {
         // Normalize mouse coordinates
         mouse.x = event.clientX / window.innerWidth * 2 - 1;
@@ -288,7 +285,7 @@ function createPhotos (camera, container) {
         raycaster.setFromCamera(mouse, camera);
         const rayIntersects = raycaster.intersectObjects(photoWheels.children);
 
-            // ### TODO ### Lerp scaling
+        // ### TODO ### Lerp scaling
 
         if (!rayIntersects.length) {
             document.body.style.cursor = "default";
@@ -305,16 +302,20 @@ function createPhotos (camera, container) {
                 hoveredItem.scale.set(1.1, 1.1, 1.1);
             }
         }
+
+        // ### TODO ### Slerp snap rotation
     }
 
     return photoWheels;
 }
 
-function snapAfterSpin (topGroup, bottomGroup) {
+function snapAfterSpin (topGroup, bottomGroup, allPhotoMeshes) {
+
     const snapPoint = {
         x: topGroup.children[4].position.x,
         y: topGroup.children[4].position.y,
     }
+
     snapPoint.theta = Math.atan2(Math.abs(snapPoint.y - topGroup.position.y), Math.abs(snapPoint.x - topGroup.position.x));
     
     let closestPhotoMesh;
@@ -354,12 +355,6 @@ function snapAfterSpin (topGroup, bottomGroup) {
     }
 
     // ### TODO ### slerp snap rotation to be smooth.
-    /**
-     * What's wrong with this approach so far:
-     *  - The slerp needs to go in the tick method so that the renderer can show the animation each frame.
-     *  - On one side of the wheel, the closest photo is properly calculated, but not the snap angle, causing the title
-     *      to update correctly, but a huge over-snap angle.
-     */
     // let eulerAngle = new Euler(0, 0, snapAngle);
     // let quaternionSnapAngle = new Quaternion();
     // quaternionSnapAngle.setFromEuler(eulerAngle);
@@ -368,9 +363,9 @@ function snapAfterSpin (topGroup, bottomGroup) {
 
     topGroup.rotateZ(snapAngle);
     bottomGroup.rotateZ(snapAngle);
-    for (let i = 0; i < topGroup.children.length; i++) {
-        topGroup.children[i].rotateZ(-snapAngle);
-        bottomGroup.children[i].rotateZ(-snapAngle);
+
+    for (const mesh of allPhotoMeshes) {
+        mesh.rotateZ(-snapAngle);
     }
 
     const projectTitle = document.getElementById('project-title');
