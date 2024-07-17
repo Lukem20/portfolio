@@ -82,11 +82,15 @@
                     background-color: var(--main-bg-color);
                     color: var(--text-color);
                     cursor: pointer;
-                    transition: 0.2s ease opacity;
+                    transition: 0.2s ease;
                     &:first-child {
                         opacity: 0;
                     }
                   }  
+                  button:hover {
+                    background-color: var(--footer-bg-color);
+                    transition: ease 0.1s;
+                }
                 }
                 .swiper-slides {
                     z-index: 1;
