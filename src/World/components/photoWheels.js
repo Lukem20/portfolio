@@ -281,25 +281,39 @@ function createPhotos (camera, container) {
     photoWheels.add(topGroup);
     photoWheels.add(bottomGroup);
 
+    const lerpFactor = 0.25;
+
     photoWheels.tick = () => {
         raycaster.setFromCamera(mouse, camera);
         const rayIntersects = raycaster.intersectObjects(photoWheels.children);
 
-        // ### TODO ### Lerp scaling
-
         if (!rayIntersects.length) {
+            /* Not hovering */
+
             document.body.style.cursor = "default";
             isHovering = false;
             for (const resetMeshScale of allPhotoMeshes) {
-                resetMeshScale.scale.set(1, 1, 1);
+                resetMeshScale.scale.set(
+                    MathUtils.lerp(resetMeshScale.scale.x, 1, lerpFactor), 
+                    MathUtils.lerp(resetMeshScale.scale.y, 1, lerpFactor),  
+                    MathUtils.lerp(resetMeshScale.scale.z, 1, lerpFactor)
+                );
             }
+            
             return;
+
         } else {
+            /* Hovering */ 
+
             for (const intersect of rayIntersects) {
                 document.body.style.cursor = "pointer";
                 isHovering = true;
                 hoveredItem = intersect.object;
-                hoveredItem.scale.set(1.1, 1.1, 1.1);
+                hoveredItem.scale.set(
+                    MathUtils.lerp(hoveredItem.scale.x, 1.1, lerpFactor * 2), 
+                    MathUtils.lerp(hoveredItem.scale.y, 1.1, lerpFactor * 2),  
+                    MathUtils.lerp(hoveredItem.scale.z, 1.1, lerpFactor * 2)
+                );
             }
         }
 
