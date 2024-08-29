@@ -43,6 +43,14 @@
         justify-content: space-around;
         gap: 5em;
     }
+    #skill-section aside {
+        width: 370px;
+    }
+        .skill-title {
+            border-bottom: 1px solid var(--main-cta-color);
+            width: fit-content;
+            padding-bottom: 0.1em;
+        }
         .skill-list {
             display: flex;
             gap: 3em;

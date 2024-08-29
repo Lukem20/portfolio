@@ -2,17 +2,18 @@
     margin-top: 4em;
 }
 section {
-    margin-bottom: 8em;
+    margin-bottom: calc(1em + 10vw);
 }
 /* *** Banner *** */
 .banner-section {
     position: relative;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
 }
 .project-title {
     font-family: 'Inter-tight', sans-serif;
-    font-size:calc(1em + 1.5vw);
+    font-size:calc(1em + 1.7vw);
     position: absolute;
     top: -3%;
     left: 0.5%;
@@ -53,9 +54,9 @@ section {
     font-family: 'Inter-tight', sans-serif;
     text-transform: uppercase;
     font-weight: 600;
-    font-size: 0.8em;
+    font-size: 0.9em;
     letter-spacing: 0.1em;
-    margin: 1em 0;
+    margin: 1.5em auto;
 }
 .project-details {
     display: flex;
@@ -75,7 +76,7 @@ section {
     max-width: 400px;
     display: flex;
     flex-direction: column;
-    gap:  min(calc(2em + 5vw), 8em);  
+    gap:  min(calc(2em + 4vw), 5em);  
 }
 .details-list * {
     margin: 0;
@@ -100,9 +101,6 @@ section {
 
 
 /* *** Pictures *** */
-.picture-section {
-    
-}
 .picture-row {
     display: flex;
     flex-wrap: wrap;

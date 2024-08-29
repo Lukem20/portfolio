@@ -49,8 +49,8 @@ function snapAfterSpin (topGroup, bottomGroup) {
 
 
     // ### TODO ### lerp (slerp?) this rotation to be smooth.
-    // console.log("Group before spin:", topGroup.quaternion);
-    // console.log("Snap", quaternionSnapAngle);
+    console.log("Group before spin:", topGroup.quaternion);
+    console.log("Snap", quaternionSnapAngle);
 
     topGroup.quaternion.slerp(quaternionSnapAngle, 0.02);
     bottomGroup.quaternion.slerp(quaternionSnapAngle, 0.02);

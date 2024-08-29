@@ -48,11 +48,17 @@ body {
 *::-webkit-scrollbar-thumb {
     background: var(--main-bg-color);
     border: 1px solid var(--main-cta-color);
+    border-radius: 5px;
     transition: 0.2s ease;
 }
 *::-webkit-scrollbar-thumb:hover {
     background-color: var(--footer-bg-color);
     transition: 0.2s ease;
+}
+
+i {
+    padding-left: 0.25em;
+    color: var(--text-color);
 }
 
 /* *** Text *** */
@@ -167,7 +173,7 @@ header {
             margin: 0;
             transition: .1s ease-in-out;
         }
-        .logo-title:hover {
+        .logo-section a:hover .logo-title {
             color: var(--main-cta-color);
             transition: .1s ease-in-out;
         }
@@ -225,12 +231,12 @@ header {
 /* *** Main Page Content *** */
 main {
     margin: 0 auto;
-    max-width: 2000px;
+    max-width: 1800px;
 }
 
 /* *** Footer *** */
 footer {
-    max-width: 2000px;
+    max-width: 1800px;
     background-color: var(--footer-bg-color);
     padding: 1em;
     display: flex;
@@ -275,14 +281,6 @@ footer {
         display: block;
         font-weight: 600;
     }
-    #job-title {
-        font-family: 'Inter-tight', sans-serif;
-        font-weight: 500;
-        font-size: 0.65rem;
-        text-transform: uppercase;
-        letter-spacing: 0.6rem;
-        margin: 1.5em 0 0 0;
-    }
 
 /* *** Utility Classes *** */
 .cta-border {
@@ -292,4 +290,7 @@ footer {
 .current-page::before {
     transform: scaleX(1);
     background-color: var(--main-cta-color);
+}
+.yellow {
+    color: var(--main-cta-color);
 }

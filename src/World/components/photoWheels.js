@@ -289,7 +289,6 @@ function createPhotos (camera, container) {
 
         if (!rayIntersects.length) {
             /* Not hovering */
-
             document.body.style.cursor = "default";
             isHovering = false;
             for (const resetMeshScale of allPhotoMeshes) {
@@ -304,7 +303,6 @@ function createPhotos (camera, container) {
 
         } else {
             /* Hovering */ 
-
             for (const intersect of rayIntersects) {
                 document.body.style.cursor = "pointer";
                 isHovering = true;
