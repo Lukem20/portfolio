@@ -11,6 +11,7 @@
 
         <link rel="icon" type="image/svg+xml" href="/favicon-light.svg" />
         <link rel="stylesheet" href="../styles/global.css" />
+        <link rel="stylesheet" href="../swiper-slides/swiper.css">
         <link rel="stylesheet" href="../styles/projects.css" />
     </head>
 
@@ -72,7 +73,7 @@
                 <div class="project-details">                    
                     <div class="details-photos">
                         <img src="../assets/images/sisis-barbershop/sisisbarbershop-laptop-3.avif" alt="A laptop sits open on a table with the homescreen open, a photo of the logo on the window is displayed." />
-                        <img src="../assets/images/sisis-barbershop/sisisbarbershop-laptop-1.avif" alt="A laptop sits open on a cushioned couch, a photo of the barbers with their photos and names are displayed." />
+                        <!-- <img src="../assets/images/sisis-barbershop/sisisbarbershop-laptop-1.avif" alt="A laptop sits open on a cushioned couch, a photo of the barbers with their photos and names are displayed." /> -->
                     </div>
 
                     <aside class="details-list">
@@ -97,13 +98,42 @@
             </section>
 
             <section class="picture-section">
-                <div class="picture-row">
-                    <img src="../assets/images/sisis-barbershop/sisisbarbershop_Macbook_Air_Mockup_1.avif" alt="Viewed from the left, a laptop is open with the barbers page open." />
-                    <img src="../assets/images/sisis-barbershop/sisisbarbershop_Macbook_Air_Mockup_3.avif" alt="Viewed from straight on, a laptop is open with the home page open." />
-                    <img src="../assets/images/sisis-barbershop/sisisbarbershop_Macbook_Air_Mockup_2.avif" alt="Viewed from above and the left, a laptop is open with the home page open." />
-                    <img src="../assets/images/sisis-barbershop/sisisbarbershop_Macbook_Air_Mockup_4.avif" alt="Viewed from above and left, a laptop is open with the barbers page open." />
-                </div>
                 
+                <div class="swiper">
+                    <nav>
+                        <button title="Previous slide" data-prev>&larr;</button>
+                        <button title="Next slide" data-next>&rarr;</button>
+                    </nav>
+                    <div class="swiper-slides" data-slider>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/sisis-barbershop/barber.avif" alt="Viewed from the left, a laptop is open with the barbers page open." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/sisis-barbershop/barber-1.avif" alt="Viewed from straight on, a laptop is open with the home page open." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/sisis-barbershop/barber-2.avif" alt="Viewed from above and the left, a laptop is open with the home page open." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/sisis-barbershop/barber-3.avif" alt="Viewed from above and left, a laptop is open with the barbers page open." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/sisis-barbershop/barber-4.avif" alt="Viewed from above and left, a laptop is open with the barbers page open." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/sisis-barbershop/barber-5.avif" alt="Viewed from above and left, a laptop is open with the barbers page open." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/sisis-barbershop/barber-6.avif" alt="Viewed from above and left, a laptop is open with the barbers page open." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/sisis-barbershop/barber-7.avif" alt="Viewed from above and left, a laptop is open with the barbers page open." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/sisis-barbershop/barber-8.avif" alt="Viewed from above and left, a laptop is open with the barbers page open." />
+                        </figure>
+                    </div>
+                </div>
                 <div class="picture-full">
                     <img src="../assets/images/sisis-barbershop/sisisbarbershop-phone.avif" alt="A smartphone stands upright, Sisi's barbershop is open on the screen." />
                     <img src="../assets/images/sisis-barbershop/sisisbarbershop-laptop-4.avif" alt="A laptop sits inside a file cabinet. Sisi's Barbershop is open on the screen." />
@@ -114,7 +144,7 @@
                 <h2>Next Project</h2>
                 <div class="next-project">
                     <a href="./hbc.html">
-                        <h3 class="cta-border">The Healdsburg Crush</h3>
+                        <h3 class="cta-border">The Healdsburg Crush <i class="fa-solid fa-arrow-right"></i></h3>
                         <div>
                             <img src="../assets/images/healdsburg-crush/hbc-banner.avif" alt="A laptop sits open on a cushioned couch. The screen displays an aerial view of Healdsburg with people enjoying a festival." />
                         </div>
@@ -156,6 +186,7 @@
             </div>
         </footer>
 
+        <script src="../swiper-slides/swiper.js"></script>
         <script src="https://kit.fontawesome.com/e25aa8d895.js" crossorigin="anonymous"></script>
     </body>
 

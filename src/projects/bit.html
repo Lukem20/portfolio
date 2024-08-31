@@ -11,6 +11,7 @@
 
         <link rel="icon" type="image/svg+xml" href="/favicon-light.svg" />
         <link rel="stylesheet" href="../styles/global.css" />
+        <link rel="stylesheet" href="../swiper-slides/swiper.css">
         <link rel="stylesheet" href="../styles/projects.css" />
     </head>
 
@@ -71,7 +72,7 @@
                 <div class="project-details">
                     <div class="details-photos">
                         <img src="../assets/images/brand-identity-timeline/bit-laptop-2.avif" alt="An open laptop screen displays the Macy's logo with a brief description of its history." />
-                        <img src="../assets/images/brand-identity-timeline/bit-laptop-3.avif" alt="An open laptop screen displays the Chase Bank logo with a brief description of its history." />
+                        <!-- <img src="../assets/images/brand-identity-timeline/bit-laptop-3.avif" alt="An open laptop screen displays the Chase Bank logo with a brief description of its history." /> -->
                     </div>
 
                     <aside class="details-list">
@@ -96,11 +97,31 @@
             </section>
 
             <section class="picture-section">
-                <div class="picture-row">
-                    <img src="../assets/images/brand-identity-timeline/bit-Macbook_Air_Mockup_1.avif" alt="A laptop sits open on a blank background. The screen displays the title screen" />
-                    <img src="../assets/images/brand-identity-timeline/bit-Macbook_Air_Mockup_2.avif" alt="A laptop sits open on a blank background. The screen displays the Pabst Blue Ribbon logo." />
-                    <img src="../assets/images/brand-identity-timeline/bit-Macbook_Air_Mockup_3.avif" alt="A laptop sits open on a blank background. The screen displays the Colgate logo." />
-                    <img src="../assets/images/brand-identity-timeline/bit-Macbook_Air_Mockup_4.avif" alt="A laptop sits open on a blank background. The screen displays the Macy's logo." />
+                <div class="swiper">
+                    <nav>
+                        <button title="Previous slide" data-prev>&larr;</button>
+                        <button title="Next slide" data-next>&rarr;</button>
+                    </nav>
+                    <div class="swiper-slides" data-slider>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/brand-identity-timeline/bit.avif" alt="A laptop sits open on a blank background. The screen displays the title screen" />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/brand-identity-timeline/bit-1.avif" alt="A laptop sits open on a blank background. The screen displays the title screen" />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/brand-identity-timeline/bit-2.avif" alt="A laptop sits open on a blank background. The screen displays the Pabst Blue Ribbon logo." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/brand-identity-timeline/bit-3.avif" alt="A laptop sits open on a blank background. The screen displays the Colgate logo." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/brand-identity-timeline/bit-4.avif" alt="A laptop sits open on a blank background. The screen displays the Macy's logo." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/brand-identity-timeline/bit-5.avif" alt="A laptop sits open on a blank background. The screen displays the title screen" />
+                        </figure>
+                    </div>
                 </div>
 
                 <div class="picture-full">
@@ -113,7 +134,7 @@
                 <div class="next-project">
                     <h2>Next Project</h2>
                     <a href="./abts.html">
-                        <h3 class="cta-border">Augmented Reality Bike Map</h3>
+                        <h3 class="cta-border">Augmented Reality Bike Map <i class="fa-solid fa-arrow-right"></i></h3>
                         <div>
                             <!-- <img src="" alt="" /> -->
                         </div>
@@ -152,10 +173,10 @@
                     This site uses no tracking or cookies.
                     <span>Copyright © 2024 Luke Moore</span>
                 </small>
-                <p id="job-title">Creative Developer</p>
             </div>
         </footer>
 
+        <script src="../swiper-slides/swiper.js"></script>
         <script src="https://kit.fontawesome.com/e25aa8d895.js" crossorigin="anonymous"></script>
     </body>
 

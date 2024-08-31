@@ -11,6 +11,7 @@
 
         <link rel="icon" type="image/svg+xml" href="/favicon-light.svg" />
         <link rel="stylesheet" href="../styles/global.css" />
+        <link rel="stylesheet" href="../swiper-slides/swiper.css">
         <link rel="stylesheet" href="../styles/projects.css" />
     </head>
 
@@ -83,11 +84,25 @@
             </section>
 
             <section class="picture-section">
-                <div class="picture-row">
-                    <!-- <img src="" alt="" />
-                    <img src="" alt="" />
-                    <img src="" alt="" />
-                    <img src="" alt="" /> -->
+                <div class="swiper">
+                    <nav>
+                        <button title="Previous slide" data-prev>&larr;</button>
+                        <button title="Next slide" data-next>&rarr;</button>
+                    </nav>
+                    <div class="swiper-slides" data-slider>
+                        <figure class="swiper-slide-item">
+                            <img src="" alt="">
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="" alt="">
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="" alt="">
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="" alt="">
+                        </figure>
+                    </div>
                 </div>
 
                 <div class="picture-full">
@@ -100,7 +115,7 @@
                 <h2>Next Project</h2>
                 <div class="next-project">
                     <a href="./bit.html">
-                        <h3 class="cta-border">Brand Identity Timeline</h3>
+                        <h3 class="cta-border">Brand Identity Timeline <i class="fa-solid fa-arrow-right"></i></h3>
                         <div>
                             <img src="../assets/images/brand-identity-timeline/bit-laptop-1.avif" alt="A laptop sits open on a wood table, a large banner is displayed on screen that says scroll to begin." />
                         </div>
@@ -145,6 +160,7 @@
             </div>
         </footer>
 
+        <script src="../swiper-slides/swiper.js"></script>
         <script src="https://kit.fontawesome.com/e25aa8d895.js" crossorigin="anonymous"></script>
     </body>
 

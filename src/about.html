@@ -12,6 +12,7 @@
         <link rel="icon" type="image/svg+xml" href="/favicon-light.svg" />
         <link rel="stylesheet" href="styles/global.css" />
         <link rel="stylesheet" href="styles/about.css" />
+        <link rel="stylesheet" href="swiper-slides/swiper.css">
     </head>
 
     <body>
@@ -59,20 +60,6 @@
                     </div>
             </section>
 
-            <!-- <section>
-                <h3>Featured Work</h3>
-                <div class="featured-work">
-                    <div>
-                        <a href=""></a>
-                        <img src="" alt="" />
-                    </div>
-                    <div>
-                        <a href=""></a>
-                        <img src="" alt="" />
-                    </div>
-                </div>
-            </section> -->
-
             <section id="skill-section">
                 <aside>
                     <h3 class="skill-title">Design <i class="fa-solid fa-pen-nib"></i></h3>
@@ -100,7 +87,6 @@
                             </ul>
                         </div>
                     </div>
-
                 </aside>
                 <aside>
                     <h3 class="skill-title">Development <i class="fa-solid fa-code"></i></h3>
@@ -277,37 +263,8 @@
             </div>
 
         </footer>
-    
+        
         <script>
-            	const slider = document.querySelector('[data-slider]');
-                const prevButton = document.querySelector('[data-prev]');
-                const nextButton = document.querySelector('[data-next]');
-
-                prevButton.addEventListener('click', () => slide('prev'));
-                nextButton.addEventListener('click', () => slide('next'));
-                slider.addEventListener('scroll', () => {
-                    updateButtonsVisibility();
-                });
-
-                function slide(direction) {
-                    const { scrollLeft, clientWidth } = slider;
-                    const left = direction === 'prev' ? scrollLeft - clientWidth : scrollLeft + clientWidth;
-
-                    slider.scroll({ left, behavior: 'smooth' });
-                }
-
-                function updateButtonsVisibility() {
-                    const { scrollLeft, clientWidth, scrollWidth } = slider;
-
-                    prevButton.style.opacity = scrollLeft === 0 ? '0' : '1';
-                    prevButton.style.pointerEvents = scrollLeft === 0 ? 'none' : 'auto';
-
-                    nextButton.style.opacity = scrollLeft + clientWidth >= scrollWidth -2 ? '0' : '1';
-                    nextButton.style.pointerEvents = scrollLeft + clientWidth >= scrollWidth -2 ? 'none' : 'auto';
-                }
-
-                updateButtonsVisibility();
-
             function copyEmail() {
                 let copyText = document.getElementById("email");
                 let button = document.getElementById("copyButton");
@@ -320,6 +277,7 @@
                 button.innerHTML = "Copy " + '<i class="fa-regular fa-copy"></i>';
             }
         </script>
+        <script src="swiper-slides/swiper.js"></script>
         <script src="https://kit.fontawesome.com/e25aa8d895.js" crossorigin="anonymous"></script>
     </body>
 </html>

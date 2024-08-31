@@ -11,6 +11,7 @@
 
         <link rel="icon" type="image/svg+xml" href="/favicon-light.svg" />
         <link rel="stylesheet" href="../styles/global.css" />
+        <link rel="stylesheet" href="../swiper-slides/swiper.css">
         <link rel="stylesheet" href="../styles/projects.css" />
     </head>
 
@@ -70,7 +71,7 @@
                 <div class="project-details">
                     <div class="details-photos">
                         <img src="../assets/images/healdsburg-crush/hbc-iPhone.avif" alt="A smartphone stands upright, the Healdsburg Crush website is open on the screen." />
-                        <img src="../assets/images/healdsburg-crush/hbc-iPad.avif" alt="A tablet stands upright, the Healdsburg Crush website is open on the screen." />
+                        <!-- <img src="../assets/images/healdsburg-crush/hbc-iPad.avif" alt="A tablet stands upright, the Healdsburg Crush website is open on the screen." /> -->
                     </div>
 
                     <aside class="details-list">
@@ -95,11 +96,49 @@
             </section>
 
             <section class="picture-section">
-                <div class="picture-row">
-                    <img src="../assets/images/healdsburg-crush/hbc-Macbook_Air_Mockup_2.avif" alt="Viewed from above and the left, a laptop is open with the home page open." />
-                    <img src="../assets/images/healdsburg-crush/hbc-Macbook_Air_Mockup_1.avif" alt="Viewed from straight on, a laptop is open with the sponsors page open." />
-                    <img src="../assets/images/healdsburg-crush/hbc-Macbook_Air_Mockup_3.avif" alt="Viewed from above and the left, a laptop is open with the wineries page open." />
-                    <img src="../assets/images/healdsburg-crush/hbc-Macbook_Air_Mockup_4.avif" alt="Viewed from above and left, a laptop is open displaying the footer." />
+                <div class="swiper">
+                    <nav>
+                        <button title="Previous slide" data-prev>&larr;</button>
+                        <button title="Next slide" data-next>&rarr;</button>
+                    </nav>
+                    <div class="swiper-slides" data-slider>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/healdsburg-crush/hbc.avif" alt="Viewed from above and the left, a laptop is open with the home page open." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/healdsburg-crush/hbc-1.avif" loading="lazy" alt="Viewed from straight on, a laptop is open with the sponsors page open." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/healdsburg-crush/hbc-2.avif" loading="lazy" alt="Viewed from above and the left, a laptop is open with the wineries page open." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/healdsburg-crush/hbc-3.avif" loading="lazy" alt="Viewed from above and left, a laptop is open displaying the footer." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/healdsburg-crush/hbc-4.avif" loading="lazy" alt="Viewed from above and left, a laptop is open displaying the footer." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/healdsburg-crush/hbc-5.avif" loading="lazy" alt="Viewed from above and left, a laptop is open displaying the footer." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/healdsburg-crush/hbc-6.avif" loading="lazy" alt="Viewed from above and left, a laptop is open displaying the footer." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/healdsburg-crush/hbc-7.avif" loading="lazy" alt="Viewed from above and left, a laptop is open displaying the footer." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/healdsburg-crush/hbc-8.avif" loading="lazy" alt="Viewed from above and left, a laptop is open displaying the footer." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/healdsburg-crush/hbc-9.avif" loading="lazy" alt="Viewed from above and left, a laptop is open displaying the footer." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/healdsburg-crush/hbc-10.avif" loading="lazy" alt="Viewed from above and left, a laptop is open displaying the footer." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/healdsburg-crush/hbc-11.avif" loading="lazy" alt="Viewed from above and left, a laptop is open displaying the footer." />
+                        </figure>
+                    </div>
                 </div>
 
                 <div class="picture-full">
@@ -112,7 +151,7 @@
                 <h2>Next Project</h2>
                 <div class="next-project">
                     <a href="./7ds.html">
-                        <h3 class="cta-border">The Seven Deadly Sins of Social Media & Technology</h3>
+                        <h3 class="cta-border">The Seven Deadly Sins of Social Media & Technology <i class="fa-solid fa-arrow-right"></i></h3>
                         <div>
                             <img src="../assets/images/seven-deadly-sins/7ds-banner.avif" alt="A laptop sits open on some stairs. The Seven Deadly Sins homepage is open on the screen." />
                         </div>
@@ -157,6 +196,7 @@
             </div>
         </footer>
 
+        <script src="../swiper-slides/swiper.js"></script>
         <script src="https://kit.fontawesome.com/e25aa8d895.js" crossorigin="anonymous"></script>
     </body>
 

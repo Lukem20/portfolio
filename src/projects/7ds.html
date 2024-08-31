@@ -11,6 +11,7 @@
 
         <link rel="icon" type="image/svg+xml" href="/favicon-light.svg" />
         <link rel="stylesheet" href="../styles/global.css" />
+        <link rel="stylesheet" href="../swiper-slides/swiper.css">
         <link rel="stylesheet" href="../styles/projects.css" />
     </head>
 
@@ -68,7 +69,7 @@
                 <div class="project-details">
                     <div class="details-photos">
                         <img src="../assets/images/seven-deadly-sins/7ds-Macbook-2.avif" alt="A laptop sits open on a concrete barrier at night, the screen displays the sin Gluttony project page." />
-                        <img src="../assets/images/seven-deadly-sins/7ds-tablet-1.avif" alt="A smart tablet sits on a table, the screen displays the sin Envy project page." />
+                        <!-- <img src="../assets/images/seven-deadly-sins/7ds-tablet-1.avif" alt="A smart tablet sits on a table, the screen displays the sin Envy project page." /> -->
                     </div>
 
                     <aside class="details-list">
@@ -93,11 +94,40 @@
             </section>
 
             <section class="picture-section">
-                <div class="picture-row">
-                    <img src="../assets/images/seven-deadly-sins/7ds-Macbook_Air_Mockup_1.avif" alt="A laptop is open in front of a blank background. The home page is open on the screen." />
-                    <img src="../assets/images/seven-deadly-sins/7ds-Macbook_Air_Mockup_2.avif" alt="A laptop is open in front of a blank background. The sin Pride is open on the screen." />
-                    <img src="../assets/images/seven-deadly-sins/7ds-Macbook_Air_Mockup_3.avif" alt="A laptop is open in front of a blank background. The sin Wrath is open on the screen." />
-                    <img src="../assets/images/seven-deadly-sins/7ds-Macbook_Air_Mockup_5.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
+                <div class="swiper">
+                    <nav>
+                        <button title="Previous slide" data-prev>&larr;</button>
+                        <button title="Next slide" data-next>&rarr;</button>
+                    </nav>
+                    <div class="swiper-slides" data-slider>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds.avif" alt="A laptop is open in front of a blank background. The home page is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-2.avif" alt="A laptop is open in front of a blank background. The sin Wrath is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-3.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-4.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-5.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-6.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-7.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-8.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-1.avif" alt="A laptop is open in front of a blank background. The sin Pride is open on the screen." />
+                        </figure>
+                    </div>
                 </div>
 
                 <div class="picture-full">
@@ -110,7 +140,7 @@
                 <h2>Next Project</h2>
                 <div class="next-project">
                     <a href="./graphics-textbook.html">
-                        <h3 class="cta-border">The Interactive Textbook for Geometric Linear Algebra</h3>
+                        <h3 class="cta-border">The Interactive Textbook for Geometric Linear Algebra <i class="fa-solid fa-arrow-right"></i></h3>
                         <div>
                             <img src="../assets/images/interactive-textbook/graphics-textbook-banner.avif" alt="A laptop open on a table displays the landing page for the interactive graphics textbook." />
                         </div>
@@ -151,6 +181,7 @@
             </div>
         </footer>
 
+        <script src="../swiper-slides/swiper.js"></script>
         <script src="https://kit.fontawesome.com/e25aa8d895.js" crossorigin="anonymous"></script>
     </body>
 
