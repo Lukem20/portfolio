@@ -236,7 +236,7 @@ main {
 
 /* *** Footer *** */
 footer {
-    max-width: 1800px;
+    max-width: 1350px;
     background-color: var(--footer-bg-color);
     padding: 1em;
     display: flex;
