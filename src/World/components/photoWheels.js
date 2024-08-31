@@ -158,7 +158,7 @@ function createPhotos (camera, container) {
     
     // --- Scroll Event ---
     let spinInProgress = null;
-    let scrollSpeed = 0.0;
+    let scrollSpeed = 0.05;
 
     document.addEventListener('wheel', event => {
         clearTimeout(spinInProgress);
@@ -166,13 +166,21 @@ function createPhotos (camera, container) {
         for (const mesh of allPhotoMeshes) {
             mesh.scale.set(1, 1, 1);
         }
-        
-        scrollSpeed = (event.deltaY / 360) / 2;
-        topGroup.rotateZ(-scrollSpeed);
-        bottomGroup.rotateZ(-scrollSpeed);
 
-        for (const mesh of allPhotoMeshes) {
-            mesh.rotateZ(scrollSpeed);
+        if (event.deltaY > 0) {
+            topGroup.rotateZ(-scrollSpeed);
+            bottomGroup.rotateZ(-scrollSpeed);
+ 
+            for (const mesh of allPhotoMeshes) {
+                mesh.rotateZ(scrollSpeed);
+            }
+        } else {
+            topGroup.rotateZ(scrollSpeed);
+            bottomGroup.rotateZ(scrollSpeed);
+
+            for (const mesh of allPhotoMeshes) {
+                mesh.rotateZ(-scrollSpeed);
+            }
         }
 
         spinInProgress = setTimeout(() => {
