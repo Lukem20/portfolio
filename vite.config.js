@@ -19,6 +19,14 @@ export default defineConfig({
                 sandbox: resolve(root, '/projects/sandbox.html'),
                 sisisbarbershop: resolve(root, '/projects/sb.html'),
                 hauntedhouse: resolve(root, '/projects/haunted-house.html'),
+            },
+            output: {
+                assetFileNames: (assetInfo) => {
+                  if (assetInfo.name === 'swiper.js') {
+                    return 'swiper-slides/swiper.js';
+                  }
+                  return '[name].[ext]';
+                }
             }
         },
         outDir,
