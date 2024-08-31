@@ -1,13 +1,11 @@
 import { defineConfig } from "vite";
 import { resolve } from 'path';
-import serveStaticPlugin from "./vite-plugin-serve-static";
 
 const root = resolve(__dirname, 'src')
 const outDir = resolve(__dirname, 'dist')
 
 export default defineConfig({
     root,
-    plugins: [serveStaticPlugin()],
     build: {
         rollupOptions: {
             input: {
