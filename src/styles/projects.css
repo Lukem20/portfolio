@@ -101,6 +101,19 @@ section {
 
 
 /* *** Pictures *** */
+.swiper {
+    height: 350px;
+    max-width: 600px;
+    margin: 0 auto 5em auto;
+}
+.swiper-slide-item > img {
+    object-fit:cover;
+    object-position: top;
+    height: 350px;
+    width: 600px;
+    min-width: 300px;
+}
+
 .picture-row {
     display: flex;
     flex-wrap: wrap;
