@@ -16,82 +16,82 @@ import { RoundedRectangle } from './geometry.js';
 function createPhotos (camera, container) {
     let photos = [
         {
-            imagePath: '/assets/.JPG',
+            imagePath: '/assets/haunted-house-square-1.jpg',
             projectPath: '/projects/haunted-house.html',
             projectTitle: 'Three.js Haunted House'
         },
         {
-            imagePath: '/assets/bit.jpg',
+            imagePath: '/assets/brand-identity-timeline-square-2.jpg',
             projectPath: '/projects/bit.html',
             projectTitle: 'Brand Identity Timeline'
         },
-        {
+        {   // Replace image path
             imagePath: '/assets/abts1.jpg',
-            projectPath: '/projects/abts.html',
-            projectTitle: 'Augmented Reality Bike Map'
+            projectPath: '/projects/botany-blog.html',
+            projectTitle: 'Botany Blog'
         },
         {
-            imagePath: '/assets/sb2.jpg',
+            imagePath: '/assets/sandbox-square-2.jpg',
             projectPath: '/projects/sandbox.html',
             projectTitle: 'Three.js Sandbox Environment'
         },
         {
-            imagePath: '/assets/sisisBarbershop1.JPG',
+            imagePath: '/assets/sisis-barbershop-square-1.jpg',
             projectPath: '/projects/sb.html',
             projectTitle: "Sisi's Barbershop"
         },
         {
-            imagePath: '/assets/hbc1.JPG',
+            imagePath: '/assets/healdsburg-crush-square-1.jpg',
             projectPath: '/projects/hbc.html',
             projectTitle: 'The Healdsburg Crush'
         },
         {
-            imagePath: '/assets/7ds1.jpg',
+            imagePath: '/assets/seven-deadly-sins-square-1.jpg',
             projectPath: '/projects/7ds.html',
             projectTitle: 'The Seven Deadly Sins'
         },
         {
-            imagePath: '/assets/ITBFGLA1.jpg',
+            imagePath: '/assets/graphics-textbook-square-1.jpg',
             projectPath: '/projects/graphics-textbook.html',
             projectTitle: 'Interactive Graphics Textbook'
         },
         {
-            imagePath: '/assets/.JPG',
+            imagePath: '/assets/haunted-house-square-2.jpg',
             projectPath: '/projects/haunted-house.html',
             projectTitle: 'Three.js Haunted House'
         },
         {
-            imagePath: '/assets/bit2.jpg',
+            imagePath: '/assets/brand-identity-timeline-square-2.jpg',
             projectPath: '/projects/bit.html',
             projectTitle: 'Brand Identity Timeline'
         },
-        {
+        {   // Replace image path
             imagePath: '/assets/abts2.jpg',
-            projectPath: '/projects/abts.html',
-            projectTitle: 'Augmented Reality Bike Map'
+            projectPath: '/projects/botany-blog.html',
+            projectTitle: 'Botany Blog'
         },
         {
-            imagePath: '/assets/sb1.jpg',
+            imagePath: '/assets/sandbox-square-1.jpg',
             projectPath: '/projects/sandbox.html',
             projectTitle: 'Three.js Sandbox Environment'
         },
         {
-            imagePath: '/assets/sisisBarbershop2.JPG',
+            imagePath: '/assets/sisis-barbershop-square-2.jpg',
             projectPath: '/projects/sb.html',
             projectTitle: "Sisi's Barbershop"
         },
         {
-            imagePath: '/assets/hbc2.JPG',
+            imagePath: '/assets/healdsburg-crush-square-2.jpg',
             projectPath: '/projects/hbc.html',
             projectTitle: 'The Healdsburg Crush'
         },
         {
-            imagePath: '/assets/7ds2.jpg',
+            imagePath: '/assets/seven-deadly-sins-square-2.jpg',
             projectPath: '/projects/7ds.html',
             projectTitle: 'Seven Deadly Sins'
         },        
         {
-            imagePath: '/assets/ITBFGLA2.jpg',
+            imagePath: '/assets/graphics-textbook-square-2.jpg',
             projectPath: '/projects/graphics-textbook.html',
             projectTitle: 'Interactive Graphics Textbook'
         },
@@ -100,7 +100,6 @@ function createPhotos (camera, container) {
     let texture = null;
     let material = null;
     const textureLoader = new TextureLoader();
-
     const geometry = {
         size: 43,
         cornerRadius: 2.5,
@@ -117,7 +116,6 @@ function createPhotos (camera, container) {
     let photoMeshTop = null;
     let photoMeshBottom = null;
     const allPhotoMeshes = [];
-
     const wheelRadius = 175;
     const wheelPosition = 208;
     const radianInterval = (2 * Math.PI) / photos.length;
@@ -148,7 +146,6 @@ function createPhotos (camera, container) {
 
         allPhotoMeshes.push(photoMeshTop);
         allPhotoMeshes.push(photoMeshBottom);
-        
         topGroup.add(photoMeshTop);
         bottomGroup.add(photoMeshBottom);
     }
@@ -263,7 +260,7 @@ function createPhotos (camera, container) {
     document.addEventListener("touchend", (event) => {
         xDown = null;
         yDown = null;
-    })
+    });
 
     // --- Mouse Event ---
     const mouse = new Vector2();
@@ -335,7 +332,6 @@ function snapAfterSpin (topGroup, bottomGroup, allPhotoMeshes) {
         x: topGroup.children[4].position.x,
         y: topGroup.children[4].position.y,
     }
-
     snapPoint.theta = Math.atan2(Math.abs(snapPoint.y - topGroup.position.y), Math.abs(snapPoint.x - topGroup.position.x));
     
     let closestPhotoMesh;
