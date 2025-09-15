@@ -1,9 +1,7 @@
 .project {
     margin-top: 4em;
 }
-section {
-    margin-bottom: calc(1em + 10vw);
-}
+
 /* *** Banner *** */
 .banner-section {
     position: relative;
@@ -21,7 +19,7 @@ section {
     width: fit-content;
     margin: 0;
     padding: 0.3em 0.6em;
-    background-color: var(--footer-bg-color);
+    background-color: var(--dark-foreground-color);
 }
 #project-banner {
     width: 97%;
@@ -84,7 +82,7 @@ section {
 .details-list h3 {
     font-size: 1.2em;
     width: fit-content;
-    border-bottom: 1px solid var(--main-cta-color);
+    border-bottom: 1px solid var(--call-to-action);
 }
 
 .details-photos {
@@ -166,7 +164,7 @@ section {
     text-decoration-color: var(--text-color);
     position: absolute;
     font-size: 1.25em;
-    background-color: var(--footer-bg-color);
+    background-color: var(--dark-foreground-color);
     padding: 0.75em 1em;
     top: -4%;
     left: -3%;

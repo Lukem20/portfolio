@@ -1,42 +1,46 @@
-.full {
+.fullscreen {
     padding: 0;
     height: 100vh;
     overscroll-behavior: none;
     overflow-y: hidden;
 }
-    .floating-header {
-        background-color: var(--footer-bg-color);
-        margin: 0;
-        padding: 1.25em 1.6em;
-        position: absolute;
-        z-index: 2;
-        left: 50%;
-        transform: translate(-50%, 1.75em);
-    }
-    #app {
-        height: 100%;
-        width: 100%;
-        max-width: none;
-        position: relative;
-    }
-        #scene-container {
-            width: 100vw;
-            height: 100vh;
-        }
-        .project-title-container {
-            position: absolute;
-            top: 59%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
-            text-align: center;
-            z-index: 1;
-        }
-            #project-title {
-                text-transform: uppercase;
-                font-size: 2.25em;
-                font-weight: 750;
-                text-align: center;
-                letter-spacing: 0.125em;
-                margin: 0;
-            }
+
+.floating-header {
+    background-color: var(--dark-foreground-color);
+    margin: 0;
+    padding: 1.25em 1.6em;
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    transform: translate(-50%, 1.75em);
+}
+
+#app {
+    height: 100%;
+    width: 100%;
+    max-width: none;
+    position: relative;
+}
+
+#scene-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+.project-title-container {
+    position: absolute;
+    top: 59%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    text-align: center;
+    z-index: 1;
+}
+#project-title {
+    text-transform: uppercase;
+    font-size: 2.25em;
+    font-weight: 750;
+    text-align: center;
+    letter-spacing: 0.125em;
+    margin: 0;
+}

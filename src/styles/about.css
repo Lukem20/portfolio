@@ -1,145 +1,145 @@
-.about {
-    max-width: 1500px;
+/* *** About Page Styles *** */
+#about {
     margin: 0 auto;
-    margin-top: 2em;
 }
-    .about section {
-        width: 100%;
-        margin: 0 auto 10em auto;
-    }
-    
-    /* Introduction */
-    #intro-section {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: flex-start;
-    }
-    #intro-title {
-        opacity: 0;
-        animation: fadein 1s ease-in forwards;
-    }
-        #intro-section h3 {
-            max-width: 380px;
-        }
-        .intro-img-section {
-            margin-right: 3vw;
-        }
-        #intro-section img {
-            height: 50%;
-            max-height: 600px;
-            min-width: 250px;
-            width: 100%;
-            object-fit: cover;
-        }
-        .intro {
-            margin-top: 4.75em;
-        }
-        .intro-text {
-            max-width: 600px;
-            min-width: 300px;
-        }
+#about section {
+    margin: 0 auto 8em auto;
+}
 
-    /* Skills */
-    #skill-section {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        gap: 5em;
-    }
-    #skill-section aside {
-        width: 370px;
-    }
-        .skill-title {
-            border-bottom: 1px solid var(--main-cta-color);
-            width: fit-content;
-            padding-bottom: 0.1em;
-        }
-        .skill-list {
-            display: flex;
-            gap: 3em;
-        }
-        #skill-section div ul {
-            padding-left: 1em;
-            margin: 0;
-        }
 
-    /* For Fun Section */
-    #for-fun-section {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 5em;
-    }
-        #for-fun-section > * {
-            min-width: 300px;
-        }
+/* *** Introduction *** */
+#intro {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    margin: 0 auto;
+    max-width: 1140px;
+}
+#intro h2 {
+    opacity: 0;
+    animation: fadein 1s ease-in forwards;
+}
+#intro h3 {
+    max-width: 380px;
+}
+#intro img {
+    height: auto;
+    max-height: 600px;
+    max-width: 100%;
+    object-fit: cover;
+}
+#intro p {
 
-    /* Contact Section */
-    #contact {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        gap: 5em;
-    }
-        #contact-header img {
-            width: 300px;
-            height: 300px;
-        }
-        #contact-info {
-            max-width: 620px;
-        }
-            #contact-info h3 {
-                line-height: 2rem;
-            }
+    max-width: 600px;
+}
+.intro-section {
+    display: flex;
+    gap: 2em;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 
-        /* Email and button */
-        .email-container {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 1em;
-            padding-top: 1.25em;
-        }
-            #email {
-                font-family: 'Inter-tight', sans-serif;
-                font-weight: 500;
-                letter-spacing: 0.05em;
-                text-transform: uppercase;
-            }
-            #copyButton {
-                font-family: 'Inter-tight', serif;
-                font-size: 1em;
-                color: var(--main-cta-color);
-                border: 2px solid var(--main-cta-color);
-                background-color: var(--main-bg-color);
-                border-radius: 4px;
-                padding: 8px 12px;
-                cursor: pointer;
-            }
-            #copyButton:hover {
-                background-color: #383C31;
-            }
 
-        /* Social Icons */
-        #icon-container {
-            max-width: 600px;
-            display: flex;
-            justify-content: space-around;
-            padding-top: 3em;
-            gap: 1em;
-        }
-            .icon {
-                width: 5vw;
-                max-width: 120px;
-                min-width: 50px;
-                fill: var(--text-color);
-            }
-            .icon:hover {
-                fill: var(--main-cta-color);
-                transition: 0.3s ease;
-            }
+/* *** Skills *** */
+#skills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 5em;
+    background-color: var(--dark-foreground-color);
+    padding: 1.5em 0;
+}
+#skills aside {
+    width: 400px;
+    max-width: 100%;
+}
+.skill-title {
+    border-bottom: 1px solid var(--call-to-action);
+    width: fit-content;
+    padding-bottom: 0.1em;
+}
+.skill-list {
+    display: flex;
+    gap: 4em;
+}
+#skills div ul {
+    padding-left: 0.5em;
+    margin: 0;
+}
+
+
+/* *** Fun *** */
+#for-fun-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5em;
+}
+
+
+/* *** Contact *** */
+#contact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 5em;
+}
+#contact-header img {
+    width: 300px;
+    height: 300px;
+}
+#contact-info {
+    max-width: 620px;
+}
+
+/* Email and button */
+.email-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1em;
+    padding-top: 1.25em;
+}
+#email {
+    font-family: 'Inter-tight', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+#copyButton {
+    font-family: 'Inter-tight', serif;
+    font-size: 1em;
+    color: var(--call-to-action);
+    border: 2px solid var(--call-to-action);
+    background-color: var(--dark-background-color);
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+#copyButton:hover {
+    background-color: #383C31;
+}
+
+/* Social Icons */
+#icon-container {
+    max-width: 600px;
+    display: flex;
+    justify-content: space-around;
+    padding-top: 3em;
+    gap: 1em;
+}
+.icon {
+    width: 5vw;
+    max-width: 120px;
+    min-width: 50px;
+    fill: var(--text-color);
+}
+.icon:hover {
+    fill: var(--call-to-action);
+    transition: 0.2s ease;
+}
 
 @keyframes fadein {
     0% {

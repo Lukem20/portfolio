@@ -25,7 +25,6 @@
                     <h1 class="logo-title">Luke Moore</h1>
                 </a>
             </section>
-
             <nav aria-label="Main menu">
                 <ul>
                     <li><a href="./index.html">Home</a></li>
@@ -35,32 +34,38 @@
             </nav>
         </header>
 
-        <main id="about" class="about">
-            <section id="intro-section">
-                    <div class="intro-img-section">
-                        <h2 id="intro-title">Hello, I'm Luke.</h2>
+
+        <main id="about">
+
+
+            <section id="intro">
+                <div class="flex flex-col">
+                    <h2 id="intro-title">Hello, I'm Luke.</h2>
+                    <div class="intro-section">
                         <img class="cta-border" src="assets/images/profile_pic-1.avif" alt="Portrait photo of me, the website author, Luke Moore." />
+                        <div>
+                            <h3>I'm a frontend developer & web designer.</h3>
+                            <p class="tall-first-letter">
+                                I create optimized, user-centered websites that are responsive and elegant.
+                                I strive for <a href="https://www.w3.org/WAI/standards-guidelines/wcag/glance/" target="_blank">WCAG2 AA</a> 
+                                accessibility and care deeply about the principals behind the <a href="https://www.a11yproject.com/" target="_blank">a11y</a> project.
+                                My skill set and education give me the resources to take on a variety of tasks that blend creativity 
+                                with logical problem-solving. 
+                            </p>
+                            <p>
+                                Before learning how to program, I built desktop computers for myself and my friends to play video games together. 
+                                I created my first website in 2019 and have enjoyed the journey of learning ever since. 
+                                What interests me the most about creating and improving user interfaces is the connection between design, psychology, and engineering. 
+                                I recently graduated from California State University, Monterey Bay with a bachelor's of science from the School of Computing & Design studying Communication Design and a minor in Computer Science. 
+                                I'm interested in novel ways of expressing typography on the web, and using graphics programming to play with visual effects and animations.
+                            </p>
+                        </div>
                     </div>
-                    <div class="intro">
-                        <h3>I'm a frontend developer & web designer.</h3>
-                        <p class="intro-text tall-first-letter">
-                            I create optimized, user-centered websites that are responsive and elegant.
-                            I strive for <a href="https://www.w3.org/WAI/standards-guidelines/wcag/glance/" target="_blank">WCAG2 AA</a> 
-                            accessibility and care deeply about the principals behind the <a href="https://www.a11yproject.com/" target="_blank">a11y</a> project.
-                            My skill set and education give me the resources to take on a variety of tasks that blend creativity 
-                            with logical problem-solving. 
-                        </p>
-                        <p class="intro-text">
-                            Before learning how to program, I built desktop computers for myself and my friends to play video games together. 
-                            I created my first website in 2019 and have enjoyed the journey of learning ever since. 
-                            What interests me the most about creating and improving user interfaces is the connection between design, psychology, and engineering. 
-                            I recently graduated from California State University, Monterey Bay with a bachelor's of science from the School of Computing & Design studying Communication Design and a minor in Computer Science. 
-                            I'm interested in novel ways of expressing typography on the web, and using graphics programming to play with visual effects and animations.
-                        </p>
-                    </div>
+                </div>
             </section>
 
-            <section id="skill-section">
+
+            <section id="skills">
                 <aside>
                     <h3 class="skill-title">Design <i class="fa-solid fa-pen-nib"></i></h3>
                     <div class="skill-list">
@@ -124,7 +129,7 @@
                     <p>
                         I've posted my plant observations to <a href="https://www.inaturalist.org/people/2524830">iNaturalist</a> for the past few years which helps me identify the things I photograph. 
                         Not only do I find it fun, but the data is used to help scientists with their research. 
-                        As I gain more experience, a future goal of mine is to contribute to this open-source project in order to give back to the community.
+                        As I gain more experience, a future goal of mine is to contribute to this open-source project to give back to the community.
                     </p>
                 </div>
 
@@ -231,19 +236,18 @@
         </main>
 
         <footer class="cta-border">
-            <div class="footer-logo">
-                <a href="./index.html" title="Home">
-                    <svg id="footer-logo" viewBox="0 0 128 128" fill="none" alt="LM initials logo. Logo is a rounded square where the L on the left wraps around and under the M.">
-                        <path d="M0 0.0335693H23.6505V128V128C10.5887 128 0 117.411 0 104.349V0.0335693Z" fill="#FFFFF2"/>
-                        <path d="M128 89.7006L104.35 89.7006L104.317 0.0385273V0.0385273C117.378 0.0385273 127.971 10.6272 127.976 23.689L128 89.7006Z" fill="#FFFFF2"/>
-                        <path d="M25 128C11.1929 128 0 116.807 0 103V103H90V128H25Z" fill="#FFFFF2"/>
-                        <path d="M105.587 0.0254915C117.946 0.0300202 127.966 10.0531 127.966 22.4128V22.4128L35.9022 22.379V-4.17495e-05L105.587 0.0254915Z" fill="#FFFFF2"/>
-                        <rect x="35.8979" y="35.5096" width="20.2718" height="54.0583" fill="#FFFFF2"/>
-                        <rect x="70.1069" y="18.6163" width="20.2718" height="70.9515" fill="#FFFFF2"/>
-                        <path d="M104 103H128V103C128 116.255 117.255 127 104 127V127V103Z" fill="#FFFFF2"/>
-                    </svg>
-                </a>            
-            </div>
+
+            <a href="./index.html" title="Home">
+                <svg id="footer-logo" viewBox="0 0 128 128" fill="none" alt="LM initials logo. Logo is a rounded square where the L on the left wraps around and under the M.">
+                    <path d="M0 0.0335693H23.6505V128V128C10.5887 128 0 117.411 0 104.349V0.0335693Z" fill="#FFFFF2"/>
+                    <path d="M128 89.7006L104.35 89.7006L104.317 0.0385273V0.0385273C117.378 0.0385273 127.971 10.6272 127.976 23.689L128 89.7006Z" fill="#FFFFF2"/>
+                    <path d="M25 128C11.1929 128 0 116.807 0 103V103H90V128H25Z" fill="#FFFFF2"/>
+                    <path d="M105.587 0.0254915C117.946 0.0300202 127.966 10.0531 127.966 22.4128V22.4128L35.9022 22.379V-4.17495e-05L105.587 0.0254915Z" fill="#FFFFF2"/>
+                    <rect x="35.8979" y="35.5096" width="20.2718" height="54.0583" fill="#FFFFF2"/>
+                    <rect x="70.1069" y="18.6163" width="20.2718" height="70.9515" fill="#FFFFF2"/>
+                    <path d="M104 103H128V103C128 116.255 117.255 127 104 127V127V103Z" fill="#FFFFF2"/>
+                </svg>
+            </a>            
 
             <nav>
                 <ul>

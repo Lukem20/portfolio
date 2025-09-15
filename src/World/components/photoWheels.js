@@ -313,9 +313,9 @@ function createPhotos (camera, container) {
                 isHovering = true;
                 hoveredItem = intersect.object;
                 hoveredItem.scale.set(
-                    MathUtils.lerp(hoveredItem.scale.x, 1.1, lerpFactor * 2), 
-                    MathUtils.lerp(hoveredItem.scale.y, 1.1, lerpFactor * 2),  
-                    MathUtils.lerp(hoveredItem.scale.z, 1.1, lerpFactor * 2)
+                    MathUtils.lerp(hoveredItem.scale.x, 1.03, lerpFactor * 1.25), 
+                    MathUtils.lerp(hoveredItem.scale.y, 1.03, lerpFactor * 1.25),  
+                    MathUtils.lerp(hoveredItem.scale.z, 1.03, lerpFactor * 1.25)
                 );
             }
         }
