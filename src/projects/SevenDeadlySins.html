@@ -37,58 +37,57 @@
 
         <main class="project">
             <section class="banner-section" role="banner" aria-label="Hero image">
-                <h1 class="project-title cta-border">Botany Blog</h1>
-                <!-- <img id="project-banner" src="" alt="" /> -->
-                <h3 class="role"><span class="yellow">Role:</span> Frontend Developer</h3>
+                <h1 class="project-title cta-border">The Seven Deadly Sins of <br />Social Media & Technology</h1>
+                <img id="project-banner" src="../assets/images/seven-deadly-sins/7ds-banner.avif" alt="A laptop sits on some concrete stairs, the screen is open to the project homepage." />
+                <h3 class="role"><span class="yellow">Role:</span> Web Designer, Frontend Developer</h3>
             </section>
 
             <section class="project-details-section">
-                <p>Please excuse the dust. This project is currently a work in progress.</p>
                 <div class="details-container">
                     <div class="details-text">
                         <h2>Background</h2>
-                        <p class="project-details-text">
-                            One of my favorite hobbies is to go outside and look at plants. Learning about the natural world and what is around us 
-                            gives us a better appreciation and connection to the things that surround us. Discovering what is native to your area 
-                            also gives us perspective on the profound impact humans have had on the natural world and what role we can play in order to 
-                            protect what little shred of intact habitat remains. The distribution of plants fascinates me and we are able to learn a lot 
-                            about many different facets of geological time based on their locations and growing habits.  
+                        <p>
+                            This is a frontend web project I made for an experimental typography class during university. 
+                            The original task was to take the idea of seven deadly sins and apply that to a concept or phenomenon in order to create a tpyography book.
+                            I received permission to alter the assignment requirements to create a website instead of a book so that I could practice creating web animations.
+                            I am fascinated by the effects of social media and the technology companies that run them on society since they are a relatively new phenomena and we are just beginning to see their influence on important world events.
                         </p>
                     </div>
                     <div class="details-text">
                         <h2>Solution</h2>
-                        <p class="project-details-text">
-                            Using React and the fetch API, I built a small blog about the plants I have seen and uploaded to iNaturalist.
-                            This is the main tool I use to learn what it is I am looking at by taking pictures and uploading it to their extensive database.
-                            It is an open-source project that provides robust way to programmatically access information for the benefit of researchers and hbbiest alike.
-                            My blog features my own observations that have been deemed research grade by others in the community that also use iNaturalist. 
-                            The pictuures on the homepage are my own and the information provided on each plant page are from iNaturalist and Wikipedia.
+                        <p>
+                            Each page contains a typographic header that uses an animation to try and encapsulate the character of the sin.
+                            I mostly used native CSS, but some of these animations also use the GSAP animation library. 
+                            I used Vite so that I could build my site after installing the animation library, but I ran into an issue with page routing. 
+                            Maybe this was naive, but I assumed I could route my pages using the paths to my HTML files, but Vite complained. 
+                            I learned how to properly write a Vite configuration file so that I could have HTML-like file based routing. 
+                            I learned a lot about creating animation frames in CSS and also had good practice creating consistent layouts. 
                         </p>
                     </div>
                 </div>
 
                 <div class="project-details">
                     <div class="details-photos">
-                        <!-- <img src="" alt="" />
-                        <img src="" alt="" /> -->
+                        <img src="../assets/images/seven-deadly-sins/7ds-Macbook-2.avif" alt="A laptop sits open on a concrete barrier at night, the screen displays the sin Gluttony project page." />
+                        <!-- <img src="../assets/images/seven-deadly-sins/7ds-tablet-1.avif" alt="A smart tablet sits on a table, the screen displays the sin Envy project page." /> -->
                     </div>
 
                     <aside class="details-list">
                         <div>
                             <h3>Link <i class="fa-solid fa-link"></i></h3>
-                            <p><a href="https://lukes-plants.netlify.app/" target="_blank">lukes-plants.netlify.app</a></p>
+                            <p><a href="https://seven-deadly-sinz.netlify.app/" target="_blank">seven-deadly-sinz.netlify.app</a></p>
                         </div>
                         <div>
                             <h3>Tools <i class="fa-solid fa-wrench"></i></h3>
-                            <p>React, CSS, HTML, RESTful API</p>
+                            <p>HTML, CSS, JavaScript, GSAP, Vite</p>
                         </div>
                         <div>
                             <h3>Skills <i class="fa-solid fa-star"></i></h3>
-                            <p>Web Develpment, Web Design, GitHub</p>
+                            <p>Web Design, Interaction Design, Animations, Story-telling</p>
                         </div>
                         <div>
                             <h3>Project Type <i class="fa-solid fa-tag"></i></h3>
-                            <p>Personal Project</p>
+                            <p>School Project</p>
                         </div>
                     </aside>
                 </div>
@@ -102,33 +101,48 @@
                     </nav>
                     <div class="swiper-slides" data-slider>
                         <figure class="swiper-slide-item">
-                            <img src="" alt="">
+                            <img src="../assets/images/seven-deadly-sins/7ds.avif" alt="A laptop is open in front of a blank background. The home page is open on the screen." />
                         </figure>
                         <figure class="swiper-slide-item">
-                            <img src="" alt="">
+                            <img src="../assets/images/seven-deadly-sins/7ds-2.avif" alt="A laptop is open in front of a blank background. The sin Wrath is open on the screen." />
                         </figure>
                         <figure class="swiper-slide-item">
-                            <img src="" alt="">
+                            <img src="../assets/images/seven-deadly-sins/7ds-3.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
                         </figure>
                         <figure class="swiper-slide-item">
-                            <img src="" alt="">
+                            <img src="../assets/images/seven-deadly-sins/7ds-4.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-5.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-6.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-7.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-8.avif" alt="A laptop is open in front of a blank background. The sin Greed is open on the screen." />
+                        </figure>
+                        <figure class="swiper-slide-item">
+                            <img src="../assets/images/seven-deadly-sins/7ds-1.avif" alt="A laptop is open in front of a blank background. The sin Pride is open on the screen." />
                         </figure>
                     </div>
                 </div>
 
                 <div class="picture-full">
-                    <!-- <img src="" alt="" />
-                    <img src="" alt="" /> -->
+                    <img src="../assets/images/seven-deadly-sins/7ds-Macbook-1.avif" alt="A laptop is in a concrete, urban setting. The screen is open to the sin Envy." />
+                    <img src="../assets/images/seven-deadly-sins/7ds-tablet-2.avif" alt="A tablet sits in front of a blank background. The screen dispalys the sin Pride, with the 'i' being the largest letter in the word." />
                 </div>
             </section>
 
             <section class="next-project-section">
                 <h2>Next Project</h2>
                 <div class="next-project">
-                    <a href="./sandbox.html">
-                        <h3 class="cta-border">Three.js Sandbox Environment <i class="fa-solid fa-arrow-right"></i></h3>
+                    <a href="./GraphicsInteractiveTextbook.html">
+                        <h3 class="cta-border">The Interactive Textbook for Geometric Linear Algebra <i class="fa-solid fa-arrow-right"></i></h3>
                         <div>
-                            <img src="../assets/images/threejs-sandbox/sandbox-tablet-1.avif" alt="A laptop glows with a three dimensional website with shapes floating around, a glowing galaxy, and blocky letters that spell 'Luke Learns Three.js'." />
+                            <img src="../assets/images/interactive-textbook/graphics-textbook-banner.avif" alt="A laptop open on a table displays the landing page for the interactive graphics textbook." />
                         </div>
                     </a>
                 </div>
@@ -160,8 +174,7 @@
 
             <div id="footer-caption">
                 <small>Set in <a href="https://djr.com/roslindale" target="_blank">Roslindale</a> and <a href="https://rsms.me/work/inter/" target="_blank">Inter</a>.
-                    Designed in Figma and made with HTML, CSS, JavaScript & 
-                    Three.js; hosted on Netlify. 
+                    Designed in Figma and made with HTML, CSS, JavaScript & Three.js; hosted on Netlify. 
                     This site uses no tracking or cookies.
                     <span>Copyright © 2024 Luke Moore</span>
                 </small>

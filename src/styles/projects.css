@@ -40,7 +40,7 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-evenly;
     gap: 3em;
 }
 .details-text {

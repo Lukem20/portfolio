@@ -36,28 +36,53 @@
     display: flex;
     gap: 2em;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     flex-wrap: wrap;
 }
 
 
 /* *** Skills *** */
+#about #skills {
+    position: relative;
+    margin-left: 4em;
+}
 #skills {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     gap: 5em;
-    background-color: var(--dark-foreground-color);
     padding: 1.5em 0;
+}
+#skills::after {
+    content: '';
+    border-top-left-radius: 70% 10vw;
+    border-top-right-radius: 70% 10vw;
+    border-bottom-left-radius: 70% 10vw;
+    border-bottom-right-radius: 70% 10vw;
+    position: absolute;
+    z-index: -1;
+    top: 0px;
+    left: 0px;
+    background-image: linear-gradient(to bottom, var(--dark-foreground-color), #374348, #2A3137);
+    height: 110%;
+    width: 95%;
+    filter: blur(100px);
 }
 #skills aside {
     width: 400px;
     max-width: 100%;
 }
 .skill-title {
-    border-bottom: 1px solid var(--call-to-action);
-    width: fit-content;
     padding-bottom: 0.1em;
+}
+#skills h4 {
+    width: 60px;
+    border-bottom: 1px solid var(--call-to-action);
+    text-transform: uppercase;
+    font-size: 12px;
+    font-family: 'Inter-tight', sans-serif;
+    letter-spacing: 0.175em;
+    font-weight: bold;
 }
 .skill-list {
     display: flex;

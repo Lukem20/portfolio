@@ -14,91 +14,93 @@ import { createMaterial } from './material.js';
 import { RoundedRectangle } from './geometry.js';
 
 function createPhotos (camera, container) {
+
     let photos = [
         {
             imagePath: '/assets/haunted-house-square-1.jpg',
-            projectPath: '/projects/haunted-house.html',
+            projectPath: '/projects/HauntedHouse.html',
             projectTitle: 'Three.js Haunted House'
         },
         {
             imagePath: '/assets/brand-identity-timeline-square-2.jpg',
-            projectPath: '/projects/bit.html',
+            projectPath: '/projects/BrandIdentityTimeline.html',
             projectTitle: 'Brand Identity Timeline'
         },
         {   // Replace image path
             imagePath: '/assets/abts1.jpg',
-            projectPath: '/projects/botany-blog.html',
+            projectPath: '/projects/BotanyBlog.html',
             projectTitle: 'Botany Blog'
         },
         {
             imagePath: '/assets/sandbox-square-2.jpg',
-            projectPath: '/projects/sandbox.html',
+            projectPath: '/projects/ThreejsSandbox.html',
             projectTitle: 'Three.js Sandbox Environment'
         },
         {
             imagePath: '/assets/sisis-barbershop-square-1.jpg',
-            projectPath: '/projects/sb.html',
+            projectPath: '/projects/SisisBarbershop.html',
             projectTitle: "Sisi's Barbershop"
         },
         {
             imagePath: '/assets/healdsburg-crush-square-1.jpg',
-            projectPath: '/projects/hbc.html',
+            projectPath: '/projects/HealdsburgCrush.html',
             projectTitle: 'The Healdsburg Crush'
         },
         {
             imagePath: '/assets/seven-deadly-sins-square-1.jpg',
-            projectPath: '/projects/7ds.html',
+            projectPath: '/projects/SevenDeadlySins.html',
             projectTitle: 'The Seven Deadly Sins'
         },
         {
             imagePath: '/assets/graphics-textbook-square-1.jpg',
-            projectPath: '/projects/graphics-textbook.html',
+            projectPath: '/projects/GraphicsInteractiveTextbook.html',
             projectTitle: 'Interactive Graphics Textbook'
         },
         {
             imagePath: '/assets/haunted-house-square-2.jpg',
-            projectPath: '/projects/haunted-house.html',
+            projectPath: '/projects/HauntedHouse.html',
             projectTitle: 'Three.js Haunted House'
         },
         {
             imagePath: '/assets/brand-identity-timeline-square-2.jpg',
-            projectPath: '/projects/bit.html',
+            projectPath: '/projects/BrandIdentityTimeline.html',
             projectTitle: 'Brand Identity Timeline'
         },
         {   // Replace image path
             imagePath: '/assets/abts2.jpg',
-            projectPath: '/projects/botany-blog.html',
+            projectPath: '/projects/BotanyBlog.html',
             projectTitle: 'Botany Blog'
         },
         {
             imagePath: '/assets/sandbox-square-1.jpg',
-            projectPath: '/projects/sandbox.html',
+            projectPath: '/projects/ThreejsSandbox.html',
             projectTitle: 'Three.js Sandbox Environment'
         },
         {
             imagePath: '/assets/sisis-barbershop-square-2.jpg',
-            projectPath: '/projects/sb.html',
+            projectPath: '/projects/SisisBarbershop.html',
             projectTitle: "Sisi's Barbershop"
         },
         {
             imagePath: '/assets/healdsburg-crush-square-2.jpg',
-            projectPath: '/projects/hbc.html',
+            projectPath: '/projects/HealdsburgCrush.html',
             projectTitle: 'The Healdsburg Crush'
         },
         {
             imagePath: '/assets/seven-deadly-sins-square-2.jpg',
-            projectPath: '/projects/7ds.html',
+            projectPath: '/projects/SevenDeadlySins.html',
             projectTitle: 'Seven Deadly Sins'
         },        
         {
             imagePath: '/assets/graphics-textbook-square-2.jpg',
-            projectPath: '/projects/graphics-textbook.html',
+            projectPath: '/projects/GraphicsInteractiveTextbook.html',
             projectTitle: 'Interactive Graphics Textbook'
         },
     ];
 
     let texture = null;
     let material = null;
+
     const textureLoader = new TextureLoader();
     const geometry = {
         size: 43,
@@ -115,10 +117,12 @@ function createPhotos (camera, container) {
 
     let photoMeshTop = null;
     let photoMeshBottom = null;
-    const allPhotoMeshes = [];
+    
     const wheelRadius = 175;
     const wheelPosition = 208;
     const radianInterval = (2 * Math.PI) / photos.length;
+    
+    const allPhotoMeshes = [];
     const topGroup = new Group();
     const bottomGroup = new Group();
 
@@ -148,6 +152,7 @@ function createPhotos (camera, container) {
         allPhotoMeshes.push(photoMeshBottom);
         topGroup.add(photoMeshTop);
         bottomGroup.add(photoMeshBottom);
+
     }
 
     topGroup.translateY(wheelPosition - 14);
