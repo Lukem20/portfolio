@@ -16,8 +16,7 @@ let loop;
 
 class World {
     constructor(container) {
-        const cameraGroup = createCamera();
-        camera = cameraGroup.children[0];
+        camera = createCamera();
         renderer = createRenderer();
         scene = createScene();
         loop = new Loop(camera, scene, renderer);
