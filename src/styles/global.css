@@ -203,6 +203,7 @@ header .logo-section a:hover .logo-title {
 /* Navigation */
 header nav {
     display: flex;
+    position: relative;
 }
 
 nav ul {
@@ -319,6 +320,35 @@ footer {
     transform: scaleX(1);
     background-color: var(--call-to-action);
 }
+
 .yellow {
     color: var(--call-to-action);
+}
+
+.blur::after {
+    content: '';
+    border-top-left-radius: 70% 10vw;
+    border-top-right-radius: 70% 10vw;
+    border-bottom-left-radius: 70% 10vw;
+    border-bottom-right-radius: 70% 10vw;
+    position: absolute;
+    z-index: -1;
+    top: 0px;
+    left: 0px;
+    background-image: linear-gradient(to bottom, var(--dark-foreground-color), #374348, #2A3137);
+    height: 110%;
+    width: 95%;
+    filter: blur(100px);
+}
+
+header nav.blur::after {
+    height: 215%;
+    width: 140%;
+    top: -50%;
+    left: -18%;
+    border-top-left-radius: 60% 10vw;
+    border-top-right-radius: 60% 10vw;
+    border-bottom-left-radius: 60% 10vw;
+    border-bottom-right-radius: 60% 10vw;
+    filter: blur(25px);
 }
