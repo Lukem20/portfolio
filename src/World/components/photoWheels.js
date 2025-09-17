@@ -182,6 +182,12 @@ function createPhotos (camera, container) {
         isSnapping = false
         clearTimeout(spinTimeout);
 
+        if (isHovering) {
+            for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
+                allPhotoMeshes[i].scale.set(1, 1, 1);
+            }
+        }
+
         // Add to velocity based on scroll direction and intensity
         const scrollIntensity = Math.abs(event.deltaY) / 100;
         const velocityChange = Math.min(scrollIntensity * 0.02, 0.05);
@@ -197,9 +203,7 @@ function createPhotos (camera, container) {
 
         // Set timeout for snapping
         clearTimeout(spinTimeout);
-        spinTimeout = setTimeout(() => {
-            startSnapping();
-        }, 500);
+        spinTimeout = setTimeout(startSnapping, 500);
     });
 
 
@@ -245,9 +249,7 @@ function createPhotos (camera, container) {
         yDown = yUp;
 
         clearTimeout(spinTimeout);
-        spinTimeout = setTimeout(() => {
-            startSnapping();
-        }, 500);
+        spinTimeout = setTimeout(startSnapping, 350);
     });       
     
 
@@ -316,9 +318,12 @@ function createPhotos (camera, container) {
 
         snapPoint.x = topGroup.children[4].position.x;
         snapPoint.y = topGroup.children[4].position.y;
-        snapPoint.theta = Math.atan2(Math.abs(snapPoint.y - topGroup.position.y), Math.abs(snapPoint.x - topGroup.position.x));
+        snapPoint.theta = Math.atan2(
+            Math.abs(snapPoint.y - topGroup.position.y), 
+            Math.abs(snapPoint.x - topGroup.position.x)
+        );
         
-        let closestPhotoMesh;
+        let closestPhotoMesh = null;
         let closestPhotoX = 0.0;
         let closestPhotoY = 0.0;
         let shortestDistance = Infinity
@@ -340,7 +345,10 @@ function createPhotos (camera, container) {
             }
         }
 
-        let angleOfClosestPhoto = Math.atan2(Math.abs(closestPhotoY - topGroup.position.y), Math.abs(closestPhotoX - topGroup.position.x));
+        let angleOfClosestPhoto = Math.atan2(
+            Math.abs(closestPhotoY - topGroup.position.y), 
+            Math.abs(closestPhotoX - topGroup.position.x)
+        );
         let snapAngle = Math.abs(angleOfClosestPhoto - snapPoint.theta);
 
         // Determines whether the wheels need to be rotated cw or ccw based on the cartesian quadrant it is in.
@@ -372,14 +380,15 @@ function createPhotos (camera, container) {
 
         // Handle smooth rotation
         if (isSnapping) {
-            // Smooth snapping using eased interpolation
             snapProgress += snapSpeed;
+
             if (snapProgress >= 1) {
                 snapProgress = 1;
                 isSnapping = false;
+                targetVelocity = 0;
+                currentVelocity = 0;
             }
             
-            // Use easeOutCubic for smooth deceleration
             const eased = 1 - Math.pow(1 - snapProgress, 3);
             const currentSnapRotation = snapStartRotation + (snapTargetRotation - snapStartRotation) * eased;
             const deltaRotation = currentSnapRotation - snapStartRotation;
@@ -422,25 +431,22 @@ function createPhotos (camera, container) {
                 if (isHovering) { // Only change cursor if state changed
                     document.body.style.cursor = "default";
                     isHovering = false;
-                }
-                
-                // 🚀 OPTIMIZATION 10: Batch scale updates with efficient loop
-                for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
-                    const mesh = allPhotoMeshes[i];
-                    mesh.scale.set(
-                        MathUtils.lerp(mesh.scale.x, 1, lerpFactor), 
-                        MathUtils.lerp(mesh.scale.y, 1, lerpFactor),  
-                        MathUtils.lerp(mesh.scale.z, 1, lerpFactor)
-                    );
+                    
+                    for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
+                        const mesh = allPhotoMeshes[i];
+                        mesh.scale.set(
+                            MathUtils.lerp(mesh.scale.x, 1, lerpFactor), 
+                            MathUtils.lerp(mesh.scale.y, 1, lerpFactor),  
+                            MathUtils.lerp(mesh.scale.z, 1, lerpFactor)
+                        );
+                    }
                 }
             } else {
                 /* Hovering */ 
-                if (!isHovering) { // Only change cursor if state changed
-                    document.body.style.cursor = "pointer";
-                    isHovering = true;
-                }
+                document.body.style.cursor = "pointer";
+                isHovering = true;
+                hoveredItem = rayIntersects[0].object;
                 
-                hoveredItem = rayIntersects[0].object; // Use first intersection
                 hoveredItem.scale.set(
                     MathUtils.lerp(hoveredItem.scale.x, 1.03, lerpFactor * 1.25), 
                     MathUtils.lerp(hoveredItem.scale.y, 1.03, lerpFactor * 1.25),  

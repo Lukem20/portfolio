@@ -9,10 +9,18 @@ function createCamera() {
         y: 0,
     };
     
+    // Throttle mouse events to prevent Firefox spastic behavior
+    let lastMouseUpdate = 0;
+    const mouseThrottle = 8; // ~120fps
 
     window.addEventListener('mousemove', (event) => {
-        cursor.x = event.clientX / window.innerWidth - 0.5;
-        cursor.y = event.clientY / window.innerHeight - 0.5;
+        const now = performance.now();
+
+        if (now - lastMouseUpdate > mouseThrottle) {
+            cursor.x = event.clientX / window.innerWidth - 0.5;
+            cursor.y = event.clientY / window.innerHeight - 0.5;
+            lastMouseUpdate = now;
+        }
     });
     
 
@@ -33,14 +41,13 @@ function createCamera() {
         const deltaTime = elapsedTime - previousTime;
         previousTime = elapsedTime;
 
-        const parallaxX = cursor.x * 5;
-        const parallaxY = - cursor.y * 5;
-        camera.position.x += (parallaxX - camera.position.x) * 100 * deltaTime;
-        camera.position.y += (parallaxY - camera.position.y) * 100 * deltaTime;
+        const parallaxX = cursor.x * 10;
+        const parallaxY = - cursor.y * 10;
 
-        console.log('x: ', camera.position.x);
-        console.log('y: ', camera.position.y);
+        const lerpFactor = Math.min(deltaTime * 2, 0.016); // ~60fps
 
+        camera.position.x += (parallaxX - camera.position.x) * lerpFactor;
+        camera.position.y += (parallaxY - camera.position.y) * lerpFactor;
     }
 
     return camera;
