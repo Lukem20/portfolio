@@ -48,7 +48,7 @@
 #skills {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-evenly;
     gap: 5em;
     padding: 1.5em 0;
 }
@@ -120,6 +120,7 @@
 #copyButton {
     font-family: 'Inter-tight', serif;
     font-size: 1em;
+    letter-spacing: 0.05em;
     color: var(--call-to-action);
     border: 2px solid var(--call-to-action);
     background-color: var(--dark-background-color);
@@ -128,7 +129,7 @@
     cursor: pointer;
 }
 #copyButton:hover {
-    background-color: #383C31;
+    background-color: var(--dark-foreground-color);
 }
 
 /* Social Icons */

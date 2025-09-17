@@ -30,12 +30,6 @@ body {
 
 /* *** Typography *** */
 @font-face {
-    font-family: 'League Spartan';
-    src: url("../assets/fonts/LeagueSpartan-VF.woff2") format('woff2');
-    font-display: swap;
-    font-style: normal;
-}
-@font-face {
     font-family: 'Roslindale';
     src: url("../assets/fonts/RoslindaleVariable.woff2") format('woff2');
     font-display: swap;
@@ -57,7 +51,7 @@ p, li {
     letter-spacing: 0.025em;
 }
 p + p { 
-    text-indent: 1em; 
+    text-indent: 1.6em; 
 }
 .tall-first-letter::first-letter {
     initial-letter: 2;
