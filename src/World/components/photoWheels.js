@@ -101,6 +101,7 @@ function createPhotos (camera, container) {
 
     /* *** Create Photo geometry and material *** */
     const textureLoader = new TextureLoader();
+
     const geometry = {
         size: 43,
         cornerRadius: 2.5,
@@ -119,10 +120,9 @@ function createPhotos (camera, container) {
     const radianInterval = (2 * Math.PI) / photos.length;
     
     const allPhotoMeshes = [];
+    const materials = [];
     const topGroup = new Group();
     const bottomGroup = new Group();
-    
-    const materials = [];
     
     
     for (let i = 0; i < photos.length; i++) {
@@ -150,10 +150,9 @@ function createPhotos (camera, container) {
         allPhotoMeshes.push(photoMeshTop, photoMeshBottom);
         topGroup.add(photoMeshTop);
         bottomGroup.add(photoMeshBottom);
-
     }
     
-    // Move each photo group after creating and palcing each photo item
+    // Move each photo group after creating and placing each photo item
     topGroup.translateY(wheelPosition - 14);
     bottomGroup.translateY(-wheelPosition - 11);
     
@@ -177,7 +176,6 @@ function createPhotos (camera, container) {
     const snapPoint = { x: 0, y: 0, theta: 0 };
 
 
-
     document.addEventListener('wheel', event => {
         event.preventDefault();
 
@@ -194,7 +192,7 @@ function createPhotos (camera, container) {
             targetVelocity += velocityChange;
         }
 
-        // Clamp velocity
+        // Clamp velocity [-maxVelocity, maxVelocity]
         targetVelocity = Math.max(-maxVelocity, Math.min(maxVelocity, targetVelocity));
 
         // Set timeout for snapping
@@ -209,8 +207,6 @@ function createPhotos (camera, container) {
     /* *** Swipe Event *** */
     let xDown = null;                                                        
     let yDown = null;
-
-
 
     document.addEventListener('touchstart', handleTouchStart, false);        
 
@@ -236,7 +232,7 @@ function createPhotos (camera, container) {
         let yDiff = yDown - yUp;
 
         let swipeSpeed = (Math.sqrt(( Math.pow(xDiff, 2) + Math.pow(yDiff, 2) )) / 360) / 2;
-        swipeSpeed = Math.min(swipeSpeed, 0.05);
+        swipeSpeed = Math.min(swipeSpeed, 0.75);
 
         if (Math.abs(xDiff) > Math.abs(yDiff)) {
             targetVelocity = xDiff > 0 ? -swipeSpeed : swipeSpeed;
@@ -251,7 +247,7 @@ function createPhotos (camera, container) {
         clearTimeout(spinTimeout);
         spinTimeout = setTimeout(() => {
             startSnapping();
-        }, 5);
+        }, 500);
     });       
     
 
