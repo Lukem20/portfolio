@@ -4,7 +4,8 @@ function createMaterial (texture) {
     return new MeshStandardMaterial({ 
         map: texture,
         transparent: true,
-        opacity: 1
+        opacity: 1,
+        roughness: 0.5,
     });
 }
 

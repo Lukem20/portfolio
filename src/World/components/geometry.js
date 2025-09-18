@@ -56,6 +56,7 @@ function RoundedRectangle( w, h, r, s ) { // width, height, radius corner, smoot
 	const geometry = new BufferGeometry();
 	geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( positions ), 3 ) );
 	geometry.setAttribute( 'uv', new BufferAttribute( new Float32Array( uvs ), 2 ) );
+	geometry.computeVertexNormals();
 	
 	return geometry;
 }

@@ -3,6 +3,7 @@ import { createCamera } from './components/camera.js';
 import { createLights } from './components/lights.js';
 import { createScene } from './components/scene.js';
 import { createPhotos } from './components/photoWheels.js';
+import { createBackground } from './components/background.js';
 
 // Systems
 import { createRenderer } from './systems/renderer.js';
@@ -22,12 +23,16 @@ class World {
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement);
 
-        const light = createLights();
+        const background = createBackground();
         const photoWheels = createPhotos(camera, container);
+        const lights = createLights(scene);
 
-        scene.add(photoWheels, camera, light);
+        scene.add(lights);
+        scene.add(photoWheels, camera, background);
+
         loop.updatables.push(camera);
         loop.updatables.push(photoWheels);
+        for (const light of lights.children) loop.updatables.push(light);
 
         const resizer = new Resizer(container, camera, renderer);
     }
