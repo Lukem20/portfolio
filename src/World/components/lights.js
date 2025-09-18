@@ -21,19 +21,19 @@ function createLights(scene) {
 }
 
 function createSpotlight(color, angleOffset, scene) {
-    const light = new SpotLight(color, 50);
+    const light = new SpotLight(color, 80);
     light.castShadow = true;
-    light.angle = 0.35;
-    light.penumbra = 0.8;
+    light.angle = 0.5;
+    light.penumbra = 0.9;
     light.decay = 0.6;
-    light.distance = 600;
+    light.distance = 500;
     light.shadow.mapSize.width = 1024;
     light.shadow.mapSize.height = 1024;
     light.shadow.camera.near = 0.1;
     light.shadow.camera.far = 500;
     light.shadow.camera.fov = 60;
 
-    const radius = 60;
+    const radius = 100;
     const angleRad = (angleOffset * Math.PI) / 180;
     const behindZ = 250;
 
