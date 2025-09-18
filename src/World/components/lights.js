@@ -21,7 +21,7 @@ function createLights(scene) {
 }
 
 function createSpotlight(color, angleOffset, scene) {
-    const light = new SpotLight(color, 30);
+    const light = new SpotLight(color, 50);
     light.castShadow = true;
     light.angle = 0.35;
     light.penumbra = 0.8;
