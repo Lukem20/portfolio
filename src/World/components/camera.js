@@ -30,7 +30,7 @@ function createCamera() {
 
     camera.position.x = 0;
     camera.position.y = 0;
-    camera.position.z = 120;
+    camera.position.z = 130;
 
 
     const clock = new Clock();

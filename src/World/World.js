@@ -9,11 +9,13 @@ import { createBackground } from './components/background.js';
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
+// import { createControls } from './systems/controls.js';
 
 let camera;
 let renderer;
 let scene;
 let loop;
+// let controls;
 
 class World {
     constructor(container) {

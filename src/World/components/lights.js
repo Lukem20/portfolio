@@ -2,16 +2,17 @@ import {
     AmbientLight,
     SpotLight,
     Object3D,
-    Group
+    Group,
+    // SpotLightHelper
 } from 'three';
 
 function createLights(scene) {
     const aLight = new AmbientLight(0xffffff, 0.1);
     aLight.tick = () => {};
 
-    const spotLight1 = createSpotlight( 0xBFBFBF, 0, scene );
-    const spotLight2 = createSpotlight( 0xBFBFBF, 120, scene );
-    const spotLight3 = createSpotlight( 0xBFBFBF, 240, scene );
+    const spotLight1 = createSpotlight( 0xFAFAFA, 240, scene );
+    const spotLight2 = createSpotlight( 0x36EEF5, 120, scene );
+    const spotLight3 = createSpotlight( 0xFF5F37, 0, scene );
 
     const lights = new Group();
     lights.add( aLight, spotLight1, spotLight2, spotLight3 );
@@ -23,8 +24,8 @@ function createLights(scene) {
 function createSpotlight(color, angleOffset, scene) {
     const light = new SpotLight(color, 80);
     light.castShadow = true;
-    light.angle = 0.5;
-    light.penumbra = 0.9;
+    light.angle = 0.2;
+    light.penumbra = 0.125;
     light.decay = 0.6;
     light.distance = 500;
     light.shadow.mapSize.width = 1024;
@@ -44,27 +45,38 @@ function createSpotlight(color, angleOffset, scene) {
     );
 
     const target = new Object3D();    
-    const targetOffset = 50;
     target.position.set(
-        (Math.random() - 0.5) * targetOffset,
-        (Math.random() - 0.5) * targetOffset,
+        0,
+        0,
         0
     );
 
     light.target = target;
     scene.add(target);
 
-    let angle = 0;
-    const movementRadius = targetOffset / 2;
-    const rotationSpeed = 0.01; 
+    const movement = {
+        angleX: Math.random() * Math.PI * 2,     // Random starting angle for X
+        angleY: Math.random() * Math.PI * 2,     // Random starting angle for Y
+        speedX: 0.008 + Math.random() * 0.004,   // Random speed X (0.008-0.012)
+        speedY: 0.006 + Math.random() * 0.006,   // Random speed Y (0.006-0.012)
+        radiusX: 10 + Math.random() * 15,        // Random X radius (10-25)
+        radiusY: 5 + Math.random() * 10,        // Random Y radius (10-25)
+        centerOffsetX: (Math.random() - 0.5) * 20, // Random center offset
+        centerOffsetY: (Math.random() - 0.5) * 20
+    }; 
+
+    // const helper = new SpotLightHelper(light);
+    // scene.add(helper);
 
     light.tick = () => {
-        angle += rotationSpeed;
+        movement.angleX += movement.speedX;
+        movement.angleY += movement.speedY;
 
-        const x = movementRadius * Math.cos(angle);
-        const y = movementRadius * Math.sin(angle);
+        const x = movement.centerOffsetX + Math.cos(movement.angleX) * movement.radiusX;
+        const y = movement.centerOffsetY + Math.sin(movement.angleY) * movement.radiusY;
 
         target.position.set(x, y, 0);
+        // helper.update();
     };
 
     return light;

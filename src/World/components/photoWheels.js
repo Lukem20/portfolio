@@ -153,8 +153,8 @@ function createPhotos (camera, container) {
     }
     
     // Move each photo group after creating and placing each photo item
-    topGroup.translateY(wheelPosition - 14);
-    bottomGroup.translateY(-wheelPosition - 11);
+    topGroup.translateY(wheelPosition - 13);
+    bottomGroup.translateY(-wheelPosition - 13);
     
 
 
