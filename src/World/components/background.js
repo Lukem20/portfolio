@@ -52,7 +52,7 @@ function createBackground () {
 
     const backgroundMesh = new Mesh(geometry, material);
     backgroundMesh.receiveShadow = true;
-    backgroundMesh.position.z = -2
+    backgroundMesh.position.z = -3.5
 
     return backgroundMesh;
 }

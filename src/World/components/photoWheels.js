@@ -13,6 +13,8 @@ import { RoundedRectangle } from './geometry.js';
 
 
 
+
+
 function createPhotos (camera, container) {
 
     let photos = [
@@ -99,6 +101,8 @@ function createPhotos (camera, container) {
     ];
 
 
+
+
     /* *** Create Photo geometry and material *** */
     const textureLoader = new TextureLoader();
 
@@ -124,7 +128,7 @@ function createPhotos (camera, container) {
     const topGroup = new Group();
     const bottomGroup = new Group();
     
-    
+    // Load photos into material and create mesh
     for (let i = 0; i < photos.length; i++) {
 
         const texture = textureLoader.load(photos[i].imagePath);
@@ -147,15 +151,17 @@ function createPhotos (camera, container) {
             1
         );
 
+        // Create array of all photo meshes. Add photos to each wheel group.
         allPhotoMeshes.push(photoMeshTop, photoMeshBottom);
         topGroup.add(photoMeshTop);
         bottomGroup.add(photoMeshBottom);
     }
     
-    // Move each photo group after creating and placing each photo item
+    // Move each photo group
     topGroup.translateY(wheelPosition - 13);
     bottomGroup.translateY(-wheelPosition - 13);
     
+
 
 
     /* *** Scroll Event *** */
@@ -174,7 +180,6 @@ function createPhotos (camera, container) {
 
     const tempVector = new Vector3();
     const snapPoint = { x: 0, y: 0, theta: 0 };
-
 
     document.addEventListener('wheel', event => {
         event.preventDefault();
@@ -208,6 +213,7 @@ function createPhotos (camera, container) {
 
 
 
+
     /* *** Swipe Event *** */
     let xDown = null;                                                        
     let yDown = null;
@@ -225,7 +231,6 @@ function createPhotos (camera, container) {
         currentVelocity = 0;
         clearTimeout(spinTimeout);
     }
-
 
     document.addEventListener('touchmove', event => {
         if (!xDown || !yDown) { return; }
@@ -252,12 +257,11 @@ function createPhotos (camera, container) {
         spinTimeout = setTimeout(startSnapping, 350);
     });       
     
-
-
     document.addEventListener("touchend", () => {
         xDown = null;
         yDown = null;
     });
+
 
 
 
@@ -269,6 +273,7 @@ function createPhotos (camera, container) {
         mouse.x = event.clientX / window.innerWidth * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight * 2 - 1);
     });
+
 
 
 
@@ -285,14 +290,23 @@ function createPhotos (camera, container) {
 
 
 
+
     function rotateWheels(angle) {
         topGroup.rotateZ(angle);
         bottomGroup.rotateZ(angle);
         
         for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
-            allPhotoMeshes[i].rotateZ(-angle);
+            const mesh = allPhotoMeshes[i];
+            // Set base rotation if it doesn't exist
+            if ( !mesh.userData.baseRotationZ) {
+                mesh.userData.baseRotationZ = 0;
+            }
+            // Update both the actual rotation and the base rotation together
+            mesh.rotateZ(-angle);
+            mesh.userData.baseRotationZ = mesh.rotation.z;
         }
     }
+
 
 
 
@@ -314,8 +328,8 @@ function createPhotos (camera, container) {
 
 
 
-    function calculateSnapAngle () {
 
+    function calculateSnapAngle () {
         snapPoint.x = topGroup.children[4].position.x;
         snapPoint.y = topGroup.children[4].position.y;
         snapPoint.theta = Math.atan2(
@@ -364,6 +378,7 @@ function createPhotos (camera, container) {
 
         return { angle: snapAngle, closestMesh: closestPhotoMesh };
     }
+
 
 
 
@@ -428,17 +443,29 @@ function createPhotos (camera, container) {
 
             if (!rayIntersects.length) {
                 /* Not hovering */
-                if (isHovering) { // Only change cursor if state changed
+                if (isHovering) {
                     document.body.style.cursor = "default";
                     isHovering = false;
+                }
                     
-                    for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
-                        const mesh = allPhotoMeshes[i];
-                        mesh.scale.set(
-                            MathUtils.lerp(mesh.scale.x, 1, lerpFactor), 
-                            MathUtils.lerp(mesh.scale.y, 1, lerpFactor),  
-                            MathUtils.lerp(mesh.scale.z, 1, lerpFactor)
-                        );
+                for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
+                    const mesh = allPhotoMeshes[i];
+                    mesh.scale.set(
+                        MathUtils.lerp(mesh.scale.x, 1, lerpFactor), 
+                        MathUtils.lerp(mesh.scale.y, 1, lerpFactor),  
+                        MathUtils.lerp(mesh.scale.z, 1, lerpFactor)
+                    );
+
+                    mesh.rotation.x = MathUtils.lerp(mesh.rotation.x, 0, lerpFactor);
+                    mesh.rotation.y = MathUtils.lerp(mesh.rotation.y, 0, lerpFactor);
+
+                    const targetRotationZ = mesh.userData.baseRotationZ || 0;
+                    const rotationDiff = targetRotationZ - mesh.rotation.z;
+
+                    if (Math.abs(rotationDiff) > Math.PI) {
+                        mesh.rotation.z = targetRotationZ;
+                    } else {
+                        mesh.rotation.z = MathUtils.lerp(mesh.rotation.z, targetRotationZ, lerpFactor);
                     }
                 }
             } else {
@@ -446,12 +473,69 @@ function createPhotos (camera, container) {
                 document.body.style.cursor = "pointer";
                 isHovering = true;
                 hoveredItem = rayIntersects[0].object;
+
+                for (let i = 0; i < allPhotoMeshes.length; i++) {
+                    const mesh = allPhotoMeshes[i];
+
+                    // Reset non hovered items
+                    if (mesh != hoveredItem) {
+                        mesh.scale.set(
+                            MathUtils.lerp(mesh.scale.x, 1, lerpFactor), 
+                            MathUtils.lerp(mesh.scale.y, 1, lerpFactor),  
+                            MathUtils.lerp(mesh.scale.z, 1, lerpFactor)
+                        );
+                    }
+
+                    mesh.rotation.x = MathUtils.lerp(mesh.rotation.x, 0, lerpFactor);
+                    mesh.rotation.y = MathUtils.lerp(mesh.rotation.y, 0, lerpFactor);
+
+                    // Handle Z rotation carefully for non-hovered items
+                    const targetRotationZ = mesh.userData.baseRotationZ || 0;
+                    const rotationDiff = targetRotationZ - mesh.rotation.z;
+                    
+                    if (Math.abs(rotationDiff) > Math.PI) {
+                        mesh.rotation.z = targetRotationZ;
+                    } else {
+                        mesh.rotation.z = MathUtils.lerp(mesh.rotation.z, targetRotationZ, lerpFactor);
+                    }
+                }
                 
+                // Scale up the hovered item
                 hoveredItem.scale.set(
                     MathUtils.lerp(hoveredItem.scale.x, 1.03, lerpFactor * 1.25), 
                     MathUtils.lerp(hoveredItem.scale.y, 1.03, lerpFactor * 1.25),  
                     MathUtils.lerp(hoveredItem.scale.z, 1.03, lerpFactor * 1.25)
                 );
+
+                // Hover Tilt effect
+                const photoWorldPosition = new Vector3();
+                hoveredItem.getWorldPosition(photoWorldPosition);
+                photoWorldPosition.project(camera);
+
+                const screenX = photoWorldPosition.x;
+                const screenY = photoWorldPosition.y;
+                const offsetX = mouse.x - screenX;
+                const offsetY = mouse.y - screenY;
+                const photoScreenSize = 0.15;
+                const normalizedX = MathUtils.clamp(offsetX / photoScreenSize, -1, 1);
+                const normalizedY = MathUtils.clamp(offsetY / photoScreenSize, -1, 1);
+
+                const maxTilt = Math.PI / 24;
+                const tiltX = normalizedY * maxTilt;
+                const tiltY = normalizedX * maxTilt;
+
+                hoveredItem.rotation.x = MathUtils.lerp(hoveredItem.rotation.x, tiltX, lerpFactor);
+                hoveredItem.rotation.y = MathUtils.lerp(hoveredItem.rotation.y, tiltY, lerpFactor);
+
+                // For hovered item, maintain base Z rotation (no additional tilting on Z-axis)
+                const targetZ = hoveredItem.userData.baseRotationZ || 0;
+                const zDiff = targetZ - hoveredItem.rotation.z;
+                
+                if (Math.abs(zDiff) > Math.PI) {
+                    hoveredItem.rotation.z = targetZ;
+                } else if (Math.abs(zDiff) > 0.05) { // Only adjust if significantly off
+                    hoveredItem.rotation.z = MathUtils.lerp(hoveredItem.rotation.z, targetZ, lerpFactor * 0.5);
+                }
             }
         }
     }

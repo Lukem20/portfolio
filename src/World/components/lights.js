@@ -57,8 +57,8 @@ function createSpotlight(color, angleOffset, scene) {
     const movement = {
         angleX: Math.random() * Math.PI * 2,     // Random starting angle for X
         angleY: Math.random() * Math.PI * 2,     // Random starting angle for Y
-        speedX: 0.008 + Math.random() * 0.004,   // Random speed X (0.008-0.012)
-        speedY: 0.006 + Math.random() * 0.006,   // Random speed Y (0.006-0.012)
+        speedX: 0.006 + Math.random() * 0.004,   // Random speed X (0.008-0.012)
+        speedY: 0.004 + Math.random() * 0.006,   // Random speed Y (0.006-0.012)
         radiusX: 10 + Math.random() * 15,        // Random X radius (10-25)
         radiusY: 5 + Math.random() * 10,        // Random Y radius (10-25)
         centerOffsetX: (Math.random() - 0.5) * 20, // Random center offset
