@@ -520,7 +520,7 @@ function createPhotos (camera, container) {
                 const normalizedX = MathUtils.clamp(offsetX / photoScreenSize, -1, 1);
                 const normalizedY = MathUtils.clamp(offsetY / photoScreenSize, -1, 1);
 
-                const maxTilt = Math.PI / 24;
+                const maxTilt = Math.PI / 30;
                 const tiltX = normalizedY * maxTilt;
                 const tiltY = normalizedX * maxTilt;
 
