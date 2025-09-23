@@ -13,8 +13,6 @@ import { RoundedRectangle } from './geometry.js';
 
 
 
-
-
 function createPhotos (camera, container) {
 
     let photos = [
@@ -102,7 +100,6 @@ function createPhotos (camera, container) {
 
 
 
-
     /* *** Create Photo geometry and material *** */
     const textureLoader = new TextureLoader();
     const geometry = {
@@ -121,13 +118,12 @@ function createPhotos (camera, container) {
     const wheelRadius = 175;
     const wheelPosition = 208;
     const radianInterval = (2 * Math.PI) / photos.length;
-    
     const allPhotoMeshes = [];
     const materials = [];
     const topGroup = new Group();
     const bottomGroup = new Group();
     
-    // Load photos into material and create mesh
+    // Create photo meshes, then create wheels.
     for (let i = 0; i < photos.length; i++) {
 
         const texture = textureLoader.load(photos[i].imagePath);
@@ -159,25 +155,25 @@ function createPhotos (camera, container) {
         topGroup.add(photoMeshTop);
         bottomGroup.add(photoMeshBottom);
     }
-    
-    // Move each photo group
     topGroup.translateY(wheelPosition - 13);
     bottomGroup.translateY(-wheelPosition - 13);
     
 
 
 
-    /* *** Converge Animation State *** */
-    let isConverging = false;
-    let convergeProgress = 0;
-    let clickedMesh = null;
-    let targetPosition = new Vector3();
-    const convergeSpeed = 0.025;
-    const stackOffset = -2;
-    const convergeDuration = 1000; // milliseconds
+    /* *** Click Event *** */
+    let isHovering = false;
+    let hoveredItem = null;
+    const raycaster = new Raycaster();
 
+    /* *** Mouse Event *** */
+    const mouse = new Vector2();
 
-    /* *** Scroll Event *** */
+    /* *** Touch/Swipe Event *** */
+    let xDown = null;                                                        
+    let yDown = null;
+
+    /* *** Scroll/Wheel Event *** */
     let targetVelocity = 0;
     let currentVelocity = 0;
     let isSnapping = false;
@@ -194,9 +190,33 @@ function createPhotos (camera, container) {
     const tempVector = new Vector3();
     const snapPoint = { x: 0, y: 0, theta: 0 };
 
-    document.addEventListener('wheel', event => {
+    /* *** Converge Animation State *** */
+    let isConverging = false;
+    let convergeProgress = 0;
+    let clickedMesh = null;
+    const convergeSpeed = 0.025;
+    const stackOffset = -2.5;
+    const convergeDuration = 650; // milliseconds
 
-        if (isConverging) return;
+
+
+    document.addEventListener('wheel', handleWheelEvent);
+    document.addEventListener('touchstart', handleTouchStart, false);
+    document.addEventListener('touchmove', handleTouchMove);     
+    document.addEventListener("touchend", handleTouchEnd);
+    container.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener('click', handleMouseClick);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    
+    
+    function handleWheelEvent (event) {
+        event.preventDefault();
+
+        if (isConverging)  {
+            endConvergeAnimation();
+            return;
+        }
 
         isSnapping = false
         clearTimeout(spinTimeout);
@@ -223,20 +243,18 @@ function createPhotos (camera, container) {
         // Set timeout for snapping
         clearTimeout(spinTimeout);
         spinTimeout = setTimeout(snapWheels, 500);
-    });
+    }
 
 
 
-
-    /* *** Touch/Swipe Event *** */
-    let xDown = null;                                                        
-    let yDown = null;
-
-    document.addEventListener('touchstart', handleTouchStart, false);        
     function handleTouchStart(event) {
         const firstTouch = event.touches[0];                                      
         xDown = firstTouch.clientX;                                      
-        yDown = firstTouch.clientY;            
+        yDown = firstTouch.clientY; 
+        
+        if(isConverging) {
+            endConvergeAnimation();
+        }
         
         // Stop any current motion when touch starts
         isSnapping = false;
@@ -245,7 +263,9 @@ function createPhotos (camera, container) {
         clearTimeout(spinTimeout);
     }
 
-    document.addEventListener('touchmove', (event) => {
+
+
+    function handleTouchMove(event) {
         if (!xDown || !yDown) { return; }
 
         let xUp = event.touches[0].clientX;                                    
@@ -268,34 +288,26 @@ function createPhotos (camera, container) {
 
         clearTimeout(spinTimeout);
         spinTimeout = setTimeout(snapWheels, 350);
-    });       
+    }
+
+
     
-    document.addEventListener("touchend", () => {
+    function handleTouchEnd() {
         xDown = null;
         yDown = null;
-    });
+    }
 
 
 
-
-    /* *** Mouse Event *** */
-    const mouse = new Vector2();
-
-    container.addEventListener('mousemove', (event) => {
+    function handleMouseMove (event) {
         // Normalize mouse coordinates
         mouse.x = event.clientX / window.innerWidth * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight * 2 - 1);
-    });
+    }
 
 
 
-
-    /* *** Click Event *** */
-    let isHovering = false;
-    let hoveredItem = null;
-    const raycaster = new Raycaster();
-
-    container.addEventListener('click', () => {
+    function handleMouseClick() {
         if (isHovering && !isSnapping && Math.abs(currentVelocity) < 0.01) {
 
             // Start click animation
@@ -305,12 +317,22 @@ function createPhotos (camera, container) {
                 window.location.href = hoveredItem.name.projectPath;
             }
         } 
-    });
+    }
 
+
+
+    function handleVisibilityChange() {
+        if (document.hidden && isConverging) {
+            endConvergeAnimation();
+        }
+    }
 
 
 
     function startConvergeAnimation(mesh) {
+
+        resetAllMeshUserData();
+
         isConverging = true;
         convergeProgress = 0;
         clickedMesh = mesh;
@@ -320,14 +342,12 @@ function createPhotos (camera, container) {
 
         if (clickedInTopWheel) {
             topTarget = mesh;
-            // Find opposite mesh in bottom wheel (opposite side of circle)
             let clickedIndex = topGroup.children.indexOf(mesh);
             let totalPhotos = topGroup.children.length;
             let oppositeIndex = (clickedIndex + Math.floor(totalPhotos / 2)) % totalPhotos;
             bottomTarget = bottomGroup.children[oppositeIndex];
         } else {
             bottomTarget = mesh;
-            // Find opposite mesh in top wheel (opposite side of circle)
             let clickedIndex = bottomGroup.children.indexOf(mesh);
             let totalPhotos = bottomGroup.children.length;
             let oppositeIndex = (clickedIndex + Math.floor(totalPhotos / 2)) % totalPhotos;
@@ -340,21 +360,24 @@ function createPhotos (camera, container) {
         currentVelocity = 0;
         clearTimeout(spinTimeout);
 
-        // Store starting positions and calculate circular paths for all meshes
+        // Pre-calculate and cache animation data
         for (let i = 0; i < allPhotoMeshes.length; i++) {
             const photoMesh = allPhotoMeshes[i];
 
             if (photoMesh === topTarget || photoMesh === bottomTarget) {
+                photoMesh.userData.isTarget = true;
                 continue;
             }
             
+            photoMesh.userData.isTarget = false;
             photoMesh.userData.startPosition = photoMesh.position.clone();
 
-            // Determine which wheel this mesh belongs to and its target (opposite photo)
-            let isInTopWheel = topGroup.children.includes(photoMesh);
-            let target = isInTopWheel ? topTarget : bottomTarget;
+            // Pre-determine target and cache it
+            let clickedInTopWheel = topGroup.children.includes(photoMesh);
+            let target = clickedInTopWheel ? topTarget : bottomTarget;
+            photoMesh.userData.cachedTarget = target;
             
-            // Calculate circular path
+            // Pre-calculate animation values
             let startAngle = Math.atan2(photoMesh.position.y, photoMesh.position.x);
             let targetAngle = Math.atan2(target.position.y, target.position.x);
             
@@ -364,16 +387,32 @@ function createPhotos (camera, container) {
             if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
             
             photoMesh.userData.startAngle = startAngle;
-            photoMesh.userData.targetAngle = startAngle + angleDiff;
+            photoMesh.userData.angleDiff = angleDiff;
             photoMesh.userData.radius = wheelRadius;
+            photoMesh.userData.startZ = photoMesh.userData.startPosition.z;
             photoMesh.userData.targetZ = target.position.z + stackOffset;
+            photoMesh.userData.zDiff = photoMesh.userData.targetZ - photoMesh.userData.startZ;
         }
 
         setTimeout(() => {
+            cleanupEventListeners();
             window.location.href = hoveredItem.name.projectPath;
-        }, 650);
+        }, convergeDuration);
     }
 
+
+
+    function endConvergeAnimation() {
+        if (!isConverging) return;
+
+        isConverging = false;
+        convergeProgress = 0;
+        clickedMesh = null;
+
+        for (let i = 0; i < allPhotoMeshes.length; i++) {
+            resetMeshToOriginalState(allPhotoMeshes[i]);
+        }
+    }
 
 
 
@@ -398,7 +437,6 @@ function createPhotos (camera, container) {
 
 
 
-
     function snapWheels() {
         if (isConverging) return;
 
@@ -417,7 +455,6 @@ function createPhotos (camera, container) {
             projectTitle.textContent = `${snapData.closestMesh.name.projectTitle}`;
         }
     }
-
 
 
 
@@ -477,8 +514,57 @@ function createPhotos (camera, container) {
 
 
 
+    function resetMeshUserData(mesh) {
+        delete mesh.userData.isTarget;
+        delete mesh.userData.cachedTarget;
+        delete mesh.userData.startAngle;
+        delete mesh.userData.angleDiff;
+        delete mesh.userData.radius;
+        delete mesh.userData.startZ;
+        delete mesh.userData.targetZ;
+        delete mesh.userData.zDiff;
+        delete mesh.userData.startPosition;
+    }
 
-    /* Loop method */
+
+
+    function resetAllMeshUserData() {
+        for (let i = 0; i < allPhotoMeshes.length; i++) {
+            resetMeshUserData(allPhotoMeshes[i]);
+        }
+    }
+
+
+
+    function resetMeshToOriginalState(mesh) {
+        // Reset position to original
+        if (mesh.userData.originalPosition) {
+            mesh.position.copy(mesh.userData.originalPosition);
+        }
+        
+        mesh.scale.set(1, 1, 1);
+        mesh.rotation.x = 0;
+        mesh.rotation.y = 0;
+        mesh.rotation.z = mesh.userData.baseRotationZ || 0;
+        
+        resetMeshUserData(mesh);
+    }
+
+
+
+    function cleanupEventListeners() {
+        document.removeEventListener('wheel', handleWheelEvent);
+        document.removeEventListener('touchstart', handleTouchStart);
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        container.removeEventListener('mousemove', handleMouseMove);
+        container.removeEventListener('click', handleMouseClick);
+    }
+
+
+
+    /* *** Animation loop *** */
     let lastHoverCheck = 0;
     const hoverCheckInterval = 16;
     const lerpFactor = 0.3;
@@ -504,63 +590,18 @@ function createPhotos (camera, container) {
             for (let  i = 0; i < allPhotoMeshes.length; i++) {
                 const photoMesh = allPhotoMeshes[i];
 
-                if (photoMesh === clickedMesh) continue;
+                if (photoMesh.userData.isTarget) continue;
 
-                // Find the corresponding target mesh
-                let isInTopWheel = topGroup.children.includes(photoMesh);
-                let targetMesh;
-
-                if (isInTopWheel) {
-                    // If clicked mesh is in top wheel, target is clicked mesh, otherwise find opposite top mesh
-                    if (topGroup.children.includes(clickedMesh)) {
-                        targetMesh = clickedMesh;
-                    } else {
-                        let clickedIndex = bottomGroup.children.indexOf(clickedMesh);
-                        let totalPhotos = topGroup.children.length;
-                        let oppositeIndex = (clickedIndex + Math.floor(totalPhotos / 2)) % totalPhotos;
-                        targetMesh = topGroup.children[oppositeIndex];
-                    }
-                } else {
-                    // If clicked mesh is in bottom wheel, target is clicked mesh, otherwise find opposite bottom mesh
-                    if (bottomGroup.children.includes(clickedMesh)) {
-                        targetMesh = clickedMesh;
-                    } else {
-                        let clickedIndex = topGroup.children.indexOf(clickedMesh);
-                        let totalPhotos = bottomGroup.children.length;
-                        let oppositeIndex = (clickedIndex + Math.floor(totalPhotos / 2)) % totalPhotos;
-                        targetMesh = bottomGroup.children[oppositeIndex];
-                    }
-                }
-
-                // Skip if this is the target mesh
-                if (photoMesh === targetMesh) continue;
-
-                if (photoMesh.userData.startPosition) {
-                    // Calculate position along circular arc
-                    let currentAngle = MathUtils.lerp(
-                        photoMesh.userData.startAngle,
-                        photoMesh.userData.targetAngle,
-                        eased
-                    );
-                    
-                    // Position on circular path
-                    let newX = Math.cos(currentAngle) * photoMesh.userData.radius;
-                    let newY = Math.sin(currentAngle) * photoMesh.userData.radius;
-                    
-                    // Lerp Z position to stack behind target
-                    let newZ = MathUtils.lerp(
-                        photoMesh.userData.startPosition.z,
-                        photoMesh.userData.targetZ,
-                        eased
-                    );
-                    
-                    photoMesh.position.set(newX, newY, newZ);
-                }
+                const currentAngle = photoMesh.userData.startAngle + (photoMesh.userData.angleDiff * eased);
+                const newX = Math.cos(currentAngle) * photoMesh.userData.radius;
+                const newY = Math.sin(currentAngle) * photoMesh.userData.radius;
+                const newZ = photoMesh.userData.startZ + (photoMesh.userData.zDiff * eased);
+                
+                photoMesh.position.set(newX, newY, newZ);
             }
         }
-        // Not converging
+        //  Snap wheels Animation
         else {
-            // Snap wheels
             if (isSnapping) {
                 snapProgress += snapSpeed;
 
@@ -583,7 +624,7 @@ function createPhotos (camera, container) {
                     currentVelocity = 0;
                 }
             } 
-            // Scroll wheels
+            // Scroll wheels Animation
             else { 
                 currentVelocity = MathUtils.lerp(currentVelocity, targetVelocity, 0.1);
                 targetVelocity *= friction;
@@ -604,8 +645,7 @@ function createPhotos (camera, container) {
 
  
 
-
-        // Hover effects
+        // Hover effects animation
         if (!isConverging && now - lastHoverCheck > hoverCheckInterval) {
             lastHoverCheck = now;
 
@@ -683,7 +723,7 @@ function createPhotos (camera, container) {
                     MathUtils.lerp(hoveredItem.scale.z, 1.03, lerpFactor * 1.25)
                 );
 
-                // Tilt effect
+                // Tilt effect animation
                 const photoWorldPosition = new Vector3();
                 hoveredItem.getWorldPosition(photoWorldPosition);
                 photoWorldPosition.project(camera);
