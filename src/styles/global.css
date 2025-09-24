@@ -24,6 +24,11 @@ body {
     background-color: var(--dark-background-color);
     overflow-x: hidden;
 }
+@media screen and (max-width: 580px) {
+    body {
+        font-size: 14px;
+    }
+}
 /* ------ * /
 
 
