@@ -15,6 +15,7 @@ let camera;
 let renderer;
 let scene;
 let loop;
+let photoWheels;
 // let controls;
 
 class World {
@@ -26,8 +27,10 @@ class World {
         container.append(renderer.domElement);
 
         const background = createBackground();
-        const photoWheels = createPhotos(camera, container);
         const lights = createLights(scene);
+        
+        photoWheels = createPhotos(camera, container);
+        photoWheels.setupWebGL(renderer);
 
         scene.add(lights);
         scene.add(photoWheels, camera, background);
@@ -41,6 +44,9 @@ class World {
 
     render() {
         renderer.render(scene, camera);
+    }
+    dispose() {
+        photoWheels.cleanup();
     }
     start() {
         loop.start();

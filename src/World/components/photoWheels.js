@@ -1,3 +1,13 @@
+import { createMaterial } from './material.js';
+import { RoundedRectangle } from './geometry.js';
+import {
+    WHEEL_CONFIG,
+    GEOMETRY_CONFIG,
+    ANIMATION_CONFIG,
+    INTERACTION_CONFIG,
+    SCROLL_CONFIG,
+    PHOTOS_DATA,
+} from './PhotoWheels/config.js';
 import {
     Group,
     MathUtils,
@@ -8,141 +18,52 @@ import {
     Vector2,
     Vector3,
 } from 'three';
-import { createMaterial } from './material.js';
-import { RoundedRectangle } from './geometry.js';
-
-
 
 function createPhotos (camera, container) {
-
-    let photos = [
-        {
-            imagePath: '/assets/haunted-house-square-1.jpg',
-            projectPath: '/projects/HauntedHouse.html',
-            projectTitle: 'Three.js Haunted House'
-        },
-        {
-            imagePath: '/assets/brand-identity-timeline-square-2.jpg',
-            projectPath: '/projects/BrandIdentityTimeline.html',
-            projectTitle: 'Brand Identity Timeline'
-        },
-        {   // Replace image path
-            imagePath: '/assets/abts1.jpg',
-            projectPath: '/projects/BotanyBlog.html',
-            projectTitle: 'Botany Blog'
-        },
-        {
-            imagePath: '/assets/sandbox-square-2.jpg',
-            projectPath: '/projects/ThreejsSandbox.html',
-            projectTitle: 'Three.js Sandbox Environment'
-        },
-        {
-            imagePath: '/assets/sisis-barbershop-square-1.jpg',
-            projectPath: '/projects/SisisBarbershop.html',
-            projectTitle: "Sisi's Barbershop"
-        },
-        {
-            imagePath: '/assets/healdsburg-crush-square-1.jpg',
-            projectPath: '/projects/HealdsburgCrush.html',
-            projectTitle: 'The Healdsburg Crush'
-        },
-        {
-            imagePath: '/assets/seven-deadly-sins-square-1.jpg',
-            projectPath: '/projects/SevenDeadlySins.html',
-            projectTitle: 'The Seven Deadly Sins'
-        },
-        {
-            imagePath: '/assets/graphics-textbook-square-1.jpg',
-            projectPath: '/projects/GraphicsInteractiveTextbook.html',
-            projectTitle: 'Interactive Graphics Textbook'
-        },
-        {
-            imagePath: '/assets/haunted-house-square-2.jpg',
-            projectPath: '/projects/HauntedHouse.html',
-            projectTitle: 'Three.js Haunted House'
-        },
-        {
-            imagePath: '/assets/brand-identity-timeline-square-2.jpg',
-            projectPath: '/projects/BrandIdentityTimeline.html',
-            projectTitle: 'Brand Identity Timeline'
-        },
-        {   // Replace image path
-            imagePath: '/assets/abts2.jpg',
-            projectPath: '/projects/BotanyBlog.html',
-            projectTitle: 'Botany Blog'
-        },
-        {
-            imagePath: '/assets/sandbox-square-1.jpg',
-            projectPath: '/projects/ThreejsSandbox.html',
-            projectTitle: 'Three.js Sandbox Environment'
-        },
-        {
-            imagePath: '/assets/sisis-barbershop-square-2.jpg',
-            projectPath: '/projects/SisisBarbershop.html',
-            projectTitle: "Sisi's Barbershop"
-        },
-        {
-            imagePath: '/assets/healdsburg-crush-square-2.jpg',
-            projectPath: '/projects/HealdsburgCrush.html',
-            projectTitle: 'The Healdsburg Crush'
-        },
-        {
-            imagePath: '/assets/seven-deadly-sins-square-2.jpg',
-            projectPath: '/projects/SevenDeadlySins.html',
-            projectTitle: 'Seven Deadly Sins'
-        },        
-        {
-            imagePath: '/assets/graphics-textbook-square-2.jpg',
-            projectPath: '/projects/GraphicsInteractiveTextbook.html',
-            projectTitle: 'Interactive Graphics Textbook'
-        },
-    ];
-
-
-
-    /* *** Create Photo geometry and material *** */
+    /**
+    * Create geometry, texture, meshes, and photo wheel groups
+    */
     const textureLoader = new TextureLoader();
-    const geometry = {
-        size: 43,
-        cornerRadius: 2.5,
-        cornerSmoothness: 12,
-    }
-    
     const roundedRectangleGeometry = RoundedRectangle(
-        geometry.size,
-        geometry.size,
-        geometry.cornerRadius,
-        geometry.cornerSmoothness
+        GEOMETRY_CONFIG.SIZE,
+        GEOMETRY_CONFIG.SIZE,
+        GEOMETRY_CONFIG.CORNER_RADIUS,
+        GEOMETRY_CONFIG.CORNER_SMOOTHNESS
     );
     
-    const wheelRadius = 175;
-    const wheelPosition = 208;
-    const radianInterval = (2 * Math.PI) / photos.length;
     const allPhotoMeshes = [];
     const materials = [];
-    const topGroup = new Group();
-    const bottomGroup = new Group();
-    
-    // Create photo meshes, then create wheels.
-    for (let i = 0; i < photos.length; i++) {
+    const topWheel = new Group();
+    const bottomWheel = new Group();
 
-        const texture = textureLoader.load(photos[i].imagePath);
+    let renderer = null;
+    let isContextLost = false;
+    const texturesToDispose = [];
+    const materialsToDispose = [];
+    
+    for (let i = 0; i < PHOTOS_DATA.length; i++) {
+
+        const texture = textureLoader.load(PHOTOS_DATA[i].imagePath);
         texture.colorSpace = SRGBColorSpace;
-        materials.push(createMaterial(texture));
+        texturesToDispose.push(texture);
+
+        const material = createMaterial(texture);
+        materials.push(material);
+        materialsToDispose.push(material);
 
         const photoMeshTop = new Mesh(roundedRectangleGeometry, materials[i]);
-        photoMeshTop.name = photos[i];
+        photoMeshTop.name = PHOTOS_DATA[i];
         photoMeshTop.position.set(
-            Math.cos(radianInterval * i) * wheelRadius,
-            Math.sin(radianInterval * i) * wheelRadius,
+            Math.cos(WHEEL_CONFIG.RADIAN_INTERVAL * i) * WHEEL_CONFIG.RADIUS,
+            Math.sin(WHEEL_CONFIG.RADIAN_INTERVAL * i) * WHEEL_CONFIG.RADIUS,
             1
         );
 
         const photoMeshBottom = photoMeshTop.clone();
-        photoMeshBottom.name = photos[i];
+        photoMeshBottom.name = PHOTOS_DATA[i];
         photoMeshBottom.position.set(
-            Math.cos(radianInterval * i) * wheelRadius,
-            Math.sin(radianInterval * i) * wheelRadius,
+            Math.cos(WHEEL_CONFIG.RADIAN_INTERVAL * i) * WHEEL_CONFIG.RADIUS,
+            Math.sin(WHEEL_CONFIG.RADIAN_INTERVAL * i) * WHEEL_CONFIG.RADIUS,
             1
         );
 
@@ -150,16 +71,17 @@ function createPhotos (camera, container) {
         photoMeshTop.userData.originalPosition = photoMeshTop.position.clone();
         photoMeshBottom.userData.originalPosition = photoMeshBottom.position.clone();
 
-        // Create array of all photo meshes. Add photos to each wheel group.
         allPhotoMeshes.push(photoMeshTop, photoMeshBottom);
-        topGroup.add(photoMeshTop);
-        bottomGroup.add(photoMeshBottom);
+        topWheel.add(photoMeshTop);
+        bottomWheel.add(photoMeshBottom);
     }
-    topGroup.translateY(wheelPosition - 13);
-    bottomGroup.translateY(-wheelPosition - 13);
-    
+    topWheel.translateY(WHEEL_CONFIG.POSITION + WHEEL_CONFIG.POSITION_OFFSET);
+    bottomWheel.translateY(-WHEEL_CONFIG.POSITION + WHEEL_CONFIG.POSITION_OFFSET);
 
 
+    /**
+    * Events and Listener logic
+    */
 
     /* *** Click Event *** */
     let isHovering = false;
@@ -168,6 +90,7 @@ function createPhotos (camera, container) {
 
     /* *** Mouse Event *** */
     const mouse = new Vector2();
+    let mouseMovedSinceLastCheck = false;
 
     /* *** Touch/Swipe Event *** */
     let xDown = null;                                                        
@@ -182,11 +105,6 @@ function createPhotos (camera, container) {
     let snapProgress = 0;
     let spinTimeout = null;
 
-    const friction = 0.87;
-    const velocityThreshold = 0.001;
-    const snapSpeed = 0.04;
-    const maxVelocity = 0.15;
-
     const tempVector = new Vector3();
     const snapPoint = { x: 0, y: 0, theta: 0 };
 
@@ -194,25 +112,20 @@ function createPhotos (camera, container) {
     let isConverging = false;
     let convergeProgress = 0;
     let clickedMesh = null;
-    const convergeSpeed = 0.025;
-    const stackOffset = -2.5;
-    const convergeDuration = 650; // milliseconds
-
 
 
     document.addEventListener('wheel', handleWheelEvent);
     document.addEventListener('touchstart', handleTouchStart, false);
     document.addEventListener('touchmove', handleTouchMove);     
-    document.addEventListener("touchend", handleTouchEnd);
+    document.addEventListener('touchend', handleTouchEnd);
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('click', handleMouseClick);
     document.addEventListener('visibilitychange', handleVisibilityChange);
-
+    document.addEventListener('pageshow', handlePageShow);
+    document.addEventListener('pagehide', handlePageHide);
     
     
     function handleWheelEvent (event) {
-        event.preventDefault();
-
         if (isConverging)  {
             endConvergeAnimation();
             return;
@@ -227,22 +140,39 @@ function createPhotos (camera, container) {
             }
         }
 
-        // Add to velocity based on scroll direction and intensity
-        const scrollIntensity = Math.abs(event.deltaY) / 100;
-        const velocityChange = Math.min(scrollIntensity * 0.02, 0.05);
-        
+        const scrollIntensity = Math.abs(event.deltaY) / SCROLL_CONFIG.INTENSITY_DIVISOR;
+        let velocityChange = Math.min(
+            scrollIntensity * SCROLL_CONFIG.BASE_VELOCITY_CHANGE, 
+            SCROLL_CONFIG.MAX_VELOCITY_CHANGE
+        );
+
+        if (Math.abs(event.deltaY) < SCROLL_CONFIG.TRACKPAD_THRESHOLD) {
+            // Trackpad
+            velocityChange *= SCROLL_CONFIG.TRACKPAD_MULTIPLIER;
+
+            clearTimeout(spinTimeout);
+            spinTimeout = setTimeout(() => {
+                startSnapAnimation()
+                setTimeout(() => forceHoverCheck(), SCROLL_CONFIG.TRACKPAD_THRESHOLD);
+            }, SCROLL_CONFIG.TRACKPAD_SNAP_DELAY);
+        } else {
+            // Mouse wheel
+            clearTimeout(spinTimeout);
+
+            spinTimeout = setTimeout(() => {
+                startSnapAnimation()
+                setTimeout(() => forceHoverCheck(), 50);
+            }, SCROLL_CONFIG.MOUSE_WHEEL_SNAP_DELAY);
+        }
+
         if (event.deltaY > 0) {
             targetVelocity -= velocityChange;
         } else {
             targetVelocity += velocityChange;
         }
 
-        // Clamp velocity [-maxVelocity, maxVelocity]
-        targetVelocity = Math.max(-maxVelocity, Math.min(maxVelocity, targetVelocity));
-
-        // Set timeout for snapping
-        clearTimeout(spinTimeout);
-        spinTimeout = setTimeout(snapWheels, 500);
+        // Clamp velocity [-MAX_VELOCITY, MAX_VELOCITY]
+        targetVelocity = Math.max(-ANIMATION_CONFIG.MAX_VELOCITY, Math.min(ANIMATION_CONFIG.MAX_VELOCITY, targetVelocity));
     }
 
 
@@ -256,11 +186,7 @@ function createPhotos (camera, container) {
             endConvergeAnimation();
         }
         
-        // Stop any current motion when touch starts
-        isSnapping = false;
-        targetVelocity = 0;
-        currentVelocity = 0;
-        clearTimeout(spinTimeout);
+        stopSnapAnimation();
     }
 
 
@@ -273,21 +199,24 @@ function createPhotos (camera, container) {
         let xDiff = xDown - xUp;
         let yDiff = yDown - yUp;
 
-        let swipeSpeed = (Math.sqrt(( Math.pow(xDiff, 2) + Math.pow(yDiff, 2) )) / 360) / 2;
-        swipeSpeed = Math.min(swipeSpeed, 0.75);
+        let swipeSpeed = Math.sqrt(( Math.pow(xDiff, 2) + Math.pow(yDiff, 2) )) / SCROLL_CONFIG.SWIPE_DIVISOR;
+        swipeSpeed = Math.min(swipeSpeed, SCROLL_CONFIG.MAX_SWIPE_SPEED);
 
+        // Determine swipe direction
         if (Math.abs(xDiff) > Math.abs(yDiff)) {
             targetVelocity = xDiff > 0 ? -swipeSpeed : swipeSpeed;
         } else {
             targetVelocity = yDiff > 0 ? swipeSpeed : -swipeSpeed;
         }                                                               
 
+        targetVelocity = Math.max(-ANIMATION_CONFIG.MAX_VELOCITY, Math.min(ANIMATION_CONFIG.MAX_VELOCITY, targetVelocity));
+
         // Reset the swipeSpeed calculation so the wheels don't accelerate
         xDown = xUp;
         yDown = yUp;
 
         clearTimeout(spinTimeout);
-        spinTimeout = setTimeout(snapWheels, 350);
+        spinTimeout = setTimeout(startSnapAnimation, SCROLL_CONFIG.SWIPE_SNAP_DELAY);
     }
 
 
@@ -303,20 +232,34 @@ function createPhotos (camera, container) {
         // Normalize mouse coordinates
         mouse.x = event.clientX / window.innerWidth * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight * 2 - 1);
+        mouseMovedSinceLastCheck = true;
     }
 
 
 
     function handleMouseClick() {
-        if (isHovering && !isSnapping && Math.abs(currentVelocity) < 0.01) {
-
-            // Start click animation
-            if (!isConverging) {
-                startConvergeAnimation(hoveredItem);
+        if (isHovering && Math.abs(currentVelocity) < INTERACTION_CONFIG.VELOCITY_CLICK_THRESHOLD) {
+            // Clicked while snapping, wait a moment
+            if (isSnapping) {
+                setTimeout(() => {
+                    if (isHovering) {
+                        executeClick()
+                    }
+                }, 100);
             } else {
-                window.location.href = hoveredItem.name.projectPath;
+                executeClick();
             }
         } 
+    }
+
+
+
+    function executeClick() {
+        if (!isConverging) {
+            startConvergeAnimation(hoveredItem);
+        } else {
+            window.location.href = hoveredItem.name.projectPath;
+        }
     }
 
 
@@ -329,36 +272,86 @@ function createPhotos (camera, container) {
 
 
 
-    function startConvergeAnimation(mesh) {
+    function handlePageShow(event) {
+        if (event.persisted) {
+            endConvergeAnimation();
 
+            isSnapping = false;
+            targetVelocity = 0;
+            currentVelocity = 0;
+            convergeProgress = 0;
+
+            for (let i = 0; i < allPhotoMeshes.length; i++) {
+                resetMeshToOriginalState(allPhotoMeshes[i]);
+            }
+        }
+    }
+
+
+
+    function handlePageHide() {
+        if (isConverging) {
+            endConvergeAnimation();
+        }
+        clearTimeout(spinTimeout);
+
+        // Dispose resources when page is hidden for 30s
+        setTimeout(() => {
+            if (document.hidden) {
+                console.log('Page hidden - disposing resources');
+                disposeResources();
+            }
+        }, 30000);
+    }
+
+
+
+    function handleContextLoss(event) {
+        event.preventDefault();
+        isContextLost = true;
+        console.warn('WebGL context lost - pausing animations');
+
+        if (isConverging) {
+            endConvergeAnimation();
+        }
+
+        stopSnapAnimation();
+    }
+
+
+
+    function handleContextRestored() {
+        console.log('WebGL context restored')
+        isContextLost = true;
+    }
+
+
+
+    function startConvergeAnimation(mesh) {
         resetAllMeshUserData();
 
         isConverging = true;
         convergeProgress = 0;
         clickedMesh = mesh;
 
-        let clickedInTopWheel = topGroup.children.includes(mesh);
+        let clickedInTopWheel = topWheel.children.includes(mesh);
         let topTarget, bottomTarget;
 
         if (clickedInTopWheel) {
             topTarget = mesh;
-            let clickedIndex = topGroup.children.indexOf(mesh);
-            let totalPhotos = topGroup.children.length;
+            let clickedIndex = topWheel.children.indexOf(mesh);
+            let totalPhotos = topWheel.children.length;
             let oppositeIndex = (clickedIndex + Math.floor(totalPhotos / 2)) % totalPhotos;
-            bottomTarget = bottomGroup.children[oppositeIndex];
+            bottomTarget = bottomWheel.children[oppositeIndex];
         } else {
             bottomTarget = mesh;
-            let clickedIndex = bottomGroup.children.indexOf(mesh);
-            let totalPhotos = bottomGroup.children.length;
+            let clickedIndex = bottomWheel.children.indexOf(mesh);
+            let totalPhotos = bottomWheel.children.length;
             let oppositeIndex = (clickedIndex + Math.floor(totalPhotos / 2)) % totalPhotos;
-            topTarget = topGroup.children[oppositeIndex];
+            topTarget = topWheel.children[oppositeIndex];
         }
 
-        // Stop other animations
-        isSnapping = false;
-        targetVelocity = 0;
-        currentVelocity = 0;
-        clearTimeout(spinTimeout);
+        stopSnapAnimation();
 
         // Pre-calculate and cache animation data
         for (let i = 0; i < allPhotoMeshes.length; i++) {
@@ -373,7 +366,7 @@ function createPhotos (camera, container) {
             photoMesh.userData.startPosition = photoMesh.position.clone();
 
             // Pre-determine target and cache it
-            let clickedInTopWheel = topGroup.children.includes(photoMesh);
+            let clickedInTopWheel = topWheel.children.includes(photoMesh);
             let target = clickedInTopWheel ? topTarget : bottomTarget;
             photoMesh.userData.cachedTarget = target;
             
@@ -388,16 +381,16 @@ function createPhotos (camera, container) {
             
             photoMesh.userData.startAngle = startAngle;
             photoMesh.userData.angleDiff = angleDiff;
-            photoMesh.userData.radius = wheelRadius;
+            photoMesh.userData.radius = WHEEL_CONFIG.RADIUS;
             photoMesh.userData.startZ = photoMesh.userData.startPosition.z;
-            photoMesh.userData.targetZ = target.position.z + stackOffset;
+            photoMesh.userData.targetZ = target.position.z + ANIMATION_CONFIG.STACK_OFFSET;
             photoMesh.userData.zDiff = photoMesh.userData.targetZ - photoMesh.userData.startZ;
         }
 
         setTimeout(() => {
             cleanupEventListeners();
             window.location.href = hoveredItem.name.projectPath;
-        }, convergeDuration);
+        }, ANIMATION_CONFIG.CONVERGE_DURATION);
     }
 
 
@@ -419,8 +412,8 @@ function createPhotos (camera, container) {
     function rotateWheels(angle) {
         if (isConverging) return;
 
-        topGroup.rotateZ(angle);
-        bottomGroup.rotateZ(angle);
+        topWheel.rotateZ(angle);
+        bottomWheel.rotateZ(angle);
         
         for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
             const mesh = allPhotoMeshes[i];
@@ -437,10 +430,10 @@ function createPhotos (camera, container) {
 
 
 
-    function snapWheels() {
+    function startSnapAnimation() {
         if (isConverging) return;
 
-        const snapData = calculateSnapAngle(topGroup);
+        const snapData = calculateSnapAngle(topWheel);
 
         if (Math.abs(snapData.angle) < 0.01) return; // Already aligned
         
@@ -454,6 +447,15 @@ function createPhotos (camera, container) {
         if (projectTitle && snapData.closestMesh) {
             projectTitle.textContent = `${snapData.closestMesh.name.projectTitle}`;
         }
+    }
+
+
+
+    function stopSnapAnimation() {
+        isSnapping = false;
+        targetVelocity = 0;
+        currentVelocity = 0;
+        clearTimeout(spinTimeout);
     }
 
 
@@ -472,8 +474,8 @@ function createPhotos (camera, container) {
         let shortestDistance = Infinity
 
         // Determine mesh with the shortest square distance to snap point 
-        for (let i = 0, len = topGroup.children.length; i < len; i++) {
-            const element = topGroup.children[i];
+        for (let i = 0, len = topWheel.children.length; i < len; i++) {
+            const element = topWheel.children[i];
             tempVector.setFromMatrixPosition(element.matrixWorld);
 
             
@@ -510,6 +512,27 @@ function createPhotos (camera, container) {
         }
 
         return { angle: snapAngle, closestMesh: closestMesh };
+    }
+
+
+
+    function forceHoverCheck() {
+        if (isConverging) return;
+
+        raycaster.setFromCamera(mouse, camera);
+        const rayIntersects = raycaster.intersectObjects(allPhotoMeshes);
+
+        if(!rayIntersects.length) {
+            if (isHovering) {
+                document.body.style.cursor = "default";
+                isHovering = false;
+                hoveredItem = null;
+            }
+        } else {
+            document.body.style.cursor = "pointer";
+            isHovering = true;
+            hoveredItem = rayIntersects[0].object;
+        }
     }
 
 
@@ -558,27 +581,95 @@ function createPhotos (camera, container) {
         document.removeEventListener('touchmove', handleTouchMove);
         document.removeEventListener('touchend', handleTouchEnd);
         document.removeEventListener('visibilitychange', handleVisibilityChange);
+        document.removeEventListener('pageshow', handlePageShow);
+        document.removeEventListener('pagehide', handlePageHide);  
         container.removeEventListener('mousemove', handleMouseMove);
         container.removeEventListener('click', handleMouseClick);
+
+        disposeResources();
+
+        if (container.querySelector('canvas')) {
+            const canvas = container.querySelector('canvas');
+            canvas.removeEventListener('webglcontextlost', handleContextLoss);
+            canvas.removeEventListener('webglcontextrestored', handleContextRestored);
+        }
     }
 
 
 
-    /* *** Animation loop *** */
-    let lastHoverCheck = 0;
-    const hoverCheckInterval = 16;
-    const lerpFactor = 0.3;
+    function disposeResources() {
+        texturesToDispose.forEach(texture => {
+            if (texture) texture.dispose();
+        });
+        texturesToDispose.length = 0;
 
+        materialsToDispose.forEach(material => {
+            if (material) material.dispose();
+        });
+        materialsToDispose.length = 0;
+
+        allPhotoMeshes.forEach(mesh => {
+            if (mesh.geometry) mesh.geometry.dispose();
+        });
+
+        if (roundedRectangleGeometry) {
+            roundedRectangleGeometry.dispose();
+        }
+
+        allPhotoMeshes.length = 0;
+        materials.length = 0;
+    }
+
+
+
+    function maintenanceCleanup() {
+        // Garbage collection if available
+        if (window.gc) {
+            window.gc();
+        }
+
+        for (let i = 0; i < allPhotoMeshes.length; i++) {
+            const mesh = allPhotoMeshes[i];
+
+            if (mesh.userData.baseRotationZ) {
+                // Normalize rotation to prevent accumulation
+                mesh.userData.baseRotationZ = mesh.userData.baseRotationZ % (2 * Math.PI);
+            }
+        }
+    }
+
+
+
+    function setupWebGLListeners(rendererInstance) {
+        renderer = rendererInstance;
+        const canvas = renderer.domElement;
+        
+        canvas.addEventListener('webglcontextlost', handleContextLoss, false);
+        canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+    }
+
+
+
+    /**
+    * Animation Loop   
+    */
+    let lastHoverCheck = 0;
+    const tiltVector = new Vector3();
     const photoWheels = new Group();
-    photoWheels.add(topGroup);
-    photoWheels.add(bottomGroup);
+    photoWheels.add(topWheel);
+    photoWheels.add(bottomWheel);
+
 
     photoWheels.tick = () => {
+        if (isContextLost) {
+            return;
+        }
+
         const now = performance.now();
 
         // Converge on click animation
         if (isConverging) {
-            convergeProgress += convergeSpeed;
+            convergeProgress += ANIMATION_CONFIG.CONVERGE_SPEED;
 
             if (convergeProgress >= 1) {
                 convergeProgress = 1;
@@ -600,16 +691,20 @@ function createPhotos (camera, container) {
                 photoMesh.position.set(newX, newY, newZ);
             }
         }
+
+
         //  Snap wheels Animation
         else {
             if (isSnapping) {
-                snapProgress += snapSpeed;
+                snapProgress += ANIMATION_CONFIG.SNAP_SPEED;
 
                 if (snapProgress >= 1) {
                     snapProgress = 1;
                     isSnapping = false;
                     targetVelocity = 0;
                     currentVelocity = 0;
+
+                    setTimeout(() => forceHoverCheck(), 0);
                 }
                 
                 const eased = 1 - Math.pow(1 - snapProgress, 3);
@@ -624,16 +719,18 @@ function createPhotos (camera, container) {
                     currentVelocity = 0;
                 }
             } 
+
+
             // Scroll wheels Animation
             else { 
                 currentVelocity = MathUtils.lerp(currentVelocity, targetVelocity, 0.1);
-                targetVelocity *= friction;
+                targetVelocity *= ANIMATION_CONFIG.FRICTION;
                 
                 // Stop very small movements
-                if (Math.abs(targetVelocity) < velocityThreshold) {
+                if (Math.abs(targetVelocity) < ANIMATION_CONFIG.VELOCITY_THRESHOLD) {
                     targetVelocity = 0;
                 }
-                if (Math.abs(currentVelocity) < velocityThreshold) {
+                if (Math.abs(currentVelocity) < ANIMATION_CONFIG.VELOCITY_THRESHOLD) {
                     currentVelocity = 0;
                 }
                 
@@ -642,33 +739,33 @@ function createPhotos (camera, container) {
                 }
             }
         }
-
  
 
         // Hover effects animation
-        if (!isConverging && now - lastHoverCheck > hoverCheckInterval) {
+        if (mouseMovedSinceLastCheck && now - lastHoverCheck > ANIMATION_CONFIG.HOVER_CHECK_INTERVAL) {
             lastHoverCheck = now;
 
             raycaster.setFromCamera(mouse, camera);
-            const rayIntersects = raycaster.intersectObjects(photoWheels.children);
+            const rayIntersects = raycaster.intersectObjects(allPhotoMeshes);
 
             // Not hovering
             if (!rayIntersects.length) {
                 if (isHovering) {
                     document.body.style.cursor = "default";
                     isHovering = false;
+                    hoveredItem = null;
                 }
                     
                 for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
                     const mesh = allPhotoMeshes[i];
                     mesh.scale.set(
-                        MathUtils.lerp(mesh.scale.x, 1, lerpFactor), 
-                        MathUtils.lerp(mesh.scale.y, 1, lerpFactor),  
-                        MathUtils.lerp(mesh.scale.z, 1, lerpFactor)
+                        MathUtils.lerp(mesh.scale.x, 1, ANIMATION_CONFIG.LERP_FACTOR), 
+                        MathUtils.lerp(mesh.scale.y, 1, ANIMATION_CONFIG.LERP_FACTOR),  
+                        MathUtils.lerp(mesh.scale.z, 1, ANIMATION_CONFIG.LERP_FACTOR)
                     );
 
-                    mesh.rotation.x = MathUtils.lerp(mesh.rotation.x, 0, lerpFactor);
-                    mesh.rotation.y = MathUtils.lerp(mesh.rotation.y, 0, lerpFactor);
+                    mesh.rotation.x = MathUtils.lerp(mesh.rotation.x, 0, ANIMATION_CONFIG.LERP_FACTOR);
+                    mesh.rotation.y = MathUtils.lerp(mesh.rotation.y, 0, ANIMATION_CONFIG.LERP_FACTOR);
 
                     const targetRotationZ = mesh.userData.baseRotationZ || 0;
                     const rotationDiff = targetRotationZ - mesh.rotation.z;
@@ -679,11 +776,13 @@ function createPhotos (camera, container) {
                         mesh.rotation.z = MathUtils.lerp(
                             mesh.rotation.z, 
                             targetRotationZ, 
-                            lerpFactor
+                            ANIMATION_CONFIG.LERP_FACTOR
                         );
                     }
                 }
             }
+
+
             // Hovering 
             else { 
                 document.body.style.cursor = "pointer";
@@ -696,14 +795,14 @@ function createPhotos (camera, container) {
                     // Reset non hovered items
                     if (mesh != hoveredItem) {
                         mesh.scale.set(
-                            MathUtils.lerp(mesh.scale.x, 1, lerpFactor), 
-                            MathUtils.lerp(mesh.scale.y, 1, lerpFactor),  
-                            MathUtils.lerp(mesh.scale.z, 1, lerpFactor)
+                            MathUtils.lerp(mesh.scale.x, 1, ANIMATION_CONFIG.LERP_FACTOR), 
+                            MathUtils.lerp(mesh.scale.y, 1, ANIMATION_CONFIG.LERP_FACTOR),  
+                            MathUtils.lerp(mesh.scale.z, 1, ANIMATION_CONFIG.LERP_FACTOR)
                         );
                     }
 
-                    mesh.rotation.x = MathUtils.lerp(mesh.rotation.x, 0, lerpFactor);
-                    mesh.rotation.y = MathUtils.lerp(mesh.rotation.y, 0, lerpFactor);
+                    mesh.rotation.x = MathUtils.lerp(mesh.rotation.x, 0, ANIMATION_CONFIG.LERP_FACTOR);
+                    mesh.rotation.y = MathUtils.lerp(mesh.rotation.y, 0, ANIMATION_CONFIG.LERP_FACTOR);
 
                     // Handle Z rotation carefully for non-hovered items
                     const targetRotationZ = mesh.userData.baseRotationZ || 0;
@@ -712,36 +811,34 @@ function createPhotos (camera, container) {
                     if (Math.abs(rotationDiff) > Math.PI) {
                         mesh.rotation.z = targetRotationZ;
                     } else {
-                        mesh.rotation.z = MathUtils.lerp(mesh.rotation.z, targetRotationZ, lerpFactor);
+                        mesh.rotation.z = MathUtils.lerp(mesh.rotation.z, targetRotationZ, ANIMATION_CONFIG.LERP_FACTOR);
                     }
                 }
                 
                 // Scale up the hovered item
                 hoveredItem.scale.set(
-                    MathUtils.lerp(hoveredItem.scale.x, 1.03, lerpFactor * 1.25), 
-                    MathUtils.lerp(hoveredItem.scale.y, 1.03, lerpFactor * 1.25),  
-                    MathUtils.lerp(hoveredItem.scale.z, 1.03, lerpFactor * 1.25)
+                    MathUtils.lerp(hoveredItem.scale.x, INTERACTION_CONFIG.HOVER_SCALE, ANIMATION_CONFIG.LERP_FACTOR * 1.25), 
+                    MathUtils.lerp(hoveredItem.scale.y, INTERACTION_CONFIG.HOVER_SCALE, ANIMATION_CONFIG.LERP_FACTOR * 1.25),  
+                    MathUtils.lerp(hoveredItem.scale.z, INTERACTION_CONFIG.HOVER_SCALE, ANIMATION_CONFIG.LERP_FACTOR * 1.25)
                 );
 
+                
                 // Tilt effect animation
-                const photoWorldPosition = new Vector3();
-                hoveredItem.getWorldPosition(photoWorldPosition);
-                photoWorldPosition.project(camera);
+                hoveredItem.getWorldPosition(tiltVector);
+                tiltVector.project(camera);
 
-                const screenX = photoWorldPosition.x;
-                const screenY = photoWorldPosition.y;
+                const screenX = tiltVector.x;
+                const screenY = tiltVector.y;
                 const offsetX = mouse.x - screenX;
                 const offsetY = mouse.y - screenY;
-                const photoScreenSize = 0.15;
-                const normalizedX = MathUtils.clamp(offsetX / photoScreenSize, -1, 1);
-                const normalizedY = MathUtils.clamp(offsetY / photoScreenSize, -1, 1);
+                const normalizedX = MathUtils.clamp(offsetX / INTERACTION_CONFIG.PHOTO_SCREEN_SIZE, -1, 1);
+                const normalizedY = MathUtils.clamp(offsetY / INTERACTION_CONFIG.PHOTO_SCREEN_SIZE, -1, 1);
 
-                const maxTilt = Math.PI / 30;
-                const tiltX = normalizedY * maxTilt;
-                const tiltY = normalizedX * maxTilt;
+                const tiltX = normalizedY * INTERACTION_CONFIG.MAX_TILT;
+                const tiltY = normalizedX * INTERACTION_CONFIG.MAX_TILT;
 
-                hoveredItem.rotation.x = MathUtils.lerp(hoveredItem.rotation.x, tiltX, lerpFactor);
-                hoveredItem.rotation.y = MathUtils.lerp(hoveredItem.rotation.y, tiltY, lerpFactor);
+                hoveredItem.rotation.x = MathUtils.lerp(hoveredItem.rotation.x, tiltX, ANIMATION_CONFIG.LERP_FACTOR);
+                hoveredItem.rotation.y = MathUtils.lerp(hoveredItem.rotation.y, tiltY, ANIMATION_CONFIG.LERP_FACTOR);
 
                 // For hovered item, maintain base Z rotation (no additional tilting on Z-axis)
                 const targetZ = hoveredItem.userData.baseRotationZ || 0;
@@ -753,15 +850,23 @@ function createPhotos (camera, container) {
                     hoveredItem.rotation.z = MathUtils.lerp(
                         hoveredItem.rotation.z, 
                         targetZ, 
-                        lerpFactor * 0.5
+                        ANIMATION_CONFIG.LERP_FACTOR * 0.5
                     );
                 }
             }
         }
+
+        // Periodic memory cleanup
+        if (now % 300000 < 16) {
+            maintenanceCleanup();
+        }
     }
+
+    photoWheels.cleanup = cleanupEventListeners;
+    photoWheels.setupWebGL = setupWebGLListeners;
+    photoWheels.disposeResources = disposeResources;
 
     return photoWheels;
 }
-
 
 export { createPhotos }

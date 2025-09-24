@@ -9,6 +9,18 @@ async function main() {
 
     const photoWheel = new World(container);
     photoWheel.start();
+
+    window.addEventListener('beforeunload', () => {
+        if (photoWheel) {
+            photoWheel.dispose();
+        }
+    });
+
+    document.addEventListener('pagehide', () => {
+        if (photoWheel) {
+            photoWheel.dispose();
+        }
+});
 }
 
 main();
