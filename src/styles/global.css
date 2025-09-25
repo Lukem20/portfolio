@@ -58,11 +58,16 @@ p, li {
 p + p { 
     text-indent: 1.6em; 
 }
-.tall-first-letter::first-letter {
-    initial-letter: 2;
+
+p.tall-first-letter::first-letter {
+    float: left;
+    font-size: 5.25ch;
     color: var(--call-to-action);
     font-weight: bold;
-    margin-right: .75em;
+    padding-top: 0.15em;
+    margin-right: 0.2em;
+
+    initial-letter: 2;
 }
 
 
