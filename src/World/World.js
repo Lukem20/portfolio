@@ -2,21 +2,20 @@
 import { createCamera } from './components/camera.js';
 import { createLights } from './components/lights.js';
 import { createScene } from './components/scene.js';
-import { createPhotos } from './components/photoWheels.js';
 import { createBackground } from './components/background.js';
+import { createPhotos } from './components/photoWheels.js'
+// import { PhotoWheels } from './components/PhotoWheels/PhotoWheels.js';
 
 // Systems
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
-// import { createControls } from './systems/controls.js';
 
 let camera;
 let renderer;
 let scene;
 let loop;
 let photoWheels;
-// let controls;
 
 class World {
     constructor(container) {
@@ -29,6 +28,7 @@ class World {
         const background = createBackground();
         const lights = createLights(scene);
         
+        // photoWheels = new PhotoWheels(camera, container);
         photoWheels = createPhotos(camera, container);
         photoWheels.setupWebGL(renderer);
 
@@ -46,7 +46,9 @@ class World {
         renderer.render(scene, camera);
     }
     dispose() {
-        photoWheels.cleanup();
+        if (photoWheels) {
+            photoWheels.cleanup();
+        }
     }
     start() {
         loop.start();

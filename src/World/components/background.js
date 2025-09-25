@@ -1,6 +1,5 @@
 import {
     ShaderMaterial,
-    MeshStandardMaterial,
     PlaneGeometry,
     Mesh,
     Color,
@@ -50,7 +49,6 @@ function createBackground () {
         vertexShader: vertexShader,
         fragmentShader: fragmentShader,
     });
-    // const material = new MeshStandardMaterial();
 
     const backgroundMesh = new Mesh(geometry, material);
     backgroundMesh.receiveShadow = true;

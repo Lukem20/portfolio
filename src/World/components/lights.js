@@ -28,11 +28,6 @@ function createSpotlight(color, angleOffset, scene) {
     light.penumbra = 0.125;
     light.decay = 0.6;
     light.distance = 500;
-    light.shadow.mapSize.width = 1024;
-    light.shadow.mapSize.height = 1024;
-    light.shadow.camera.near = 0.1;
-    light.shadow.camera.far = 500;
-    light.shadow.camera.fov = 60;
 
     const radius = 100;
     const angleRad = (angleOffset * Math.PI) / 180;

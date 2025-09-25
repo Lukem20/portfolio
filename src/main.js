@@ -7,20 +7,20 @@ async function main() {
         return;
     }
 
-    const photoWheel = new World(container);
-    photoWheel.start();
+    const world = new World(container);
+    world.start();
 
     window.addEventListener('beforeunload', () => {
-        if (photoWheel) {
-            photoWheel.dispose();
+        if (world) {
+            world.dispose();
         }
     });
 
     document.addEventListener('pagehide', () => {
-        if (photoWheel) {
-            photoWheel.dispose();
+        if (world) {
+            world.dispose();
         }
-});
+    });
 }
 
 main();

@@ -127,8 +127,3 @@ export const SCROLL_CONFIG = {
     MAX_SWIPE_SPEED: 0.15,
     SWIPE_SNAP_DELAY: 200,
 };
-
-/*
-Uncaught TypeError: can't access property "name", hoveredItem is null
-    startConvergeAnimation photoWheels.js:393
-*/
