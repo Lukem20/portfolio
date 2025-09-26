@@ -96,6 +96,15 @@ function createPhotos (camera, container) {
     let xDown = null;                                                        
     let yDown = null;
 
+    /* *** Key Press Event *** */
+    let isKeyPressed = false;
+    let pressedKeys = new Set();
+    let keyVelocity = 0;
+    let isStepRotating = false;
+    let stepRotationTarget = 0;
+    let stepRotationProgress = 0;
+    let stepRotationVelocity = 0;
+
     /* *** Scroll/Wheel Event *** */
     let targetVelocity = 0;
     let currentVelocity = 0;
@@ -104,8 +113,8 @@ function createPhotos (camera, container) {
     let snapTargetRotation = 0;
     let snapProgress = 0;
     let springVelocity = 0;
-    let springDamping = 0.275;
-    let springStiffness = 0.085;
+    let springDamping = ANIMATION_CONFIG.INITIAL_SPRING_DAMPING;
+    let springStiffness = ANIMATION_CONFIG.INITIAL_SPRING_STIFFNESS;
     let spinTimeout = null;
 
     const tempVector = new Vector3();
@@ -123,6 +132,8 @@ function createPhotos (camera, container) {
     document.addEventListener('touchend', handleTouchEnd);
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('click', handleMouseClick);
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
     document.addEventListener('visibilitychange', handleVisibilityChange);
     document.addEventListener('pageshow', handlePageShow);
     document.addEventListener('pagehide', handlePageHide);
@@ -267,6 +278,123 @@ function createPhotos (camera, container) {
 
 
 
+    function handleKeyDown(event) {
+        // Only care about arrow keys
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter'].includes(event.code)) {
+            event.preventDefault();
+        } else {
+            return;
+        }
+
+        if (event.code == 'Enter') {
+            handleEnterKey();
+            return;
+        }
+
+        if (isConverging) {
+            endConvergeAnimation();
+            return;
+        }
+
+        if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
+            if (!pressedKeys.has(event.code)) {
+                pressedKeys.add(event.code);
+                isKeyPressed = true;
+                
+                stopSnapAnimation();
+                stopStepRotation();
+                
+                if (isHovering) {
+                    for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
+                        allPhotoMeshes[i].scale.set(1, 1, 1);
+                    }
+                }
+            }
+        }
+
+        if (event.code === 'ArrowLeft' || event.code === 'ArrowRight') {
+            if (!pressedKeys.has(event.code)) {
+                pressedKeys.add(event.code);
+                
+                stopSnapAnimation();
+                
+                isStepRotating = true;
+                stepRotationProgress = 0;
+                stepRotationVelocity = 0;
+                
+                // Calculate rotation amount: one radian interval plus extra for spring effect
+                const baseRotation = WHEEL_CONFIG.RADIAN_INTERVAL;
+                const totalRotation = baseRotation + SCROLL_CONFIG.KEY_STEP_ROTATION_EXTRA;
+                
+                if (event.code === 'ArrowLeft') {
+                    stepRotationTarget = totalRotation;
+                } else {
+                    stepRotationTarget = -totalRotation;
+                }
+                
+            }
+        }
+    }
+
+
+
+    function handleEnterKey() {
+        if ( isConverging || isSnapping || isStepRotating || isKeyPressed ) {
+            return;
+        }
+
+        if (Math.abs(currentVelocity) > ANIMATION_CONFIG.VELOCITY_THRESHOLD ||
+            Math.abs(targetVelocity) > ANIMATION_CONFIG.VELOCITY_THRESHOLD ) {
+            return;
+        }
+
+        const snapData = calculateSnapAngle(topWheel);
+
+        if ( !snapData.closestMesh || Math.abs(snapData.angle) > 0.05) {
+            return;
+        }
+
+        startConvergeAnimation(snapData.closestMesh);
+    }
+
+
+
+    function handleKeyUp(event) {
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)) {
+            event.preventDefault();
+        }
+
+        if (event.code === 'Enter') {
+            return;
+        }
+
+        pressedKeys.delete(event.code);
+
+        if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
+            if (!pressedKeys.has('ArrowUp') && !pressedKeys.has('ArrowDown')) {
+                isKeyPressed = false;
+                keyVelocity = 0;
+                
+                // Start snap animation similar to scroll/swipe end
+                setTimeout(() => {
+                    startSnapAnimation();
+                    setTimeout(() => forceHoverCheck(), 50);
+                }, 100);
+            }
+        }
+    }
+
+
+
+    function stopStepRotation() {
+        isStepRotating = false;
+        stepRotationTarget = 0;
+        stepRotationProgress = 0;
+        stepRotationVelocity = 0;
+    }
+
+
+
     function handleVisibilityChange() {
         if (document.hidden && isConverging) {
             endConvergeAnimation();
@@ -392,7 +520,7 @@ function createPhotos (camera, container) {
 
         setTimeout(() => {
             cleanupEventListeners();
-            window.location.href = hoveredItem.name.projectPath;
+            window.location.href = mesh.name.projectPath;
         }, ANIMATION_CONFIG.CONVERGE_DURATION);
     }
 
@@ -584,6 +712,8 @@ function createPhotos (camera, container) {
         document.removeEventListener('touchstart', handleTouchStart);
         document.removeEventListener('touchmove', handleTouchMove);
         document.removeEventListener('touchend', handleTouchEnd);
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keyup', handleKeyUp);
         document.removeEventListener('visibilitychange', handleVisibilityChange);
         document.removeEventListener('pageshow', handlePageShow);
         document.removeEventListener('pagehide', handlePageHide);  
@@ -699,7 +829,30 @@ function createPhotos (camera, container) {
 
         //  Snap wheels Animation
         else {
-            if (isSnapping) {
+            if (isStepRotating) {
+                const displacement = stepRotationTarget - stepRotationProgress;
+
+                stepRotationVelocity += displacement * SCROLL_CONFIG.KEY_STEP_ROTATION_SPEED;
+                stepRotationVelocity *= SCROLL_CONFIG.KEY_STEP_ROTATION_DAMPING;
+                stepRotationProgress += stepRotationVelocity;
+
+                if ( Math.abs(displacement) < 0.01 && Math.abs(stepRotationVelocity) < 0.01 ) {
+                    const finalRotation  = stepRotationTarget - stepRotationProgress;
+                    rotateWheels(finalRotation);
+
+                    stopStepRotation();
+
+                    setTimeout(() => {
+                        startSnapAnimation();
+                        setTimeout (() => forceHoverCheck(), 50);
+                    }, 50);
+                } else {
+                    const deltaRotation = stepRotationVelocity;
+                    rotateWheels(deltaRotation);
+                }
+
+            }
+            else if (isSnapping) {
 
                 const displacement = snapTargetRotation - snapProgress;
                 const springForce = displacement * springStiffness;
@@ -723,16 +876,30 @@ function createPhotos (camera, container) {
                 
                 rotateWheels(deltaRotation);
                 snapStartRotation = snapProgress;
-                
-                // if (snapProgress >= 1) {
-                //     targetVelocity = 0;
-                //     currentVelocity = 0;
-                // }
             } 
 
 
             // Scroll wheels Animation
             else { 
+
+                // Keyboard scrolling
+                if (isKeyPressed) {
+                    let keyDirection = 0;
+
+                    if (pressedKeys.has('ArrowUp')) {
+                        keyDirection += SCROLL_CONFIG.KEY_SPIN_SPEED;
+                    }
+                    if (pressedKeys.has('ArrowDown')) {
+                        keyDirection -= SCROLL_CONFIG.KEY_SPIN_SPEED;
+                    }
+                    
+                    if (keyDirection !== 0) {
+                        targetVelocity = keyDirection;
+                        // Clamp to max velocity
+                        targetVelocity = Math.max(-ANIMATION_CONFIG.MAX_VELOCITY, Math.min(ANIMATION_CONFIG.MAX_VELOCITY, targetVelocity));
+                    }
+                }
+
                 currentVelocity = MathUtils.lerp(currentVelocity, targetVelocity, 0.1);
                 targetVelocity *= ANIMATION_CONFIG.FRICTION;
                 
