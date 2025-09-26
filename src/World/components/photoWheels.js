@@ -103,6 +103,9 @@ function createPhotos (camera, container) {
     let snapStartRotation = 0;
     let snapTargetRotation = 0;
     let snapProgress = 0;
+    let springVelocity = 0;
+    let springDamping = 0.275;
+    let springStiffness = 0.085;
     let spinTimeout = null;
 
     const tempVector = new Vector3();
@@ -441,6 +444,7 @@ function createPhotos (camera, container) {
         snapStartRotation = 0;
         snapTargetRotation = snapData.angle;
         snapProgress = 0;
+        springVelocity = 0;
         
         // Update project title after snap
         const projectTitle = document.getElementById('project-title');
@@ -696,10 +700,18 @@ function createPhotos (camera, container) {
         //  Snap wheels Animation
         else {
             if (isSnapping) {
-                snapProgress += ANIMATION_CONFIG.SNAP_SPEED;
 
-                if (snapProgress >= 1) {
-                    snapProgress = 1;
+                const displacement = snapTargetRotation - snapProgress;
+                const springForce = displacement * springStiffness;
+                const dampingForce = springVelocity * springDamping;
+
+                springVelocity += springForce - dampingForce;
+                snapProgress += springVelocity;
+
+                // If really small spring and really small velocity
+                if (Math.abs(displacement) < 0.001 && Math.abs(springVelocity) < 0.001) {
+                    snapProgress = snapTargetRotation;
+                    springVelocity = 0;
                     isSnapping = false;
                     targetVelocity = 0;
                     currentVelocity = 0;
@@ -707,17 +719,15 @@ function createPhotos (camera, container) {
                     setTimeout(() => forceHoverCheck(), 0);
                 }
                 
-                const eased = 1 - Math.pow(1 - snapProgress, 3);
-                const currentSnapRotation = snapStartRotation + (snapTargetRotation - snapStartRotation) * eased;
-                const deltaRotation = currentSnapRotation - snapStartRotation;
+                const deltaRotation = snapProgress - snapStartRotation;
                 
                 rotateWheels(deltaRotation);
-                snapStartRotation = currentSnapRotation;
+                snapStartRotation = snapProgress;
                 
-                if (snapProgress >= 1) {
-                    targetVelocity = 0;
-                    currentVelocity = 0;
-                }
+                // if (snapProgress >= 1) {
+                //     targetVelocity = 0;
+                //     currentVelocity = 0;
+                // }
             } 
 
 
