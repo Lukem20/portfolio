@@ -3,19 +3,18 @@ import {
     SpotLight,
     Object3D,
     Group,
-    // SpotLightHelper
 } from 'three';
 
 function createLights(scene) {
     const aLight = new AmbientLight(0xffffff, 0.1);
-    aLight.tick = () => {};
-
     const spotLight1 = createSpotlight( 0xFAFAFA, 240, scene );
     const spotLight2 = createSpotlight( 0x36EEF5, 120, scene );
     const spotLight3 = createSpotlight( 0xFF5F37, 0, scene );
 
+    aLight.tick = () => {};
+
     const lights = new Group();
-    lights.add( aLight, spotLight1, spotLight2, spotLight3 );
+    lights.add(aLight, spotLight1, spotLight2, spotLight3 );
     lights.position.y -= 90;
 
     return lights;
@@ -24,18 +23,19 @@ function createLights(scene) {
 function createSpotlight(color, angleOffset, scene) {
     const light = new SpotLight(color, 80);
     light.castShadow = true;
-    light.angle = 0.2;
-    light.penumbra = 0.125;
-    light.decay = 0.6;
-    light.distance = 500;
+    light.angle = 0.3;
+    light.penumbra = 0.15;
+    light.decay = 0.8;
+    light.distance = 400;
+    light.intensity = 120;
 
     const radius = 100;
     const angleRad = (angleOffset * Math.PI) / 180;
-    const behindZ = 250;
+    const behindZ = 150;
 
     light.position.set(
-        (Math.cos(angleRad) * radius),// + 30,
-        (Math.sin(angleRad) * radius),// + 250,
+        (Math.cos(angleRad) * radius),
+        (Math.sin(angleRad) * radius),
         behindZ
     );
 
@@ -60,9 +60,6 @@ function createSpotlight(color, angleOffset, scene) {
         centerOffsetY: (Math.random() - 0.5) * 20
     }; 
 
-    // const helper = new SpotLightHelper(light);
-    // scene.add(helper);
-
     light.tick = () => {
         movement.angleX += movement.speedX;
         movement.angleY += movement.speedY;
@@ -71,7 +68,6 @@ function createSpotlight(color, angleOffset, scene) {
         const y = movement.centerOffsetY + Math.sin(movement.angleY) * movement.radiusY;
 
         target.position.set(x, y, 0);
-        // helper.update();
     };
 
     return light;

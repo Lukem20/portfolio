@@ -19,7 +19,7 @@ import {
     Vector3,
 } from 'three';
 
-function createPhotos (camera, container) {
+function createPhotos (camera, container, lights) {
     /**
     * Create geometry, texture, meshes, and photo wheel groups
     */
@@ -47,7 +47,7 @@ function createPhotos (camera, container) {
         texture.colorSpace = SRGBColorSpace;
         texturesToDispose.push(texture);
 
-        const material = createMaterial(texture);
+        const material = createMaterial(texture, lights);
         materials.push(material);
         materialsToDispose.push(material);
 
@@ -91,6 +91,8 @@ function createPhotos (camera, container) {
     /* *** Mouse Event *** */
     const mouse = new Vector2();
     let mouseMovedSinceLastCheck = false;
+    let lastHoverCheck = 0;
+    const tiltVector = new Vector3();
 
     /* *** Touch/Swipe Event *** */
     let xDown = null;                                                        
@@ -126,6 +128,7 @@ function createPhotos (camera, container) {
     let clickedMesh = null;
 
 
+
     document.addEventListener('wheel', handleWheelEvent);
     document.addEventListener('touchstart', handleTouchStart, false);
     document.addEventListener('touchmove', handleTouchMove);     
@@ -139,6 +142,7 @@ function createPhotos (camera, container) {
     document.addEventListener('pagehide', handlePageHide);
     
     
+
     function handleWheelEvent (event) {
         if (isConverging)  {
             endConvergeAnimation();
@@ -758,9 +762,7 @@ function createPhotos (camera, container) {
 
     function maintenanceCleanup() {
         // Garbage collection if available
-        if (window.gc) {
-            window.gc();
-        }
+        if (window.gc) window.gc();
 
         for (let i = 0; i < allPhotoMeshes.length; i++) {
             const mesh = allPhotoMeshes[i];
@@ -777,7 +779,6 @@ function createPhotos (camera, container) {
     function setupWebGLListeners(rendererInstance) {
         renderer = rendererInstance;
         const canvas = renderer.domElement;
-        
         canvas.addEventListener('webglcontextlost', handleContextLoss, false);
         canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
     }
@@ -787,11 +788,11 @@ function createPhotos (camera, container) {
     /**
     * Animation Loop   
     */
-    let lastHoverCheck = 0;
-    const tiltVector = new Vector3();
     const photoWheels = new Group();
-    photoWheels.add(topWheel);
-    photoWheels.add(bottomWheel);
+    photoWheels.add(topWheel, bottomWheel);
+    photoWheels.cleanup = cleanupEventListeners;
+    photoWheels.setupWebGL = setupWebGLListeners;
+    photoWheels.disposeResources = disposeResources;
 
 
     photoWheels.tick = () => {
@@ -935,6 +936,7 @@ function createPhotos (camera, container) {
                     
                 for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
                     const mesh = allPhotoMeshes[i];
+
                     mesh.scale.set(
                         MathUtils.lerp(mesh.scale.x, 1, ANIMATION_CONFIG.LERP_FACTOR), 
                         MathUtils.lerp(mesh.scale.y, 1, ANIMATION_CONFIG.LERP_FACTOR),  
@@ -953,6 +955,14 @@ function createPhotos (camera, container) {
                         mesh.rotation.z = MathUtils.lerp(
                             mesh.rotation.z, 
                             targetRotationZ, 
+                            ANIMATION_CONFIG.LERP_FACTOR
+                        );
+                    }
+
+                    if (mesh.material.uniforms && mesh.material.uniforms.uMouseInfluence) {
+                        mesh.material.uniforms.uMouseInfluence.value = MathUtils.lerp(
+                            mesh.material.uniforms.uMouseInfluence.value, 
+                            0.0, 
                             ANIMATION_CONFIG.LERP_FACTOR
                         );
                     }
@@ -976,6 +986,15 @@ function createPhotos (camera, container) {
                             MathUtils.lerp(mesh.scale.y, 1, ANIMATION_CONFIG.LERP_FACTOR),  
                             MathUtils.lerp(mesh.scale.z, 1, ANIMATION_CONFIG.LERP_FACTOR)
                         );
+
+                        // Reset rim lighting for non-hovered items
+                        if (mesh.material.uniforms && mesh.material.uniforms.uMouseInfluence) {
+                            mesh.material.uniforms.uMouseInfluence.value = MathUtils.lerp(
+                                mesh.material.uniforms.uMouseInfluence.value, 
+                                0.0, 
+                                ANIMATION_CONFIG.LERP_FACTOR
+                            );
+                        }
                     }
 
                     mesh.rotation.x = MathUtils.lerp(mesh.rotation.x, 0, ANIMATION_CONFIG.LERP_FACTOR);
@@ -1017,6 +1036,19 @@ function createPhotos (camera, container) {
                 hoveredItem.rotation.x = MathUtils.lerp(hoveredItem.rotation.x, tiltX, ANIMATION_CONFIG.LERP_FACTOR);
                 hoveredItem.rotation.y = MathUtils.lerp(hoveredItem.rotation.y, tiltY, ANIMATION_CONFIG.LERP_FACTOR);
 
+                // Enhanced rim lighting for hovered item
+                if (hoveredItem.material.uniforms) {
+                    const mouseScreenX = (mouse.x + 1) * 0.5;
+                    const mouseScreenY = (mouse.y + 1) * 0.5;
+                    
+                    hoveredItem.material.uniforms.uMousePosition.value.set(mouseScreenX, mouseScreenY);
+                    hoveredItem.material.uniforms.uMouseInfluence.value = MathUtils.lerp(
+                        hoveredItem.material.uniforms.uMouseInfluence.value, 
+                        1.0, 
+                        ANIMATION_CONFIG.LERP_FACTOR
+                    );
+                }
+
                 // For hovered item, maintain base Z rotation (no additional tilting on Z-axis)
                 const targetZ = hoveredItem.userData.baseRotationZ || 0;
                 const zDiff = targetZ - hoveredItem.rotation.z;
@@ -1033,15 +1065,17 @@ function createPhotos (camera, container) {
             }
         }
 
+        for (let i = 0; i < materials.length; i++) {
+            if (materials[i].updateLights) {
+                materials[i].updateLights(lights);
+            }
+        }
+
         // Periodic memory cleanup
         if (now % 300000 < 16) {
             maintenanceCleanup();
         }
     }
-
-    photoWheels.cleanup = cleanupEventListeners;
-    photoWheels.setupWebGL = setupWebGLListeners;
-    photoWheels.disposeResources = disposeResources;
 
     return photoWheels;
 }

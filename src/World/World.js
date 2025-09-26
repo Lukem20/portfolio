@@ -29,7 +29,7 @@ class World {
         const lights = createLights(scene);
         
         // photoWheels = new PhotoWheels(camera, container);
-        photoWheels = createPhotos(camera, container);
+        photoWheels = createPhotos(camera, container, lights);
         photoWheels.setupWebGL(renderer);
 
         scene.add(lights);
