@@ -17,6 +17,7 @@ import {
     TextureLoader,
     Vector2,
     Vector3,
+    LinearFilter,
 } from 'three';
 
 function createPhotos (camera, container, lights) {
@@ -45,6 +46,8 @@ function createPhotos (camera, container, lights) {
 
         const texture = textureLoader.load(PHOTOS_DATA[i].imagePath);
         texture.colorSpace = SRGBColorSpace;
+        texture.minFilter = LinearFilter;
+        texture.magFilter = LinearFilter;
         texturesToDispose.push(texture);
 
         const material = createMaterial(texture, lights);
@@ -92,6 +95,7 @@ function createPhotos (camera, container, lights) {
     const mouse = new Vector2();
     let mouseMovedSinceLastCheck = false;
     let lastHoverCheck = 0;
+    let lastMouseMoveTime = 0;
     const tiltVector = new Vector3();
 
     /* *** Touch/Swipe Event *** */
@@ -247,10 +251,15 @@ function createPhotos (camera, container, lights) {
 
 
     function handleMouseMove (event) {
+        const now = performance.now();
+        if (now - lastMouseMoveTime < 16) return;
+        lastMouseMoveTime = now;
+
         // Normalize mouse coordinates
         mouse.x = event.clientX / window.innerWidth * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight * 2 - 1);
         mouseMovedSinceLastCheck = true;
+        
     }
 
 
@@ -796,9 +805,7 @@ function createPhotos (camera, container, lights) {
 
 
     photoWheels.tick = () => {
-        if (isContextLost) {
-            return;
-        }
+        if (isContextLost || document.hidden) return;
 
         const now = performance.now();
 
@@ -922,9 +929,26 @@ function createPhotos (camera, container, lights) {
         // Hover effects animation
         if (mouseMovedSinceLastCheck && now - lastHoverCheck > ANIMATION_CONFIG.HOVER_CHECK_INTERVAL) {
             lastHoverCheck = now;
+            mouseMovedSinceLastCheck = false;
+
+            // Skip raycasting during fast movement
+            if (Math.abs(currentVelocity) > 0.03) {
+                if (isHovering) {
+                    document.body.style.cursor = "default";
+                    isHovering = false;
+                    hoveredItem = null;
+                }
+                return;
+            }
 
             raycaster.setFromCamera(mouse, camera);
-            const rayIntersects = raycaster.intersectObjects(allPhotoMeshes);
+
+            const visibleMeshes = allPhotoMeshes.filter(mesh => {
+                const distance = camera.position.distanceTo(mesh.position);
+                return distance < 400; 
+            });
+
+            const rayIntersects = raycaster.intersectObjects(visibleMeshes);
 
             // Not hovering
             if (!rayIntersects.length) {
@@ -1065,11 +1089,27 @@ function createPhotos (camera, container, lights) {
             }
         }
 
-        for (let i = 0; i < materials.length; i++) {
-            if (materials[i].updateLights) {
-                materials[i].updateLights(lights);
+        const visibleMaterials = materials.filter((_, i) => 
+            allPhotoMeshes[i].visible
+        );
+
+        for (let i = 0; i < visibleMaterials.length; i++) {
+            if (visibleMaterials[i].updateLights) {
+                visibleMaterials[i].updateLights(lights);
             }
         }
+
+        for (let  i = 0; i < allPhotoMeshes.length; i++) {
+            const mesh = allPhotoMeshes[i];
+
+            const distanceToCamera = camera.position.distanceTo(mesh.position);
+            if (distanceToCamera > 200) {
+                mesh.material.uniforms.uLOD.value = 0.5; // Lower quality for distant objects
+            } else {
+                mesh.material.uniforms.uLOD.value = 1.0;
+            }
+        }
+
 
         // Periodic memory cleanup
         if (now % 300000 < 16) {

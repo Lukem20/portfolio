@@ -182,7 +182,7 @@ function createMaterial (texture, lights) {
             borderMask *= smoothstep(-uBorderWidth - 0.03, -uBorderWidth, dist);
             
             vec2 screenPos = gl_FragCoord.xy / uResolution;
-            float distanceFromMouse = length(screenPos - uMousePosition);
+            float distanceFromMouse = dot(screenPos - uMousePosition, screenPos - uMousePosition);
             float mouseInfluenceStrength = 1.0 - smoothstep(0.0, 0.6, distanceFromMouse);
             mouseInfluenceStrength *= uMouseInfluence;
             
@@ -209,73 +209,77 @@ function createMaterial (texture, lights) {
     // Add method to update light uniforms
     material.updateLights = function(lightsGroup) {
         if (!lightsGroup || !lightsGroup.children) return;
-        
-        // Find spot lights (skip ambient light which is first)
-        const spotLights = lightsGroup.children.filter(child => child.isSpotLight);
-        
-        if (spotLights[0]) {
-            const light = spotLights[0];
-            // Update world position since lights group may be transformed
-            light.updateWorldMatrix(true, false);
-            light.target.updateWorldMatrix(true, false);
+
+        if (!this._lastLightUpdate || performance.now() - this._lastLightUpdate > 16) {
+            // Find spot lights (skip ambient light which is first)
+            const spotLights = lightsGroup.children.filter(child => child.isSpotLight);
             
-            this.uniforms.uSpotLight1_position.value.setFromMatrixPosition(light.matrixWorld);
+            if (spotLights[0]) {
+                const light = spotLights[0];
+                // Update world position since lights group may be transformed
+                light.updateWorldMatrix(true, false);
+                light.target.updateWorldMatrix(true, false);
+                
+                this.uniforms.uSpotLight1_position.value.setFromMatrixPosition(light.matrixWorld);
+                
+                // Calculate direction from light to target
+                const direction = new Vector3();
+                direction.setFromMatrixPosition(light.target.matrixWorld);
+                direction.sub(this.uniforms.uSpotLight1_position.value);
+                direction.normalize();
+                this.uniforms.uSpotLight1_direction.value.copy(direction);
+                
+                this.uniforms.uSpotLight1_color.value.copy(light.color);
+                this.uniforms.uSpotLight1_intensity.value = light.intensity;
+                this.uniforms.uSpotLight1_distance.value = light.distance;
+                this.uniforms.uSpotLight1_decay.value = light.decay;
+                this.uniforms.uSpotLight1_coneCos.value = Math.cos(light.angle);
+                this.uniforms.uSpotLight1_penumbraCos.value = Math.cos(light.angle * (1.0 - light.penumbra));
+            }
             
-            // Calculate direction from light to target
-            const direction = new Vector3();
-            direction.setFromMatrixPosition(light.target.matrixWorld);
-            direction.sub(this.uniforms.uSpotLight1_position.value);
-            direction.normalize();
-            this.uniforms.uSpotLight1_direction.value.copy(direction);
+            if (spotLights[1]) {
+                const light = spotLights[1];
+                light.updateWorldMatrix(true, false);
+                light.target.updateWorldMatrix(true, false);
+                
+                this.uniforms.uSpotLight2_position.value.setFromMatrixPosition(light.matrixWorld);
+                
+                const direction = new Vector3();
+                direction.setFromMatrixPosition(light.target.matrixWorld);
+                direction.sub(this.uniforms.uSpotLight2_position.value);
+                direction.normalize();
+                this.uniforms.uSpotLight2_direction.value.copy(direction);
+                
+                this.uniforms.uSpotLight2_color.value.copy(light.color);
+                this.uniforms.uSpotLight2_intensity.value = light.intensity;
+                this.uniforms.uSpotLight2_distance.value = light.distance;
+                this.uniforms.uSpotLight2_decay.value = light.decay;
+                this.uniforms.uSpotLight2_coneCos.value = Math.cos(light.angle);
+                this.uniforms.uSpotLight2_penumbraCos.value = Math.cos(light.angle * (1.0 - light.penumbra));
+            }
             
-            this.uniforms.uSpotLight1_color.value.copy(light.color);
-            this.uniforms.uSpotLight1_intensity.value = light.intensity;
-            this.uniforms.uSpotLight1_distance.value = light.distance;
-            this.uniforms.uSpotLight1_decay.value = light.decay;
-            this.uniforms.uSpotLight1_coneCos.value = Math.cos(light.angle);
-            this.uniforms.uSpotLight1_penumbraCos.value = Math.cos(light.angle * (1.0 - light.penumbra));
-        }
-        
-        if (spotLights[1]) {
-            const light = spotLights[1];
-            light.updateWorldMatrix(true, false);
-            light.target.updateWorldMatrix(true, false);
-            
-            this.uniforms.uSpotLight2_position.value.setFromMatrixPosition(light.matrixWorld);
-            
-            const direction = new Vector3();
-            direction.setFromMatrixPosition(light.target.matrixWorld);
-            direction.sub(this.uniforms.uSpotLight2_position.value);
-            direction.normalize();
-            this.uniforms.uSpotLight2_direction.value.copy(direction);
-            
-            this.uniforms.uSpotLight2_color.value.copy(light.color);
-            this.uniforms.uSpotLight2_intensity.value = light.intensity;
-            this.uniforms.uSpotLight2_distance.value = light.distance;
-            this.uniforms.uSpotLight2_decay.value = light.decay;
-            this.uniforms.uSpotLight2_coneCos.value = Math.cos(light.angle);
-            this.uniforms.uSpotLight2_penumbraCos.value = Math.cos(light.angle * (1.0 - light.penumbra));
-        }
-        
-        if (spotLights[2]) {
-            const light = spotLights[2];
-            light.updateWorldMatrix(true, false);
-            light.target.updateWorldMatrix(true, false);
-            
-            this.uniforms.uSpotLight3_position.value.setFromMatrixPosition(light.matrixWorld);
-            
-            const direction = new Vector3();
-            direction.setFromMatrixPosition(light.target.matrixWorld);
-            direction.sub(this.uniforms.uSpotLight3_position.value);
-            direction.normalize();
-            this.uniforms.uSpotLight3_direction.value.copy(direction);
-            
-            this.uniforms.uSpotLight3_color.value.copy(light.color);
-            this.uniforms.uSpotLight3_intensity.value = light.intensity;
-            this.uniforms.uSpotLight3_distance.value = light.distance;
-            this.uniforms.uSpotLight3_decay.value = light.decay;
-            this.uniforms.uSpotLight3_coneCos.value = Math.cos(light.angle);
-            this.uniforms.uSpotLight3_penumbraCos.value = Math.cos(light.angle * (1.0 - light.penumbra));
+            if (spotLights[2]) {
+                const light = spotLights[2];
+                light.updateWorldMatrix(true, false);
+                light.target.updateWorldMatrix(true, false);
+                
+                this.uniforms.uSpotLight3_position.value.setFromMatrixPosition(light.matrixWorld);
+                
+                const direction = new Vector3();
+                direction.setFromMatrixPosition(light.target.matrixWorld);
+                direction.sub(this.uniforms.uSpotLight3_position.value);
+                direction.normalize();
+                this.uniforms.uSpotLight3_direction.value.copy(direction);
+                
+                this.uniforms.uSpotLight3_color.value.copy(light.color);
+                this.uniforms.uSpotLight3_intensity.value = light.intensity;
+                this.uniforms.uSpotLight3_distance.value = light.distance;
+                this.uniforms.uSpotLight3_decay.value = light.decay;
+                this.uniforms.uSpotLight3_coneCos.value = Math.cos(light.angle);
+                this.uniforms.uSpotLight3_penumbraCos.value = Math.cos(light.angle * (1.0 - light.penumbra));
+            }
+
+            this._lastLightUpdate = performance.now();
         }
     };
 
