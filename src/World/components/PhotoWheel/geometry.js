@@ -5,7 +5,7 @@ import {
     BufferAttribute,
 } from 'three';
 
-function RoundedRectangle( w, h, r, s ) { // width, height, radius corner, smoothness  
+function createGeometry( w, h, r, s ) { // width, height, radius corner, smoothness  
 	const wi = w / 2 - r;		// inner width
 	const hi = h / 2 - r;		// inner height
 	const w2 = w / 2;			// half width
@@ -61,4 +61,4 @@ function RoundedRectangle( w, h, r, s ) { // width, height, radius corner, smoot
 	return geometry;
 }
 
-export { RoundedRectangle };
+export { createGeometry };

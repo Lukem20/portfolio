@@ -3,7 +3,7 @@ import { createCamera } from './components/camera.js';
 import { createLights } from './components/lights.js';
 import { createScene } from './components/scene.js';
 import { createBackground } from './components/background.js';
-import { createPhotos } from './components/photoWheels.js'
+import { createWheels } from './components/photoWheels.js'
 // import { PhotoWheels } from './components/PhotoWheels/PhotoWheels.js';
 
 // Systems
@@ -29,7 +29,7 @@ class World {
         const lights = createLights(scene);
         
         // photoWheels = new PhotoWheels(camera, container);
-        photoWheels = createPhotos(camera, container, lights);
+        photoWheels = createWheels(camera, container, lights);
         photoWheels.setupWebGL(renderer);
 
         scene.add(lights);

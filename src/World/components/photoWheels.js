@@ -1,5 +1,7 @@
-import { createMaterial } from './material.js';
-import { RoundedRectangle } from './geometry.js';
+import { createTexture } from './PhotoWheel/texture.js'
+import { createMaterial } from './PhotoWheel/material.js';
+import { createGeometry } from './PhotoWheel/geometry.js';
+import { createMesh } from './PhotoWheel/mesh.js';
 import {
     WHEEL_CONFIG,
     GEOMETRY_CONFIG,
@@ -7,72 +9,44 @@ import {
     INTERACTION_CONFIG,
     SCROLL_CONFIG,
     PHOTOS_DATA,
-} from './PhotoWheels/config.js';
+} from './config.js';
 import {
     Group,
     MathUtils,
-    Mesh,
     Raycaster,
-    SRGBColorSpace,
     TextureLoader,
     Vector2,
     Vector3,
-    LinearFilter,
 } from 'three';
 
-function createPhotos (camera, container, lights) {
+function createWheels (camera, container, lights) {
     /**
-    * Create geometry, texture, meshes, and photo wheel groups
+    * Create geometry, texture, materials, meshes, and photo wheel groups
     */
-    const textureLoader = new TextureLoader();
-    const roundedRectangleGeometry = RoundedRectangle(
-        GEOMETRY_CONFIG.SIZE,
-        GEOMETRY_CONFIG.SIZE,
-        GEOMETRY_CONFIG.CORNER_RADIUS,
-        GEOMETRY_CONFIG.CORNER_SMOOTHNESS
-    );
-    
-    const allPhotoMeshes = [];
-    const materials = [];
-    const topWheel = new Group();
-    const bottomWheel = new Group();
-
-    let renderer = null;
-    let isContextLost = false;
-    const texturesToDispose = [];
-    const materialsToDispose = [];
+   const textureLoader = new TextureLoader();
+   const materials = [];
+   const texturesToDispose = [];
+   const materialsToDispose = [];
+   const allPhotoMeshes = [];
+   const topWheel = new Group();
+   const bottomWheel = new Group();
+   const roundedRectangleGeometry = createGeometry(
+       GEOMETRY_CONFIG.SIZE,
+       GEOMETRY_CONFIG.SIZE,
+       GEOMETRY_CONFIG.CORNER_RADIUS,
+       GEOMETRY_CONFIG.CORNER_SMOOTHNESS
+   );
     
     for (let i = 0; i < PHOTOS_DATA.length; i++) {
-
-        const texture = textureLoader.load(PHOTOS_DATA[i].imagePath);
-        texture.colorSpace = SRGBColorSpace;
-        texture.minFilter = LinearFilter;
-        texture.magFilter = LinearFilter;
+        const texture = createTexture(textureLoader, PHOTOS_DATA[i].imagePath);
         texturesToDispose.push(texture);
 
         const material = createMaterial(texture, lights);
         materials.push(material);
         materialsToDispose.push(material);
 
-        const photoMeshTop = new Mesh(roundedRectangleGeometry, materials[i]);
-        photoMeshTop.name = PHOTOS_DATA[i];
-        photoMeshTop.position.set(
-            Math.cos(WHEEL_CONFIG.RADIAN_INTERVAL * i) * WHEEL_CONFIG.RADIUS,
-            Math.sin(WHEEL_CONFIG.RADIAN_INTERVAL * i) * WHEEL_CONFIG.RADIUS,
-            1
-        );
-
-        const photoMeshBottom = photoMeshTop.clone();
-        photoMeshBottom.name = PHOTOS_DATA[i];
-        photoMeshBottom.position.set(
-            Math.cos(WHEEL_CONFIG.RADIAN_INTERVAL * i) * WHEEL_CONFIG.RADIUS,
-            Math.sin(WHEEL_CONFIG.RADIAN_INTERVAL * i) * WHEEL_CONFIG.RADIUS,
-            1
-        );
-
-        // Store original positions for animations
-        photoMeshTop.userData.originalPosition = photoMeshTop.position.clone();
-        photoMeshBottom.userData.originalPosition = photoMeshBottom.position.clone();
+        const photoMeshTop = createMesh(roundedRectangleGeometry, materials[i], PHOTOS_DATA[i], i);
+        const photoMeshBottom = createMesh(roundedRectangleGeometry, materials[i], PHOTOS_DATA[i], i);
 
         allPhotoMeshes.push(photoMeshTop, photoMeshBottom);
         topWheel.add(photoMeshTop);
@@ -82,27 +56,33 @@ function createPhotos (camera, container, lights) {
     bottomWheel.translateY(-WHEEL_CONFIG.POSITION + WHEEL_CONFIG.POSITION_OFFSET);
 
 
+
     /**
     * Events and Listener logic
     */
 
-    /* *** Click Event *** */
-    let isHovering = false;
-    let hoveredItem = null;
-    const raycaster = new Raycaster();
+    /* Scroll/Wheel Event */
+    let targetVelocity = 0;
+    let currentVelocity = 0;
+    let spinTimeout = null;
 
-    /* *** Mouse Event *** */
+    /* Touch/Swipe Event */
+    let xDown = null;                                                        
+    let yDown = null;
+
+    /* Mouse Event */
     const mouse = new Vector2();
     let mouseMovedSinceLastCheck = false;
     let lastHoverCheck = 0;
     let lastMouseMoveTime = 0;
     const tiltVector = new Vector3();
 
-    /* *** Touch/Swipe Event *** */
-    let xDown = null;                                                        
-    let yDown = null;
+    /* Click Event */
+    let isHovering = false;
+    let hoveredItem = null;
+    const raycaster = new Raycaster();
 
-    /* *** Key Press Event *** */
+    /* Key Press Event */
     let isKeyPressed = false;
     let pressedKeys = new Set();
     let keyVelocity = 0;
@@ -111,9 +91,10 @@ function createPhotos (camera, container, lights) {
     let stepRotationProgress = 0;
     let stepRotationVelocity = 0;
 
-    /* *** Scroll/Wheel Event *** */
-    let targetVelocity = 0;
-    let currentVelocity = 0;
+    /* Context lost / visibility */
+    let isContextLost = false;
+    
+    /* Snapping + Springing animation state */
     let isSnapping = false;
     let snapStartRotation = 0;
     let snapTargetRotation = 0;
@@ -121,12 +102,10 @@ function createPhotos (camera, container, lights) {
     let springVelocity = 0;
     let springDamping = ANIMATION_CONFIG.INITIAL_SPRING_DAMPING;
     let springStiffness = ANIMATION_CONFIG.INITIAL_SPRING_STIFFNESS;
-    let spinTimeout = null;
-
     const tempVector = new Vector3();
     const snapPoint = { x: 0, y: 0, theta: 0 };
 
-    /* *** Converge Animation State *** */
+    /* Converge Animation State */
     let isConverging = false;
     let convergeProgress = 0;
     let clickedMesh = null;
@@ -162,13 +141,14 @@ function createPhotos (camera, container, lights) {
             }
         }
 
-        const scrollIntensity = Math.abs(event.deltaY) / SCROLL_CONFIG.INTENSITY_DIVISOR;
+        const scroll = event.deltaY;
+        const scrollIntensity = Math.abs(scroll) / SCROLL_CONFIG.INTENSITY_DIVISOR;
         let velocityChange = Math.min(
             scrollIntensity * SCROLL_CONFIG.BASE_VELOCITY_CHANGE, 
             SCROLL_CONFIG.MAX_VELOCITY_CHANGE
         );
 
-        if (Math.abs(event.deltaY) < SCROLL_CONFIG.TRACKPAD_THRESHOLD) {
+        if (Math.abs(scroll) < SCROLL_CONFIG.TRACKPAD_THRESHOLD) {
             // Trackpad
             velocityChange *= SCROLL_CONFIG.TRACKPAD_MULTIPLIER;
 
@@ -187,7 +167,7 @@ function createPhotos (camera, container, lights) {
             }, SCROLL_CONFIG.MOUSE_WHEEL_SNAP_DELAY);
         }
 
-        if (event.deltaY > 0) {
+        if (scroll > 0) {
             targetVelocity -= velocityChange;
         } else {
             targetVelocity += velocityChange;
@@ -206,6 +186,7 @@ function createPhotos (camera, container, lights) {
         
         if(isConverging) {
             endConvergeAnimation();
+            return;
         }
         
         stopSnapAnimation();
@@ -465,8 +446,7 @@ function createPhotos (camera, container, lights) {
 
 
     function handleContextRestored() {
-        console.log('WebGL context restored')
-        isContextLost = true;
+        isContextLost = false;
     }
 
 
@@ -705,7 +685,6 @@ function createPhotos (camera, container, lights) {
 
 
     function resetMeshToOriginalState(mesh) {
-        // Reset position to original
         if (mesh.userData.originalPosition) {
             mesh.position.copy(mesh.userData.originalPosition);
         }
@@ -784,10 +763,8 @@ function createPhotos (camera, container, lights) {
     }
 
 
-
     function setupWebGLListeners(rendererInstance) {
-        renderer = rendererInstance;
-        const canvas = renderer.domElement;
+        const canvas = rendererInstance.domElement;
         canvas.addEventListener('webglcontextlost', handleContextLoss, false);
         canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
     }
@@ -1120,4 +1097,4 @@ function createPhotos (camera, container, lights) {
     return photoWheels;
 }
 
-export { createPhotos }
+export { createWheels }
