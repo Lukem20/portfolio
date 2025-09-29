@@ -77,6 +77,16 @@ function createWheels (camera, container, lights) {
     let lastMouseMoveTime = 0;
     const tiltVector = new Vector3();
 
+    /* Drag Event */
+    let isDragging = false;
+    let dragDidMove = false;
+    let dragStartPosition = new Vector2();
+    let dragCurrentPosition = new Vector2();
+    let dragStartAngle = 0;
+    let lastDragAngle = 0;
+    let dragVelocityHistory = [];
+    let lastDragTime = 0;
+
     /* Click Event */
     let isHovering = false;
     let hoveredItem = null;
@@ -118,6 +128,8 @@ function createWheels (camera, container, lights) {
     document.addEventListener('touchend', handleTouchEnd);
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('click', handleMouseClick);
+    container.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -126,7 +138,7 @@ function createWheels (camera, container, lights) {
     
     
 
-    function handleWheelEvent (event) {
+    function handleWheelEvent(event) {
         if (isConverging)  {
             endConvergeAnimation();
             return;
@@ -231,7 +243,7 @@ function createWheels (camera, container, lights) {
 
 
 
-    function handleMouseMove (event) {
+    function handleMouseMove(event) {
         const now = performance.now();
         if (now - lastMouseMoveTime < 16) return;
         lastMouseMoveTime = now;
@@ -241,11 +253,151 @@ function createWheels (camera, container, lights) {
         mouse.y = -(event.clientY / window.innerHeight * 2 - 1);
         mouseMovedSinceLastCheck = true;
         
+        if (isDragging) {
+            handleMouseDrag(event);
+        }
+    }
+
+
+
+    function handleMouseDown(event) {
+
+        if (isConverging) {
+            endConvergeAnimation();
+            return;
+        }
+
+        isDragging = true;
+        dragDidMove = false;
+        dragStartPosition.x = event.clientX;
+        dragStartPosition.y = event.clientY;
+        dragCurrentPosition.x = event.clientX;
+        dragCurrentPosition.y = event.clientY;
+
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+
+        dragStartAngle = Math.atan2(
+            dragStartPosition.y - centerY,
+            dragStartPosition.x - centerX
+        );
+        lastDragAngle = dragStartAngle;
+
+        dragVelocityHistory.length = 0;
+        lastDragTime = performance.now();
+
+        stopSnapAnimation();
+        stopStepRotation();
+
+        document.body.style.cursor = "grabbing";
+
+        event.preventDefault();
+    }
+
+
+
+    function handleMouseDrag(event) {
+        if (!isDragging) return;
+
+        const now = performance.now()
+        const deltaTime = now - lastDragTime;
+
+        dragCurrentPosition.x = event.clientX;
+        dragCurrentPosition.y = event.clientY;
+
+        const deltaX = dragCurrentPosition.x - dragStartPosition.x;
+        const sensitivity = 4000;
+        let angleDiff = (deltaX / sensitivity) * Math.PI * 2;
+        
+        // Handle angle wrapping around -π to π
+        dragStartPosition.x = dragCurrentPosition.x;
+        dragStartPosition.y = dragCurrentPosition.y;
+
+        if (Math.abs(angleDiff) > 0.001) {
+            dragDidMove = true;
+            const maxDragSpeed = 0.075;
+            angleDiff = Math.max(-maxDragSpeed, Math.min(maxDragSpeed, angleDiff));
+
+            rotateWheels(angleDiff);
+
+            if (deltaTime > 0) {
+                const angularVelocity  = angleDiff / (deltaTime * 1000);
+                dragVelocityHistory.push({
+                    velocity: angularVelocity,
+                    time: now,
+                });
+
+                if (dragVelocityHistory.length > INTERACTION_CONFIG.VELOCITY_HISTORY_LENGTH) {
+                    dragVelocityHistory.shift();
+                }
+            }
+        }
+
+        lastDragTime = now;
+
+        event.preventDefault();
+    }
+
+
+
+    function handleMouseUp(event) {
+        if (!isDragging) return;
+
+        isDragging = false;
+        document.body.style.cursor = 'default';
+
+        const now = performance.now();
+        let releaseVelocity = 0;
+
+        if (dragVelocityHistory.length > 0) {
+            const recentSamples = dragVelocityHistory.filter((sum, sample) => {
+                now - sample.time < 100;
+            });
+
+            if (recentSamples.length > 0) {
+                const avgVelocity = recentSamples.reduce((sum, sample) => 
+                    sum + sample.velocity, 0
+                ) / recentSamples.length;
+
+                releaseVelocity = avgVelocity;
+            }
+
+            releaseVelocity = Math.max(
+                -ANIMATION_CONFIG.MAX_VELOCITY, 
+                Math.min(ANIMATION_CONFIG.MAX_VELOCITY, releaseVelocity)
+            );
+        }
+
+        // Apply momentum if there's significant velocity
+        if (Math.abs(releaseVelocity) > 0.005) {
+            targetVelocity = releaseVelocity;
+            
+            clearTimeout(spinTimeout);
+            spinTimeout = setTimeout(() => {
+                startSnapAnimation();
+                setTimeout(() => forceHoverCheck(), 50);
+            }, 800); 
+        } else {
+            setTimeout(() => {
+                startSnapAnimation();
+                setTimeout(() => forceHoverCheck(), 50);
+            }, 100);
+        }
+        
+        // Clear velocity history
+        dragVelocityHistory.length = 0;
+        
+        event.preventDefault();
     }
 
 
 
     function handleMouseClick() {
+        if (dragDidMove) {
+            dragDidMove = false;
+            return;
+        }
+
         if (isHovering && Math.abs(currentVelocity) < INTERACTION_CONFIG.VELOCITY_CLICK_THRESHOLD) {
             // Clicked while snapping, wait a moment
             if (isSnapping) {
@@ -711,6 +863,8 @@ function createWheels (camera, container, lights) {
         document.removeEventListener('pagehide', handlePageHide);  
         container.removeEventListener('mousemove', handleMouseMove);
         container.removeEventListener('click', handleMouseClick);
+        container.removeEventListener('mousedown', handleMouseDown);
+        document.removeEventListener('mouseup', handleMouseUp);
 
         disposeResources();
 
