@@ -1,3 +1,5 @@
+"use strict";
+
 const setSize = (container, camera, renderer) => {
     const sizes = {
         width: container.clientWidth,

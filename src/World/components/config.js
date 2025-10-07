@@ -1,3 +1,5 @@
+"use strict";
+
 export const PHOTOS_DATA = [
     {
         imagePath: '/assets/haunted-house-square-1.jpg',

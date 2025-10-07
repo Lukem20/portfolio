@@ -1,3 +1,4 @@
+"use strict";
 import { World } from "./World/World";
 
 async function main() {

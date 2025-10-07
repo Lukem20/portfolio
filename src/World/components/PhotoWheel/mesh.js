@@ -1,3 +1,4 @@
+"use strict";
 import { WHEEL_CONFIG } from '../config.js';
 import {
     Mesh,

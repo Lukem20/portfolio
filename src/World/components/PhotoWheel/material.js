@@ -1,6 +1,6 @@
+"use strict";
 import { vertexShader } from './vertexShader';
 import { fragmentShader } from './fragmentShader';
-
 import { 
     ShaderMaterial,
     Vector2,

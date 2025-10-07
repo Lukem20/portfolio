@@ -1,3 +1,4 @@
+"use strict";
 // Components
 import { createCamera } from './components/camera.js';
 import { createLights } from './components/lights.js';

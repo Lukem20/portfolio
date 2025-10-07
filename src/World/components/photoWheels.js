@@ -1,3 +1,4 @@
+"use strict";
 import { createTexture } from './PhotoWheel/texture.js'
 import { createMaterial } from './PhotoWheel/material.js';
 import { createGeometry } from './PhotoWheel/geometry.js';
