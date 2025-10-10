@@ -267,6 +267,35 @@
             </div>
 
         </footer>
+
+        <script type="module" defer>
+            import { AboutExperience } from "./webgl/AboutExperience/AboutExperience";
+
+            async function main() {
+                const container = document.querySelector('#scene-container');
+
+                if (!container) {
+                    return;
+                }
+
+                const aboutExperience = new HomeExperience(container);
+                aboutExperience.start();
+
+                window.addEventListener('beforeunload', () => {
+                    if (aboutExperience) {
+                        aboutExperience.dispose();
+                    }
+                });
+
+                document.addEventListener('pagehide', () => {
+                    if (aboutExperience) {
+                        aboutExperience.dispose();
+                    }
+                });
+            }
+
+            main();
+        </script>
         
         <script>
             function copyEmail() {

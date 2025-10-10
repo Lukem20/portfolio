@@ -47,7 +47,34 @@
         </main>
 
         <noscript>You need to enable JavaScript to run this app.</noscript>
-        <script type="module" src="./main.js" defer></script>
+        <script type="module" defer>
+            import { HomeExperience } from "./webgl/HomeExperience/HomeExperience";
+
+            async function main() {
+                const container = document.querySelector('#scene-container');
+
+                if (!container) {
+                    return;
+                }
+
+                const homeExperience = new HomeExperience(container);
+                homeExperience.start();
+
+                window.addEventListener('beforeunload', () => {
+                    if (homeExperience) {
+                        homeExperience.dispose();
+                    }
+                });
+
+                document.addEventListener('pagehide', () => {
+                    if (homeExperience) {
+                        homeExperience.dispose();
+                    }
+                });
+            }
+
+            main();
+        </script>
 
     </body>
 

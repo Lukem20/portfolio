@@ -28,12 +28,12 @@ function createBackground () {
 
         void main() {
 
-            float strength = distance(vUv, vec2(0.5));
+            float strength = distance(vUv, vec2(0.5)) * 0.1;
 
+            vec3 yellowColor = vec3(0.957, 1.0, 0.369); // #F4FF5E
             vec3 blackColor = vec3(0.0);
-            vec3 uvColor = vec3(vUv, 0.5);
 
-            vec3 mixedColor = mix(blackColor, uvColor, strength);
+            vec3 mixedColor = mix(blackColor, yellowColor, strength);
 
             gl_FragColor = vec4(mixedColor, 1.0);
         }
