@@ -1,15 +1,14 @@
+// Systems
+import { createScene } from '../systems/scene.js';
+import { createRenderer } from '../systems/renderer.js';
+import { Resizer } from '../systems/Resizer.js';
+import { Loop } from '../systems/Loop.js';
+
 // Components
 import { createCamera } from './components/camera.js';
 import { createLights } from './components/lights.js';
-import { createScene } from './components/scene.js';
 import { createBackground } from './components/background.js';
 import { createWheels } from './components/photoWheels.js'
-// import { PhotoWheels } from './components/PhotoWheels/PhotoWheels.js';
-
-// Systems
-import { createRenderer } from './systems/renderer.js';
-import { Resizer } from './systems/Resizer.js';
-import { Loop } from './systems/Loop.js';
 
 let camera;
 let renderer;
@@ -17,7 +16,7 @@ let scene;
 let loop;
 let photoWheels;
 
-class World {
+class HomeExperience {
     constructor(container) {
         camera = createCamera();
         renderer = createRenderer();
@@ -58,4 +57,4 @@ class World {
     }
 }
     
-export { World };
+export { HomeExperience };
