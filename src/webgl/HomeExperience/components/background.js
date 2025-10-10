@@ -27,7 +27,7 @@ function createBackground () {
 
         void main() {
 
-            float strength = distance(vUv, vec2(0.5)) * 0.05;
+            float strength = distance(vUv, vec2(0.5)) * 0.1;
 
             vec3 yellowColor = vec3(0.957, 1.0, 0.369); // #F4FF5E
             vec3 blackColor = vec3(0.0);
