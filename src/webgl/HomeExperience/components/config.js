@@ -1,4 +1,8 @@
-"use strict";
+export const GEOMETRY_CONFIG = {
+    SIZE: 43,
+    CORNER_RADIUS: 2.5,
+    CORNER_SMOOTHNESS: 12,
+};
 
 export const PHOTOS_DATA = [
     {
@@ -90,12 +94,6 @@ export const WHEEL_CONFIG = {
     POSITION_OFFSET: -13,
     RADIAN_INTERVAL: (2 * Math.PI) / PHOTOS_DATA.length,
 
-};
-
-export const GEOMETRY_CONFIG = {
-    SIZE: 43,
-    CORNER_RADIUS: 2.5,
-    CORNER_SMOOTHNESS: 12,
 };
 
 export const ANIMATION_CONFIG = {

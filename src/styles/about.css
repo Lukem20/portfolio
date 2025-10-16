@@ -42,6 +42,10 @@
 
 
 /* *** Skills *** */
+#scene-container {
+    
+}
+
 #about #skills {
     position: relative;
 }

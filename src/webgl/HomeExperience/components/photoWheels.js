@@ -1,15 +1,14 @@
-"use strict";
 import { createTexture } from './PhotoWheel/texture.js'
 import { createMaterial } from './PhotoWheel/material.js';
 import { createGeometry } from './PhotoWheel/geometry.js';
 import { createMesh } from './PhotoWheel/mesh.js';
 import {
-    WHEEL_CONFIG,
     GEOMETRY_CONFIG,
+    PHOTOS_DATA,
+    WHEEL_CONFIG,
     ANIMATION_CONFIG,
     INTERACTION_CONFIG,
     SCROLL_CONFIG,
-    PHOTOS_DATA,
 } from './config.js';
 import {
     Group,
@@ -20,9 +19,11 @@ import {
     Vector3,
 } from 'three';
 
+
+
 function createWheels (camera, container, lights) {
     /**
-    * Create geometry, texture, materials, meshes, and photo wheel groups
+    *   Create geometry, texture, materials, meshes, and photo wheel groups
     */
    const textureLoader = new TextureLoader();
    const materials = [];
@@ -59,9 +60,9 @@ function createWheels (camera, container, lights) {
 
 
     /**
-    * Events and Listener logic
+    * Event Listener logic
     */
-
+   
     /* Scroll/Wheel Event */
     let targetVelocity = 0;
     let currentVelocity = 0;
@@ -83,8 +84,6 @@ function createWheels (camera, container, lights) {
     let dragDidMove = false;
     let dragStartPosition = new Vector2();
     let dragCurrentPosition = new Vector2();
-    let dragStartAngle = 0;
-    let lastDragAngle = 0;
     let dragVelocityHistory = [];
     let lastDragTime = 0;
 
@@ -96,7 +95,6 @@ function createWheels (camera, container, lights) {
     /* Key Press Event */
     let isKeyPressed = false;
     let pressedKeys = new Set();
-    let keyVelocity = 0;
     let isStepRotating = false;
     let stepRotationTarget = 0;
     let stepRotationProgress = 0;
@@ -119,17 +117,16 @@ function createWheels (camera, container, lights) {
     /* Converge Animation State */
     let isConverging = false;
     let convergeProgress = 0;
-    let clickedMesh = null;
 
 
 
+    container.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener('click', handleMouseClick);
+    container.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('wheel', handleWheelEvent);
     document.addEventListener('touchstart', handleTouchStart, false);
     document.addEventListener('touchmove', handleTouchMove);     
     document.addEventListener('touchend', handleTouchEnd);
-    container.addEventListener('mousemove', handleMouseMove);
-    container.addEventListener('click', handleMouseClick);
-    container.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
@@ -140,14 +137,14 @@ function createWheels (camera, container, lights) {
     
 
     function handleWheelEvent(event) {
-        if (isConverging)  {
-            endConvergeAnimation();
-            return;
-        }
+        // Do nothing if wheels are converging
+        if (isConverging) return;
 
+        // Prevent wheels from snapping
         isSnapping = false
         clearTimeout(spinTimeout);
 
+        // Reset hover scale animation
         if (isHovering) {
             for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
                 allPhotoMeshes[i].scale.set(1, 1, 1);
@@ -162,9 +159,10 @@ function createWheels (camera, container, lights) {
         );
 
         if (Math.abs(scroll) < SCROLL_CONFIG.TRACKPAD_THRESHOLD) {
-            // Trackpad
+            // Scroll speed indicates trackpad, apply trackpad scroll multiplier
             velocityChange *= SCROLL_CONFIG.TRACKPAD_MULTIPLIER;
 
+            // Snap after spinTimeout
             clearTimeout(spinTimeout);
             spinTimeout = setTimeout(() => {
                 startSnapAnimation()
@@ -193,22 +191,23 @@ function createWheels (camera, container, lights) {
 
 
     function handleTouchStart(event) {
+        // Do nothing if wheels are converging
+        if(isConverging) return;
+
+        // Prevent wheels from snapping
+        isSnapping = false
+        clearTimeout(spinTimeout);
+
         const firstTouch = event.touches[0];                                      
         xDown = firstTouch.clientX;                                      
         yDown = firstTouch.clientY; 
         
-        if(isConverging) {
-            endConvergeAnimation();
-            return;
-        }
-        
-        stopSnapAnimation();
     }
 
 
 
     function handleTouchMove(event) {
-        if (!xDown || !yDown) { return; }
+        if (!xDown || !yDown) return;
 
         let xUp = event.touches[0].clientX;                                    
         let yUp = event.touches[0].clientY;
@@ -225,6 +224,7 @@ function createWheels (camera, container, lights) {
             targetVelocity = yDiff > 0 ? swipeSpeed : -swipeSpeed;
         }                                                               
 
+        // Clamp velocity [-MAX_VELOCITY, MAX_VELOCITY]
         targetVelocity = Math.max(-ANIMATION_CONFIG.MAX_VELOCITY, Math.min(ANIMATION_CONFIG.MAX_VELOCITY, targetVelocity));
 
         // Reset the swipeSpeed calculation so the wheels don't accelerate
@@ -245,6 +245,7 @@ function createWheels (camera, container, lights) {
 
 
     function handleMouseMove(event) {
+        // Throttle mouse move events for performance
         const now = performance.now();
         if (now - lastMouseMoveTime < 16) return;
         lastMouseMoveTime = now;
@@ -262,33 +263,23 @@ function createWheels (camera, container, lights) {
 
 
     function handleMouseDown(event) {
-
-        if (isConverging) {
-            endConvergeAnimation();
-            return;
-        }
-
-        isDragging = true;
-        dragDidMove = false;
-        dragStartPosition.x = event.clientX;
-        dragStartPosition.y = event.clientY;
-        dragCurrentPosition.x = event.clientX;
-        dragCurrentPosition.y = event.clientY;
-
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-
-        dragStartAngle = Math.atan2(
-            dragStartPosition.y - centerY,
-            dragStartPosition.x - centerX
-        );
-        lastDragAngle = dragStartAngle;
-
-        dragVelocityHistory.length = 0;
-        lastDragTime = performance.now();
+        // Do nothing if wheels are converging
+        if (isConverging) return;
 
         stopSnapAnimation();
         stopStepRotation();
+
+        isDragging = true;
+        dragDidMove = false;
+
+        dragStartPosition.x = event.clientX;
+        dragStartPosition.y = event.clientY;
+
+        dragCurrentPosition.x = event.clientX;
+        dragCurrentPosition.y = event.clientY;
+
+        dragVelocityHistory.length = 0;
+        lastDragTime = performance.now();
 
         document.body.style.cursor = "grabbing";
 
@@ -298,8 +289,6 @@ function createWheels (camera, container, lights) {
 
 
     function handleMouseDrag(event) {
-        if (!isDragging) return;
-
         const now = performance.now()
         const deltaTime = now - lastDragTime;
 
@@ -342,8 +331,6 @@ function createWheels (camera, container, lights) {
 
 
     function handleMouseUp(event) {
-        if (!isDragging) return;
-
         isDragging = false;
         document.body.style.cursor = 'default';
 
@@ -394,6 +381,7 @@ function createWheels (camera, container, lights) {
 
 
     function handleMouseClick() {
+        // Do nothing if dragging
         if (dragDidMove) {
             dragDidMove = false;
             return;
@@ -438,8 +426,8 @@ function createWheels (camera, container, lights) {
             return;
         }
 
+        // Do nothing if converging
         if (isConverging) {
-            endConvergeAnimation();
             return;
         }
 
@@ -486,10 +474,12 @@ function createWheels (camera, container, lights) {
 
 
     function handleEnterKey() {
+        // Do nothing if other animation state is active
         if ( isConverging || isSnapping || isStepRotating || isKeyPressed ) {
             return;
         }
 
+        // Do nothing if moving too fast
         if (Math.abs(currentVelocity) > ANIMATION_CONFIG.VELOCITY_THRESHOLD ||
             Math.abs(targetVelocity) > ANIMATION_CONFIG.VELOCITY_THRESHOLD ) {
             return;
@@ -520,7 +510,6 @@ function createWheels (camera, container, lights) {
         if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
             if (!pressedKeys.has('ArrowUp') && !pressedKeys.has('ArrowDown')) {
                 isKeyPressed = false;
-                keyVelocity = 0;
                 
                 // Start snap animation similar to scroll/swipe end
                 setTimeout(() => {
@@ -546,6 +535,8 @@ function createWheels (camera, container, lights) {
         if (document.hidden && isConverging) {
             endConvergeAnimation();
         }
+
+        resetAllMeshToOriginalState();
     }
 
 
@@ -559,9 +550,7 @@ function createWheels (camera, container, lights) {
             currentVelocity = 0;
             convergeProgress = 0;
 
-            for (let i = 0; i < allPhotoMeshes.length; i++) {
-                resetMeshToOriginalState(allPhotoMeshes[i]);
-            }
+            resetAllMeshToOriginalState();
         }
     }
 
@@ -609,7 +598,6 @@ function createWheels (camera, container, lights) {
 
         isConverging = true;
         convergeProgress = 0;
-        clickedMesh = mesh;
 
         let clickedInTopWheel = topWheel.children.includes(mesh);
         let topTarget, bottomTarget;
@@ -677,11 +665,8 @@ function createWheels (camera, container, lights) {
 
         isConverging = false;
         convergeProgress = 0;
-        clickedMesh = null;
 
-        for (let i = 0; i < allPhotoMeshes.length; i++) {
-            resetMeshToOriginalState(allPhotoMeshes[i]);
-        }
+        resetAllMeshToOriginalState();
     }
 
 
@@ -815,6 +800,14 @@ function createWheels (camera, container, lights) {
 
 
 
+    function resetAllMeshUserData() {
+        for (let i = 0; i < allPhotoMeshes.length; i++) {
+            resetMeshUserData(allPhotoMeshes[i]);
+        }
+    }
+
+
+
     function resetMeshUserData(mesh) {
         delete mesh.userData.isTarget;
         delete mesh.userData.cachedTarget;
@@ -829,15 +822,15 @@ function createWheels (camera, container, lights) {
 
 
 
-    function resetAllMeshUserData() {
+    function resetAllMeshToOriginalState() {
         for (let i = 0; i < allPhotoMeshes.length; i++) {
-            resetMeshUserData(allPhotoMeshes[i]);
+            resetMeshState(allPhotoMeshes[i]);
         }
     }
 
 
 
-    function resetMeshToOriginalState(mesh) {
+    function resetMeshState(mesh) {
         if (mesh.userData.originalPosition) {
             mesh.position.copy(mesh.userData.originalPosition);
         }
@@ -1236,7 +1229,8 @@ function createWheels (camera, container, lights) {
 
             const distanceToCamera = camera.position.distanceTo(mesh.position);
             if (distanceToCamera > 200) {
-                mesh.material.uniforms.uLOD.value = 0.5; // Lower quality for distant objects
+                // Lower quality for distant objects
+                mesh.material.uniforms.uLOD.value = 0.5; 
             } else {
                 mesh.material.uniforms.uLOD.value = 1.0;
             }
