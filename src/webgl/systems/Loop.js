@@ -1,10 +1,11 @@
-"use strict";
 import { Clock } from "three";
+import EventEmitter from "./EventEmitter";
 
 const clock = new Clock();
 
-class Loop {
+class Loop extends EventEmitter {
     constructor(camera, scene, renderer) {
+        super();
         this.camera = camera;
         this.scene = scene;
         this.renderer = renderer;
@@ -13,6 +14,7 @@ class Loop {
 
     start() {
         this.renderer.setAnimationLoop(() => {
+            this.trigger('tick');
             this.tick();
             this.renderer.render(this.scene, this.camera);
         });

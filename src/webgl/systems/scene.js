@@ -1,4 +1,3 @@
-"use strict";
 import { Scene } from 'three';
 
 function createScene() {

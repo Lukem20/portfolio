@@ -1,26 +1,30 @@
-"use strict";
+import EventEmitter from "./EventEmitter";
 
-const setSize = (container, camera, renderer) => {
-    const sizes = {
-        width: container.clientWidth,
-        height: container.clientHeight,
-        pixelRatio: Math.min(window.devicePixelRatio, 2),
-    }
-    camera.aspect = sizes.width / sizes.height;
-    camera.updateProjectionMatrix();
-    
-    renderer.setSize(sizes.width, sizes.height);
-    renderer.setPixelRatio(sizes.pixelRatio);
-};
-
-class Resizer {
+class Resizer extends EventEmitter {
     constructor(container, camera, renderer) {
-        setSize(container, camera, renderer);
+        super();
+        this.container = container;
+        this.camera = camera;
+        this.renderer = renderer;
+        this.width = container.clientWidth;
+        this.height = container.clientHeight;
+        this.pixelRatio = Math.min(window.devicePixelRatio, 2);
+        this.setSize();
 
-        // Set the size again if a resize occurs
         window.addEventListener("resize", () => {
-            setSize(container, camera, renderer);
+            this.trigger('resize');
+            this.setSize();
         });
+    }
+
+    setSize() {
+        this.width = this.container.clientWidth;
+        this.height = this.container.clientHeight;
+        this.camera.aspect = this.width / this.height;
+        this.camera.updateProjectionMatrix();
+        
+        this.renderer.setSize(this.width, this.height);
+        this.renderer.setPixelRatio(this.pixelRatio);
     }
 }
 

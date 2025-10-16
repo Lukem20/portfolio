@@ -1,3 +1,4 @@
+import { HomeExperience } from '../HomeExperience.js';
 import { createTexture } from './PhotoWheel/texture.js'
 import { createMaterial } from './PhotoWheel/material.js';
 import { createGeometry } from './PhotoWheel/geometry.js';
@@ -20,8 +21,8 @@ import {
 } from 'three';
 
 
-
-function createWheels (camera, container, lights) {
+function createWheels () {
+    const experience = new HomeExperience();
     /**
     *   Create geometry, texture, materials, meshes, and photo wheel groups
     */
@@ -43,7 +44,7 @@ function createWheels (camera, container, lights) {
         const texture = createTexture(textureLoader, PHOTOS_DATA[i].imagePath);
         texturesToDispose.push(texture);
 
-        const material = createMaterial(texture, lights);
+        const material = createMaterial(texture, experience.lights);
         materials.push(material);
         materialsToDispose.push(material);
 
@@ -120,9 +121,9 @@ function createWheels (camera, container, lights) {
 
 
 
-    container.addEventListener('mousemove', handleMouseMove);
-    container.addEventListener('click', handleMouseClick);
-    container.addEventListener('mousedown', handleMouseDown);
+    experience.container.addEventListener('mousemove', handleMouseMove);
+    experience.container.addEventListener('click', handleMouseClick);
+    experience.container.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('wheel', handleWheelEvent);
     document.addEventListener('touchstart', handleTouchStart, false);
     document.addEventListener('touchmove', handleTouchMove);     
@@ -782,7 +783,7 @@ function createWheels (camera, container, lights) {
     function forceHoverCheck() {
         if (isConverging) return;
 
-        raycaster.setFromCamera(mouse, camera);
+        raycaster.setFromCamera(mouse, experience.camera);
         const rayIntersects = raycaster.intersectObjects(allPhotoMeshes);
 
         if(!rayIntersects.length) {
@@ -855,15 +856,15 @@ function createWheels (camera, container, lights) {
         document.removeEventListener('visibilitychange', handleVisibilityChange);
         document.removeEventListener('pageshow', handlePageShow);
         document.removeEventListener('pagehide', handlePageHide);  
-        container.removeEventListener('mousemove', handleMouseMove);
-        container.removeEventListener('click', handleMouseClick);
-        container.removeEventListener('mousedown', handleMouseDown);
+        experience.container.removeEventListener('mousemove', handleMouseMove);
+        experience.container.removeEventListener('click', handleMouseClick);
+        experience.container.removeEventListener('mousedown', handleMouseDown);
         document.removeEventListener('mouseup', handleMouseUp);
 
         disposeResources();
 
-        if (container.querySelector('canvas')) {
-            const canvas = container.querySelector('canvas');
+        if (experience.container.querySelector('canvas')) {
+            const canvas = experience.container.querySelector('canvas');
             canvas.removeEventListener('webglcontextlost', handleContextLoss);
             canvas.removeEventListener('webglcontextrestored', handleContextRestored);
         }
@@ -1066,10 +1067,10 @@ function createWheels (camera, container, lights) {
                 return;
             }
 
-            raycaster.setFromCamera(mouse, camera);
+            raycaster.setFromCamera(mouse, experience.camera);
 
             const visibleMeshes = allPhotoMeshes.filter(mesh => {
-                const distance = camera.position.distanceTo(mesh.position);
+                const distance = experience.camera.position.distanceTo(mesh.position);
                 return distance < 400; 
             });
 
@@ -1170,7 +1171,7 @@ function createWheels (camera, container, lights) {
                 
                 // Tilt effect animation
                 hoveredItem.getWorldPosition(tiltVector);
-                tiltVector.project(camera);
+                tiltVector.project(experience.camera);
 
                 const screenX = tiltVector.x;
                 const screenY = tiltVector.y;
@@ -1220,14 +1221,14 @@ function createWheels (camera, container, lights) {
 
         for (let i = 0; i < visibleMaterials.length; i++) {
             if (visibleMaterials[i].updateLights) {
-                visibleMaterials[i].updateLights(lights);
+                visibleMaterials[i].updateLights(experience.lights);
             }
         }
 
         for (let  i = 0; i < allPhotoMeshes.length; i++) {
             const mesh = allPhotoMeshes[i];
 
-            const distanceToCamera = camera.position.distanceTo(mesh.position);
+            const distanceToCamera = experience.camera.position.distanceTo(mesh.position);
             if (distanceToCamera > 200) {
                 // Lower quality for distant objects
                 mesh.material.uniforms.uLOD.value = 0.5; 

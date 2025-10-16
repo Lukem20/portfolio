@@ -1,5 +1,4 @@
 // https://discourse.threejs.org/t/roundedrectangle-squircle/28645
-"use strict";
 import {     
     BufferGeometry,
     BufferAttribute,

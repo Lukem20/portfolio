@@ -8,52 +8,51 @@ import { Loop } from '../systems/Loop.js';
 import { createCamera } from './components/camera.js';
 import { createLights } from './components/lights.js';
 import { createBackground } from './components/background.js';
-import { createWheels } from './components/photoWheels.js'
+import { createWheels } from './components/photoWheels.js';
 
-let camera;
-let renderer;
-let scene;
-let loop;
-let photoWheels;
+let instance = null;
 
 class HomeExperience {
     constructor(container) {
-        camera = createCamera();
-        renderer = createRenderer();
-        scene = createScene();
-        loop = new Loop(camera, scene, renderer);
-        container.append(renderer.domElement);
+        if (instance) return instance;
+        instance = this;
 
-        const background = createBackground();
-        const lights = createLights(scene);
+        this.container = container;
+        this.renderer = createRenderer();
+        this.scene = createScene();
+        this.camera = createCamera();
+        this.loop = new Loop(this.camera, this.scene, this.renderer);
+        this.background = createBackground();
+        this.lights = createLights();
+        this.photoWheels = createWheels();
         
-        // photoWheels = new PhotoWheels(camera, container);
-        photoWheels = createWheels(camera, container, lights);
-        photoWheels.setupWebGL(renderer);
+        this.container.append(this.renderer.domElement);
+        this.photoWheels.setupWebGL(this.renderer);
+        
+        this.scene.add(this.lights, this.photoWheels, this.camera, this.background);
 
-        scene.add(lights);
-        scene.add(photoWheels, camera, background);
+        for (const light of this.lights.children) this.loop.updatables.push(light);
+        this.loop.updatables.push(this.camera);
+        this.loop.updatables.push(this.photoWheels);
+        this.loop.on('tick', ()=> {});
 
-        loop.updatables.push(camera);
-        loop.updatables.push(photoWheels);
-        for (const light of lights.children) loop.updatables.push(light);
-
-        const resizer = new Resizer(container, camera, renderer);
+        this.resizer = new Resizer(this.container, this.camera, this.renderer);
+        this.resizer.on('resize', () => {});
     }
 
     render() {
-        renderer.render(scene, camera);
+        this.renderer.render(this.scene, this.camera);
     }
     dispose() {
-        if (photoWheels) {
-            photoWheels.cleanup();
+        if (this.photoWheels) {
+            this.photoWheels.cleanup();
         }
     }
     start() {
-        loop.start();
+        this.loop.start();
     }
     stop() {
-        loop.stop();
+        this.loop.stop();
     }
 }
     

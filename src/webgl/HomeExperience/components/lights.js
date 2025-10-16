@@ -1,16 +1,18 @@
-"use strict";
 import { 
     AmbientLight,
     SpotLight,
     Object3D,
     Group,
 } from 'three';
+import { HomeExperience } from '../HomeExperience';
 
-function createLights(scene) {
+function createLights() {
+    const experience = new HomeExperience();
+
     const aLight = new AmbientLight(0xffffff, 0.1);
-    const spotLight1 = createSpotlight( 0xFAFAFA, 240, scene );
-    const spotLight2 = createSpotlight( 0x36EEF5, 120, scene );
-    const spotLight3 = createSpotlight( 0xFF5F37, 0, scene );
+    const spotLight1 = createSpotlight( 0xFAFAFA, 240, experience.scene );
+    const spotLight2 = createSpotlight( 0x36EEF5, 120, experience.scene );
+    const spotLight3 = createSpotlight( 0xFF5F37, 0, experience.scene );
 
     aLight.tick = () => {};
 
