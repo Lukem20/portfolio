@@ -5,56 +5,62 @@ import {
     Color,
 } from 'three';
 
-function createBackground () {
-    
-    const uniforms = {
-        'centerColor': { value: new Color( 0x0077ff ) },
-        'outerColor': { value: new Color( 0xffffff ) },
-    };
-    
-    const vertexShader = `
-        varying vec2 vUv;
 
-        void main() {
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-
-            vUv = uv;
+export default class Background {
+    constructor() {
+        this.uniforms =  {
+            'centerColor': { value: new Color( 0x0077ff ) },
+            'outerColor': { value: new Color( 0xffffff ) },
         }
-    `;
-    
-    const fragmentShader = `
-        varying vec2 vUv;
 
-        void main() {
-
-            float strength = distance(vUv, vec2(0.5)) * 0.1;
-
-            vec3 yellowColor = vec3(0.957, 1.0, 0.369); // #F4FF5E
-            vec3 blackColor = vec3(0.0);
-
-            vec3 mixedColor = mix(blackColor, yellowColor, strength);
-
-            gl_FragColor = vec4(mixedColor, 1.0);
+        this.sizes = {
+            height: 400,
+            width: 400,
         }
-    `;
-    
-    const sizes = {
-        height: 400,
-        width: 400,
-    };
 
-    const geometry = new PlaneGeometry(sizes.width, sizes.height);
-    const material = new ShaderMaterial({
-        uniforms: uniforms,
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader,
-    });
+        this.geometry = null;
+        this.geometry = null;
+        this.material = null;
 
-    const backgroundMesh = new Mesh(geometry, material);
-    backgroundMesh.receiveShadow = true;
-    backgroundMesh.position.z = -3.5
+        this.vertexShader = `
+            varying vec2 vUv;
 
-    return backgroundMesh;
+            void main() {
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+                vUv = uv;
+            }
+        `;
+
+        this.fragmentShader = `
+            varying vec2 vUv;
+
+            void main() {
+
+                float strength = distance(vUv, vec2(0.5)) * 0.1;
+
+                vec3 yellowColor = vec3(0.957, 1.0, 0.369); // #F4FF5E
+                vec3 blackColor = vec3(0.0);
+
+                vec3 mixedColor = mix(blackColor, yellowColor, strength);
+
+                gl_FragColor = vec4(mixedColor, 1.0);
+            }
+        `;
+
+        this.createMesh();
+    }
+
+
+    createMesh() {
+        this.geometry = new PlaneGeometry(this.sizes.width, this.sizes.height);;
+        this.material = new ShaderMaterial({
+            uniforms: this.uniforms,
+            vertexShader: this.vertexShader,
+            fragmentShader: this.fragmentShader,
+        });
+        this.mesh = new Mesh(this.geometry, this.material);
+        this.mesh.receiveShadow = true;
+        this.mesh.position.z = -3.5
+    }
 }
-
-export { createBackground };

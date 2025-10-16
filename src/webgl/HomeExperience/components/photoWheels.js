@@ -1,4 +1,4 @@
-import { HomeExperience } from '../HomeExperience.js';
+import HomeExperience from '../HomeExperience.js';
 import { createTexture } from './PhotoWheel/texture.js'
 import { createMaterial } from './PhotoWheel/material.js';
 import { createGeometry } from './PhotoWheel/geometry.js';
@@ -21,135 +21,265 @@ import {
 } from 'three';
 
 
-function createWheels () {
-    const experience = new HomeExperience();
-    /**
-    *   Create geometry, texture, materials, meshes, and photo wheel groups
-    */
-   const textureLoader = new TextureLoader();
-   const materials = [];
-   const texturesToDispose = [];
-   const materialsToDispose = [];
-   const allPhotoMeshes = [];
-   const topWheel = new Group();
-   const bottomWheel = new Group();
-   const roundedRectangleGeometry = createGeometry(
-       GEOMETRY_CONFIG.SIZE,
-       GEOMETRY_CONFIG.SIZE,
-       GEOMETRY_CONFIG.CORNER_RADIUS,
-       GEOMETRY_CONFIG.CORNER_SMOOTHNESS
-   );
-    
-    for (let i = 0; i < PHOTOS_DATA.length; i++) {
-        const texture = createTexture(textureLoader, PHOTOS_DATA[i].imagePath);
-        texturesToDispose.push(texture);
+export default class PhotoWheels {
 
-        const material = createMaterial(texture, experience.lights);
-        materials.push(material);
-        materialsToDispose.push(material);
-
-        const photoMeshTop = createMesh(roundedRectangleGeometry, materials[i], PHOTOS_DATA[i], i);
-        const photoMeshBottom = createMesh(roundedRectangleGeometry, materials[i], PHOTOS_DATA[i], i);
-
-        allPhotoMeshes.push(photoMeshTop, photoMeshBottom);
-        topWheel.add(photoMeshTop);
-        bottomWheel.add(photoMeshBottom);
+    constructor() {
+        this.experience = new HomeExperience();
+        this.initializeState();
+        this.initializeScene();
+        this.setupEventListeners();
     }
-    topWheel.translateY(WHEEL_CONFIG.POSITION + WHEEL_CONFIG.POSITION_OFFSET);
-    bottomWheel.translateY(-WHEEL_CONFIG.POSITION + WHEEL_CONFIG.POSITION_OFFSET);
 
 
 
-    /**
-    * Event Listener logic
-    */
-   
-    /* Scroll/Wheel Event */
-    let targetVelocity = 0;
-    let currentVelocity = 0;
-    let spinTimeout = null;
+    initializeState() {
+        /* *** Scene Objects *** */
+        this.textureLoader = new TextureLoader();
+        this.materials = [];
+        this.texturesToDispose = [];
+        this.materialsToDispose = [];
+        this.allPhotoMeshes = [];
+        this.topWheel = new Group();
+        this.bottomWheel = new Group();
+        this.roundedRectangleGeometry = null;
 
-    /* Touch/Swipe Event */
-    let xDown = null;                                                        
-    let yDown = null;
+        /* *** Scroll/Wheel Animation *** */
+        this.targetVelocity = 0;
+        this.currentVelocity = 0;
+        this.spinTimeout = null;
 
-    /* Mouse Event */
-    const mouse = new Vector2();
-    let mouseMovedSinceLastCheck = false;
-    let lastHoverCheck = 0;
-    let lastMouseMoveTime = 0;
-    const tiltVector = new Vector3();
+        /* *** Touch/Swipe *** */
+        this.xDown = null;
+        this.yDown = null;
 
-    /* Drag Event */
-    let isDragging = false;
-    let dragDidMove = false;
-    let dragStartPosition = new Vector2();
-    let dragCurrentPosition = new Vector2();
-    let dragVelocityHistory = [];
-    let lastDragTime = 0;
+        /* *** Mouse State *** */
+        this.mouse = new Vector2();
+        this.mouseMovedSinceLastCheck = false;
+        this.lastHoverCheck = 0;
+        this.lastMouseMoveTime = 0;
+        this.tiltVector = new Vector3()
 
-    /* Click Event */
-    let isHovering = false;
-    let hoveredItem = null;
-    const raycaster = new Raycaster();
+        /* *** Drag State *** */
+        this.isDragging = false;
+        this.dragDidMove = false;
+        this.dragStartPosition = new Vector2();
+        this.dragCurrentPosition = new Vector2();
+        this.dragVelocityHistory = [];
+        this.lastDragTime = 0;
 
-    /* Key Press Event */
-    let isKeyPressed = false;
-    let pressedKeys = new Set();
-    let isStepRotating = false;
-    let stepRotationTarget = 0;
-    let stepRotationProgress = 0;
-    let stepRotationVelocity = 0;
+        /* *** Hover State *** */
+        this.isHovering = false;
+        this.hoveredItem = null;
+        this.raycaster = new Raycaster();
 
-    /* Context lost / visibility */
-    let isContextLost = false;
-    
-    /* Snapping + Springing animation state */
-    let isSnapping = false;
-    let snapStartRotation = 0;
-    let snapTargetRotation = 0;
-    let snapProgress = 0;
-    let springVelocity = 0;
-    let springDamping = ANIMATION_CONFIG.INITIAL_SPRING_DAMPING;
-    let springStiffness = ANIMATION_CONFIG.INITIAL_SPRING_STIFFNESS;
-    const tempVector = new Vector3();
-    const snapPoint = { x: 0, y: 0, theta: 0 };
+        /* *** Keyboard State *** */
+        this.isKeyPressed = false;
+        this.pressedKeys = new Set();
+        this.isStepRotating = false;
+        this.stepRotationTarget = 0;
+        this.stepRotationProgress = 0;
+        this.stepRotationVelocity = 0;
 
-    /* Converge Animation State */
-    let isConverging = false;
-    let convergeProgress = 0;
+        /* *** Snapping Animation State *** */
+        this.isSnapping = false;
+        this.snapStartRotation = 0;
+        this.snapTargetRotation = 0;
+        this.snapProgress = 0;
+        this.springVelocity = 0;
+        this.springDamping = ANIMATION_CONFIG.INITIAL_SPRING_DAMPING;
+        this.springStiffness = ANIMATION_CONFIG.INITIAL_SPRING_STIFFNESS;
+        this.tempVector = new Vector3();
+        this.snapPoint = { x: 0, y: 0, theta: 0 };
 
+        /* *** Converge Animation State *** */
+        this.isConverging = false;
+        this.convergeProgress = 0;
 
-
-    experience.container.addEventListener('mousemove', handleMouseMove);
-    experience.container.addEventListener('click', handleMouseClick);
-    experience.container.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('wheel', handleWheelEvent);
-    document.addEventListener('touchstart', handleTouchStart, false);
-    document.addEventListener('touchmove', handleTouchMove);     
-    document.addEventListener('touchend', handleTouchEnd);
-    document.addEventListener('mouseup', handleMouseUp);
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    document.addEventListener('pageshow', handlePageShow);
-    document.addEventListener('pagehide', handlePageHide);
-    
+        /* *** Context/Visibility State *** */
+        this.isContextLost = false;
+    }
     
 
-    function handleWheelEvent(event) {
+
+    initializeScene() {
+        // Geometry
+        this.roundedRectangleGeometry = createGeometry(
+            GEOMETRY_CONFIG.SIZE,
+            GEOMETRY_CONFIG.SIZE,
+            GEOMETRY_CONFIG.CORNER_RADIUS,
+            GEOMETRY_CONFIG.CORNER_SMOOTHNESS
+        );
+
+        this.createPhotoMeshes();
+        this.positionWheels();
+    }
+
+    createPhotoMeshes() {
+        for (let i = 0; i < PHOTOS_DATA.length; i++) {
+            // Create texture
+            const texture = createTexture(this.textureLoader, PHOTOS_DATA[i].imagePath);
+            this.texturesToDispose.push(texture);
+            // Create material
+            const material = createMaterial(texture, this.experience.lights);
+            this.materials.push(material);
+            this.materialsToDispose.push(material);
+            // Create mesh
+            const photoMeshTop = createMesh(this.roundedRectangleGeometry, this.materials[i], PHOTOS_DATA[i], i);
+            const photoMeshBottom = createMesh(this.roundedRectangleGeometry, this.materials[i], PHOTOS_DATA[i], i);
+            // Add to Group
+            this.allPhotoMeshes.push(photoMeshTop, photoMeshBottom);
+            this.topWheel.add(photoMeshTop);
+            this.bottomWheel.add(photoMeshBottom);
+        }
+    }
+
+    positionWheels() {
+        this.topWheel.translateY(
+            WHEEL_CONFIG.POSITION + WHEEL_CONFIG.POSITION_OFFSET
+        );
+        this.bottomWheel.translateY(
+            -WHEEL_CONFIG.POSITION + WHEEL_CONFIG.POSITION_OFFSET
+        );
+    }
+    
+
+
+    setupEventListeners() {
+        this.experience.container.addEventListener('mousemove', this.handleMouseMove);
+        this.experience.container.addEventListener('click', this.handleMouseClick);
+        this.experience.container.addEventListener('mousedown', this.handleMouseDown);
+        
+        document.addEventListener('wheel', this.handleWheelEvent);
+        document.addEventListener('touchstart', this.handleTouchStart, false);
+        document.addEventListener('touchmove', this.handleTouchMove);
+        document.addEventListener('touchend', this.handleTouchEnd);
+        document.addEventListener('mouseup', this.handleMouseUp);
+        document.addEventListener('keydown', this.handleKeyDown);
+        document.addEventListener('keyup', this.handleKeyUp);
+        document.addEventListener('visibilitychange', this.handleVisibilityChange);
+        document.addEventListener('pageshow', this.handlePageShow);
+        document.addEventListener('pagehide', this.handlePageHide);
+    }
+
+    
+    /* *** Event Listeners *** */
+
+    handleMouseMove = (event) => {
+        // Throttle mouse move events for performance
+        const now = performance.now();
+        if (now - this.lastMouseMoveTime < 16) return;
+
+        this.lastMouseMoveTime = now;
+
+        // Normalize mouse coordinates
+        this.mouse.x = event.clientX / window.innerWidth * 2 - 1;
+        this.mouse.y = -(event.clientY / window.innerHeight * 2 - 1);
+        this.mouseMovedSinceLastCheck = true;
+        
+        if (this.isDragging) {
+            this.handleMouseDrag(event);
+        }
+    }
+
+
+    handleMouseDrag = (event) => {
+        const now = performance.now()
+        const deltaTime = now - this.lastDragTime;
+
+        this.dragCurrentPosition.x = event.clientX;
+        this.dragCurrentPosition.y = event.clientY;
+
+        const deltaX = this.dragCurrentPosition.x - this.dragStartPosition.x;
+        const sensitivity = 4000;
+        let angleDiff = (deltaX / sensitivity) * Math.PI * 2;
+        
+        // Handle angle wrapping around -π to π
+        this.dragStartPosition.x = this.dragCurrentPosition.x;
+        this.dragStartPosition.y = this.dragCurrentPosition.y;
+
+        if (Math.abs(angleDiff) > 0.001) {
+            this.dragDidMove = true;
+            const maxDragSpeed = 0.075;
+            angleDiff = Math.max(-maxDragSpeed, Math.min(maxDragSpeed, angleDiff));
+
+            this.rotateWheels(angleDiff);
+
+            if (deltaTime > 0) {
+                const angularVelocity  = angleDiff / (deltaTime * 1000);
+                this.dragVelocityHistory.push({
+                    velocity: angularVelocity,
+                    time: now,
+                });
+
+                if (this.dragVelocityHistory.length > INTERACTION_CONFIG.VELOCITY_HISTORY_LENGTH) {
+                    this.dragVelocityHistory.shift();
+                }
+            }
+        }
+
+        this.lastDragTime = now;
+
+        event.preventDefault();
+    }
+
+
+    handleMouseClick = () => {
+        // Do nothing if dragging
+        if (this.dragDidMove) {
+            this.dragDidMove = false;
+            return;
+        }
+
+        // If hovering and wheel not moving too fast
+        if (this.isHovering && Math.abs(this.currentVelocity) < INTERACTION_CONFIG.VELOCITY_CLICK_THRESHOLD) {
+            if (this.isSnapping) {
+                setTimeout(() => {
+                    if (this.isHovering) {
+                        this.executeClick()
+                    }
+                }, 100);
+            } else {
+                this.executeClick();
+            }
+        } 
+    }
+
+
+    handleMouseDown = (event) => {
         // Do nothing if wheels are converging
-        if (isConverging) return;
+        if (this.isConverging) return;
+
+        this.stopSnapAnimation();
+        this.stopStepRotation();
+
+        this.isDragging = true;
+        this.dragDidMove = false;
+
+        this.dragStartPosition.x = event.clientX;
+        this.dragStartPosition.y = event.clientY;
+
+        this.dragCurrentPosition.x = event.clientX;
+        this.dragCurrentPosition.y = event.clientY;
+
+        this.dragVelocityHistory.length = 0;
+        this.lastDragTime = performance.now();
+
+        document.body.style.cursor = "grabbing";
+
+        event.preventDefault();
+    }
+
+
+    handleWheelEvent = (event) => {
+        // Do nothing if wheels are converging
+        if (this.isConverging) return;
 
         // Prevent wheels from snapping
-        isSnapping = false
-        clearTimeout(spinTimeout);
+        this.isSnapping = false
+        clearTimeout(this.spinTimeout);
 
-        // Reset hover scale animation
-        if (isHovering) {
-            for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
-                allPhotoMeshes[i].scale.set(1, 1, 1);
-            }
+        if (this.isHovering) {
+            this.resetHoverScale()
         }
 
         const scroll = event.deltaY;
@@ -164,182 +294,90 @@ function createWheels () {
             velocityChange *= SCROLL_CONFIG.TRACKPAD_MULTIPLIER;
 
             // Snap after spinTimeout
-            clearTimeout(spinTimeout);
-            spinTimeout = setTimeout(() => {
-                startSnapAnimation()
-                setTimeout(() => forceHoverCheck(), SCROLL_CONFIG.TRACKPAD_THRESHOLD);
+            clearTimeout(this.spinTimeout);
+            this.spinTimeout = setTimeout(() => {
+                this.startSnapAnimation()
+                setTimeout(() => this.forceHoverCheck(), SCROLL_CONFIG.TRACKPAD_THRESHOLD);
             }, SCROLL_CONFIG.TRACKPAD_SNAP_DELAY);
         } else {
-            // Mouse wheel
-            clearTimeout(spinTimeout);
+            // Scroll speed indicates mouse wheel
+            clearTimeout(this.spinTimeout);
 
-            spinTimeout = setTimeout(() => {
-                startSnapAnimation()
-                setTimeout(() => forceHoverCheck(), 50);
+            this.spinTimeout = setTimeout(() => {
+                this.startSnapAnimation()
+                setTimeout(() => this.forceHoverCheck(), 50);
             }, SCROLL_CONFIG.MOUSE_WHEEL_SNAP_DELAY);
         }
 
+        // Determine scroll direction
         if (scroll > 0) {
-            targetVelocity -= velocityChange;
+            this.targetVelocity -= velocityChange;
         } else {
-            targetVelocity += velocityChange;
+            this.targetVelocity += velocityChange;
         }
 
-        // Clamp velocity [-MAX_VELOCITY, MAX_VELOCITY]
-        targetVelocity = Math.max(-ANIMATION_CONFIG.MAX_VELOCITY, Math.min(ANIMATION_CONFIG.MAX_VELOCITY, targetVelocity));
+        this.targetVelocity = this.clampVelocity(this.targetVelocity);
     }
+    
 
-
-
-    function handleTouchStart(event) {
+    handleTouchStart = (event) => {
         // Do nothing if wheels are converging
-        if(isConverging) return;
+        if(this.isConverging) return;
 
         // Prevent wheels from snapping
-        isSnapping = false
-        clearTimeout(spinTimeout);
+        this.isSnapping = this.false
+        clearTimeout(this.spinTimeout);
 
         const firstTouch = event.touches[0];                                      
-        xDown = firstTouch.clientX;                                      
-        yDown = firstTouch.clientY; 
-        
+        this.xDown = firstTouch.clientX;                                      
+        this.yDown = firstTouch.clientY; 
     }
 
 
-
-    function handleTouchMove(event) {
-        if (!xDown || !yDown) return;
+    handleTouchMove = (event) => {
+        if (!this.xDown || !this.yDown) return;
 
         let xUp = event.touches[0].clientX;                                    
         let yUp = event.touches[0].clientY;
-        let xDiff = xDown - xUp;
-        let yDiff = yDown - yUp;
+        let xDiff = this.xDown - xUp;
+        let yDiff = this.yDown - yUp;
 
         let swipeSpeed = Math.sqrt(( Math.pow(xDiff, 2) + Math.pow(yDiff, 2) )) / SCROLL_CONFIG.SWIPE_DIVISOR;
         swipeSpeed = Math.min(swipeSpeed, SCROLL_CONFIG.MAX_SWIPE_SPEED);
 
         // Determine swipe direction
         if (Math.abs(xDiff) > Math.abs(yDiff)) {
-            targetVelocity = xDiff > 0 ? -swipeSpeed : swipeSpeed;
+            this.targetVelocity = xDiff > 0 ? -swipeSpeed : swipeSpeed;
         } else {
-            targetVelocity = yDiff > 0 ? swipeSpeed : -swipeSpeed;
+            this.targetVelocity = yDiff > 0 ? swipeSpeed : -swipeSpeed;
         }                                                               
 
-        // Clamp velocity [-MAX_VELOCITY, MAX_VELOCITY]
-        targetVelocity = Math.max(-ANIMATION_CONFIG.MAX_VELOCITY, Math.min(ANIMATION_CONFIG.MAX_VELOCITY, targetVelocity));
+        this.targetVelocity = this.clampVelocity(this.targetVelocity);
 
         // Reset the swipeSpeed calculation so the wheels don't accelerate
-        xDown = xUp;
-        yDown = yUp;
+        this.xDown = xUp;
+        this.yDown = yUp;
 
-        clearTimeout(spinTimeout);
-        spinTimeout = setTimeout(startSnapAnimation, SCROLL_CONFIG.SWIPE_SNAP_DELAY);
+        clearTimeout(this.spinTimeout);
+        this.spinTimeout = setTimeout(this.startSnapAnimation, SCROLL_CONFIG.SWIPE_SNAP_DELAY);
     }
 
 
-    
-    function handleTouchEnd() {
-        xDown = null;
-        yDown = null;
+    handleTouchEnd = () => {
+        this.xDown = null;
+        this.yDown = null;
     }
 
 
-
-    function handleMouseMove(event) {
-        // Throttle mouse move events for performance
-        const now = performance.now();
-        if (now - lastMouseMoveTime < 16) return;
-        lastMouseMoveTime = now;
-
-        // Normalize mouse coordinates
-        mouse.x = event.clientX / window.innerWidth * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight * 2 - 1);
-        mouseMovedSinceLastCheck = true;
-        
-        if (isDragging) {
-            handleMouseDrag(event);
-        }
-    }
-
-
-
-    function handleMouseDown(event) {
-        // Do nothing if wheels are converging
-        if (isConverging) return;
-
-        stopSnapAnimation();
-        stopStepRotation();
-
-        isDragging = true;
-        dragDidMove = false;
-
-        dragStartPosition.x = event.clientX;
-        dragStartPosition.y = event.clientY;
-
-        dragCurrentPosition.x = event.clientX;
-        dragCurrentPosition.y = event.clientY;
-
-        dragVelocityHistory.length = 0;
-        lastDragTime = performance.now();
-
-        document.body.style.cursor = "grabbing";
-
-        event.preventDefault();
-    }
-
-
-
-    function handleMouseDrag(event) {
-        const now = performance.now()
-        const deltaTime = now - lastDragTime;
-
-        dragCurrentPosition.x = event.clientX;
-        dragCurrentPosition.y = event.clientY;
-
-        const deltaX = dragCurrentPosition.x - dragStartPosition.x;
-        const sensitivity = 4000;
-        let angleDiff = (deltaX / sensitivity) * Math.PI * 2;
-        
-        // Handle angle wrapping around -π to π
-        dragStartPosition.x = dragCurrentPosition.x;
-        dragStartPosition.y = dragCurrentPosition.y;
-
-        if (Math.abs(angleDiff) > 0.001) {
-            dragDidMove = true;
-            const maxDragSpeed = 0.075;
-            angleDiff = Math.max(-maxDragSpeed, Math.min(maxDragSpeed, angleDiff));
-
-            rotateWheels(angleDiff);
-
-            if (deltaTime > 0) {
-                const angularVelocity  = angleDiff / (deltaTime * 1000);
-                dragVelocityHistory.push({
-                    velocity: angularVelocity,
-                    time: now,
-                });
-
-                if (dragVelocityHistory.length > INTERACTION_CONFIG.VELOCITY_HISTORY_LENGTH) {
-                    dragVelocityHistory.shift();
-                }
-            }
-        }
-
-        lastDragTime = now;
-
-        event.preventDefault();
-    }
-
-
-
-    function handleMouseUp(event) {
-        isDragging = false;
+    handleMouseUp = (event) => {
+        this.isDragging = false;
         document.body.style.cursor = 'default';
 
         const now = performance.now();
         let releaseVelocity = 0;
 
-        if (dragVelocityHistory.length > 0) {
-            const recentSamples = dragVelocityHistory.filter((sum, sample) => {
+        if (this.dragVelocityHistory.length > 0) {
+            const recentSamples = this.dragVelocityHistory.filter((sum, sample) => {
                 now - sample.time < 100;
             });
 
@@ -351,277 +389,433 @@ function createWheels () {
                 releaseVelocity = avgVelocity;
             }
 
-            releaseVelocity = Math.max(
-                -ANIMATION_CONFIG.MAX_VELOCITY, 
-                Math.min(ANIMATION_CONFIG.MAX_VELOCITY, releaseVelocity)
-            );
+            releaseVelocity = this.clampVelocity(releaseVelocity);
         }
 
         // Apply momentum if there's significant velocity
         if (Math.abs(releaseVelocity) > 0.005) {
-            targetVelocity = releaseVelocity;
+            this.targetVelocity = releaseVelocity;
             
-            clearTimeout(spinTimeout);
-            spinTimeout = setTimeout(() => {
-                startSnapAnimation();
-                setTimeout(() => forceHoverCheck(), 50);
+            clearTimeout(this.spinTimeout);
+            this.spinTimeout = setTimeout(() => {
+                this.startSnapAnimation();
+                setTimeout(() => this.forceHoverCheck(), 50);
             }, 800); 
         } else {
             setTimeout(() => {
-                startSnapAnimation();
-                setTimeout(() => forceHoverCheck(), 50);
+                this.startSnapAnimation();
+                setTimeout(() => this.forceHoverCheck(), 50);
             }, 100);
         }
         
         // Clear velocity history
-        dragVelocityHistory.length = 0;
+        this.dragVelocityHistory.length = 0;
         
         event.preventDefault();
     }
 
 
-
-    function handleMouseClick() {
-        // Do nothing if dragging
-        if (dragDidMove) {
-            dragDidMove = false;
-            return;
-        }
-
-        if (isHovering && Math.abs(currentVelocity) < INTERACTION_CONFIG.VELOCITY_CLICK_THRESHOLD) {
-            // Clicked while snapping, wait a moment
-            if (isSnapping) {
-                setTimeout(() => {
-                    if (isHovering) {
-                        executeClick()
-                    }
-                }, 100);
-            } else {
-                executeClick();
-            }
-        } 
-    }
-
-
-
-    function executeClick() {
-        if (!isConverging) {
-            startConvergeAnimation(hoveredItem);
-        } else {
-            window.location.href = hoveredItem.name.projectPath;
-        }
-    }
-
-
-
-    function handleKeyDown(event) {
-        // Only care about arrow keys
+    handleKeyDown = (event) => {
+        // Do nothing if converging
+        if (this.isConverging) return;
+        
+        // Only care about arrow and enter keys
         if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter'].includes(event.code)) {
             event.preventDefault();
+
+        } else if (event.code == 'Enter') {
+            this.handleEnterKey();
+            return;
+
         } else {
-            return;
-        }
-
-        if (event.code == 'Enter') {
-            handleEnterKey();
-            return;
-        }
-
-        // Do nothing if converging
-        if (isConverging) {
             return;
         }
 
         if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
-            if (!pressedKeys.has(event.code)) {
-                pressedKeys.add(event.code);
-                isKeyPressed = true;
+            if (!this.pressedKeys.has(event.code)) {
+                this.pressedKeys.add(event.code);
+                this.isKeyPressed = true;
                 
-                stopSnapAnimation();
-                stopStepRotation();
+                this.stopSnapAnimation();
+                this.stopStepRotation();
                 
-                if (isHovering) {
-                    for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
-                        allPhotoMeshes[i].scale.set(1, 1, 1);
-                    }
+                if (this.isHovering) {
+                    this.resetHoverScale();
                 }
             }
         }
 
         if (event.code === 'ArrowLeft' || event.code === 'ArrowRight') {
-            if (!pressedKeys.has(event.code)) {
-                pressedKeys.add(event.code);
+            if (!this.pressedKeys.has(event.code)) {
+                this.pressedKeys.add(event.code);
                 
-                stopSnapAnimation();
+                this.stopSnapAnimation();
                 
-                isStepRotating = true;
-                stepRotationProgress = 0;
-                stepRotationVelocity = 0;
+                this.isStepRotating = true;
+                this.stepRotationProgress = 0;
+                this.stepRotationVelocity = 0;
                 
                 // Calculate rotation amount: one radian interval plus extra for spring effect
                 const baseRotation = WHEEL_CONFIG.RADIAN_INTERVAL;
                 const totalRotation = baseRotation + SCROLL_CONFIG.KEY_STEP_ROTATION_EXTRA;
                 
                 if (event.code === 'ArrowLeft') {
-                    stepRotationTarget = totalRotation;
+                    this.stepRotationTarget = totalRotation;
                 } else {
-                    stepRotationTarget = -totalRotation;
+                    this.stepRotationTarget = -totalRotation;
                 }
-                
             }
         }
     }
 
 
+    handleKeyUp = (event) => {
+        if (event.code === 'Enter') return;
 
-    function handleEnterKey() {
-        // Do nothing if other animation state is active
-        if ( isConverging || isSnapping || isStepRotating || isKeyPressed ) {
-            return;
-        }
-
-        // Do nothing if moving too fast
-        if (Math.abs(currentVelocity) > ANIMATION_CONFIG.VELOCITY_THRESHOLD ||
-            Math.abs(targetVelocity) > ANIMATION_CONFIG.VELOCITY_THRESHOLD ) {
-            return;
-        }
-
-        const snapData = calculateSnapAngle(topWheel);
-
-        if ( !snapData.closestMesh || Math.abs(snapData.angle) > 0.05) {
-            return;
-        }
-
-        startConvergeAnimation(snapData.closestMesh);
-    }
-
-
-
-    function handleKeyUp(event) {
         if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)) {
             event.preventDefault();
         }
 
-        if (event.code === 'Enter') {
-            return;
-        }
-
-        pressedKeys.delete(event.code);
+        this.pressedKeys.delete(event.code);
 
         if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
-            if (!pressedKeys.has('ArrowUp') && !pressedKeys.has('ArrowDown')) {
-                isKeyPressed = false;
+            if (!this.pressedKeys.has('ArrowUp') && !this.pressedKeys.has('ArrowDown')) {
+                this.isKeyPressed = false;
                 
                 // Start snap animation similar to scroll/swipe end
                 setTimeout(() => {
-                    startSnapAnimation();
-                    setTimeout(() => forceHoverCheck(), 50);
+                    this.startSnapAnimation();
+                    setTimeout(() => this.forceHoverCheck(), 50);
                 }, 100);
             }
         }
     }
 
 
-
-    function stopStepRotation() {
-        isStepRotating = false;
-        stepRotationTarget = 0;
-        stepRotationProgress = 0;
-        stepRotationVelocity = 0;
-    }
-
-
-
-    function handleVisibilityChange() {
-        if (document.hidden && isConverging) {
-            endConvergeAnimation();
+    handleEnterKey = () => {
+        // Do nothing if other animation state is active
+        if ( this.isConverging || this.isSnapping || this.isStepRotating || this.isKeyPressed ) {
+            return;
         }
 
-        resetAllMeshToOriginalState();
+        // Do nothing if moving too fast
+        if (Math.abs(this.currentVelocity) > ANIMATION_CONFIG.VELOCITY_THRESHOLD ||
+            Math.abs(this.targetVelocity) > ANIMATION_CONFIG.VELOCITY_THRESHOLD ) {
+            return;
+        }
+
+        const snapData = calculateSnapAngle(this.topWheel);
+
+        if ( !snapData.closestMesh || Math.abs(snapData.angle) > 0.05) {
+            return;
+        }
+
+        this.startConvergeAnimation(snapData.closestMesh);
     }
 
 
+    handleVisibilityChange = () => {
+        if (document.hidden && this.isConverging) {
+            this.endConvergeAnimation();
+        }
 
-    function handlePageShow(event) {
+        this.resetAllMeshToOriginalState();
+    }
+
+
+    handlePageShow = (event) => {
         if (event.persisted) {
-            endConvergeAnimation();
+            this.endConvergeAnimation();
 
-            isSnapping = false;
-            targetVelocity = 0;
-            currentVelocity = 0;
-            convergeProgress = 0;
+            this.isSnapping = false;
+            this.targetVelocity = 0;
+            this.currentVelocity = 0;
+            this.convergeProgress = 0;
 
-            resetAllMeshToOriginalState();
+            this.resetAllMeshToOriginalState();
         }
     }
 
-
-
-    function handlePageHide() {
-        if (isConverging) {
-            endConvergeAnimation();
+    
+    handlePageHide = () => {
+        if (this.isConverging) {
+            this.endConvergeAnimation();
         }
-        clearTimeout(spinTimeout);
+        clearTimeout(this.spinTimeout);
 
         // Dispose resources when page is hidden for 30s
         setTimeout(() => {
             if (document.hidden) {
                 console.log('Page hidden - disposing resources');
-                disposeResources();
+                this.disposeResources();
             }
         }, 30000);
     }
 
 
-
-    function handleContextLoss(event) {
+    handleContextLoss = (event) => {
         event.preventDefault();
-        isContextLost = true;
+        this.isContextLost = true;
         console.warn('WebGL context lost - pausing animations');
 
-        if (isConverging) {
-            endConvergeAnimation();
+        if (this.isConverging) {
+            this.endConvergeAnimation();
         }
 
-        stopSnapAnimation();
+        this.stopSnapAnimation();
+    }
+
+
+    handleContextRestored = () => {
+        this.isContextLost = false;
     }
 
 
 
-    function handleContextRestored() {
-        isContextLost = false;
+    /* *** Utility Methods *** */
+
+    resetHoverScale() {
+        for (let i = 0; i < this.allPhotoMeshes.length; i++) {
+            this.allPhotoMeshes[i].scale.set(1, 1, 1);
+        }
+    }
+
+
+    clampVelocity(velocity) {
+        // [-MAX_VELOCITY, MAX_VELOCITY]
+        return Math.max(-ANIMATION_CONFIG.MAX_VELOCITY, Math.min(ANIMATION_CONFIG.MAX_VELOCITY, velocity));
+    }
+
+
+    executeClick() {
+        if (!this.isConverging) {
+            this.startConvergeAnimation(this.hoveredItem);
+        } else {
+            window.location.href = this.hoveredItem.name.projectPath;
+        }
+    }
+
+
+    resetAllMeshUserData() {
+        for (let i = 0; i < this.allPhotoMeshes.length; i++) {
+            this.resetMeshUserData(this.allPhotoMeshes[i]);
+        }
+    }
+
+
+    resetMeshUserData(mesh) {
+        delete mesh.userData.isTarget;
+        delete mesh.userData.cachedTarget;
+        delete mesh.userData.startAngle;
+        delete mesh.userData.angleDiff;
+        delete mesh.userData.radius;
+        delete mesh.userData.startZ;
+        delete mesh.userData.targetZ;
+        delete mesh.userData.zDiff;
+        delete mesh.userData.startPosition;
+    }
+
+
+    resetAllMeshToOriginalState() {
+        for (let i = 0; i < this.allPhotoMeshes.length; i++) {
+            this.resetMeshState(this.allPhotoMeshes[i]);
+        }
+    }
+
+
+    resetMeshState(mesh) {
+        if (mesh.userData.originalPosition) {
+            mesh.position.copy(mesh.userData.originalPosition);
+        }
+        
+        mesh.scale.set(1, 1, 1);
+        mesh.rotation.x = 0;
+        mesh.rotation.y = 0;
+        mesh.rotation.z = mesh.userData.baseRotationZ || 0;
+        
+        this.resetMeshUserData(mesh);
+    }
+
+
+    calculateSnapAngle (wheel) {
+        this.snapPoint.x = wheel.children[4].position.x;
+        this.snapPoint.y = wheel.children[4].position.y;
+        this.snapPoint.theta = Math.atan2(
+            Math.abs(this.snapPoint.y - wheel.position.y), 
+            Math.abs(this.snapPoint.x - wheel.position.x)
+        );
+        
+        let closestMesh = null;
+        let closestX = 0.0;
+        let closestY = 0.0;
+        let shortestDistance = Infinity
+
+        // Determine mesh with the shortest square distance to snap point 
+        for (let i = 0; i < this.topWheel.children.length; i++) {
+            const element = this.topWheel.children[i];
+            this.tempVector.setFromMatrixPosition(element.matrixWorld);
+
+            
+            let dx = tempVector.x - this.snapPoint.x;
+            let dy = tempVector.y - this.snapPoint.y;
+            let currentDistance = dx * dx + dy * dy;
+
+            if (currentDistance < shortestDistance) {
+                shortestDistance = currentDistance;
+                closestX = this.tempVector.x;
+                closestY = this.tempVector.y;
+                closestMesh = element;
+            }
+        }
+
+        let angleOfClosestMesh = Math.atan2(
+            Math.abs(closestY - wheel.position.y), 
+            Math.abs(closestX - wheel.position.x)
+        );
+        let snapAngle = Math.abs(angleOfClosestMesh - this.snapPoint.theta);
+
+        // Determines whether the wheels need to be rotated cw or ccw based on the cartesian quadrant it is in.
+        if (closestX > wheel.position.x && closestY <= wheel.position.y) {        // Q1
+            snapAngle = angleOfClosestMesh > this.snapPoint.theta ? snapAngle : -1.0 * snapAngle;
+        } 
+        else if (closestX <= wheel.position.x && closestY <= wheel.position.y) {  // Q2
+            snapAngle = angleOfClosestMesh > this.snapPoint.theta ? -1.0 * snapAngle : snapAngle;
+        } 
+        else if (closestX <= wheel.position.x && closestY > wheel.position.y) {   // Q3
+            snapAngle = angleOfClosestMesh > this.snapPoint.theta ? snapAngle : -1.0 * snapAngle;
+        } 
+        else if (closestX > wheel.position.x && closestY >= wheel.position.y) {   // Q4
+            snapAngle = angleOfClosestMesh > this.snapPoint.theta ? -1.0 * snapAngle : snapAngle;
+        }
+
+        return { angle: snapAngle, closestMesh: closestMesh };
+    }
+
+
+    forceHoverCheck() {
+        if (this.isConverging) return;
+
+        this.raycaster.setFromCamera(this.mouse, this.experience.camera.instance);
+        const rayIntersects = this.raycaster.intersectObjects(this.allPhotoMeshes);
+
+        if(!rayIntersects.length) {
+            if (this.isHovering) {
+                document.body.style.cursor = "default";
+                this.isHovering = false;
+                this.hoveredItem = null;
+            }
+        } else {
+            document.body.style.cursor = "pointer";
+            this.isHovering = true;
+            this.hoveredItem = rayIntersects[0].object;
+        }
+    }
+
+
+    cleanupEventListeners() {
+        document.removeEventListener('wheel', this.handleWheelEvent);
+        document.removeEventListener('touchstart', this.handleTouchStart);
+        document.removeEventListener('touchmove', this.handleTouchMove);
+        document.removeEventListener('touchend', this.handleTouchEnd);
+        document.removeEventListener('keydown', this.handleKeyDown);
+        document.removeEventListener('keyup', this.handleKeyUp);
+        document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+        document.removeEventListener('pageshow', this.handlePageShow);
+        document.removeEventListener('pagehide', this.handlePageHide);  
+        this.experience.container.removeEventListener('mousemove', this.handleMouseMove);
+        this.experience.container.removeEventListener('click', this.handleMouseClick);
+        this.experience.container.removeEventListener('mousedown', this.handleMouseDown);
+        document.removeEventListener('mouseup', this.handleMouseUp);
+
+        this.disposeResources();
+
+        if (this.experience.container.querySelector('canvas')) {
+            const canvas = this.experience.container.querySelector('canvas');
+            canvas.removeEventListener('webglcontextlost', this.handleContextLoss);
+            canvas.removeEventListener('webglcontextrestored', this.handleContextRestored);
+        }
     }
 
 
 
-    function startConvergeAnimation(mesh) {
-        resetAllMeshUserData();
+    disposeResources() {
+        this.texturesToDispose.forEach(texture => {
+            if (texture) texture.dispose();
+        });
+        this.texturesToDispose.length = 0;
 
-        isConverging = true;
-        convergeProgress = 0;
+        this.materialsToDispose.forEach(material => {
+            if (material) material.dispose();
+        });
+        this.materialsToDispose.length = 0;
 
-        let clickedInTopWheel = topWheel.children.includes(mesh);
+        this.allPhotoMeshes.forEach(mesh => {
+            if (mesh.geometry) mesh.geometry.dispose();
+        });
+
+        if (this.roundedRectangleGeometry) {
+            this.roundedRectangleGeometry.dispose();
+        }
+
+        this.allPhotoMeshes.length = 0;
+        this.materials.length = 0;
+    }
+
+
+
+    maintenanceCleanup() {
+        // Garbage collection if available
+        if (window.gc) window.gc();
+
+        for (let i = 0; i < this.allPhotoMeshes.length; i++) {
+            const mesh = this.allPhotoMeshes[i];
+
+            if (mesh.userData.baseRotationZ) {
+                // Normalize rotation to prevent accumulation
+                mesh.userData.baseRotationZ = mesh.userData.baseRotationZ % (2 * Math.PI);
+            }
+        }
+    }
+
+
+    setupWebGLListeners(rendererInstance) {
+        const canvas = rendererInstance.domElement;
+        canvas.addEventListener('webglcontextlost', this.handleContextLoss, false);
+        canvas.addEventListener('webglcontextrestored', this.handleContextRestored, false);
+    }
+
+
+
+    /* *** Animation helper methods *** */
+
+    startConvergeAnimation(mesh) {
+        this.resetAllMeshUserData();
+
+        this.isConverging = true;
+        this.convergeProgress = 0;
+
+        let clickedInTopWheel = this.topWheel.children.includes(mesh);
         let topTarget, bottomTarget;
 
         if (clickedInTopWheel) {
             topTarget = mesh;
-            let clickedIndex = topWheel.children.indexOf(mesh);
-            let totalPhotos = topWheel.children.length;
+            let clickedIndex = this.topWheel.children.indexOf(mesh);
+            let totalPhotos = this.topWheel.children.length;
             let oppositeIndex = (clickedIndex + Math.floor(totalPhotos / 2)) % totalPhotos;
-            bottomTarget = bottomWheel.children[oppositeIndex];
+            bottomTarget = this.bottomWheel.children[oppositeIndex];
         } else {
             bottomTarget = mesh;
-            let clickedIndex = bottomWheel.children.indexOf(mesh);
-            let totalPhotos = bottomWheel.children.length;
+            let clickedIndex = this.bottomWheel.children.indexOf(mesh);
+            let totalPhotos = this.bottomWheel.children.length;
             let oppositeIndex = (clickedIndex + Math.floor(totalPhotos / 2)) % totalPhotos;
-            topTarget = topWheel.children[oppositeIndex];
+            topTarget = this.topWheel.children[oppositeIndex];
         }
 
-        stopSnapAnimation();
+        this.stopSnapAnimation();
 
         // Pre-calculate and cache animation data
-        for (let i = 0; i < allPhotoMeshes.length; i++) {
-            const photoMesh = allPhotoMeshes[i];
+        for (let i = 0; i < this.allPhotoMeshes.length; i++) {
+            const photoMesh = this.allPhotoMeshes[i];
 
             if (photoMesh === topTarget || photoMesh === bottomTarget) {
                 photoMesh.userData.isTarget = true;
@@ -632,7 +826,7 @@ function createWheels () {
             photoMesh.userData.startPosition = photoMesh.position.clone();
 
             // Pre-determine target and cache it
-            let clickedInTopWheel = topWheel.children.includes(photoMesh);
+            let clickedInTopWheel = this.topWheel.children.includes(photoMesh);
             let target = clickedInTopWheel ? topTarget : bottomTarget;
             photoMesh.userData.cachedTarget = target;
             
@@ -654,32 +848,30 @@ function createWheels () {
         }
 
         setTimeout(() => {
-            cleanupEventListeners();
+            this.cleanupEventListeners();
             window.location.href = mesh.name.projectPath;
         }, ANIMATION_CONFIG.CONVERGE_DURATION);
     }
 
 
+    endConvergeAnimation() {
+        if (!this.isConverging) return;
 
-    function endConvergeAnimation() {
-        if (!isConverging) return;
+        this.isConverging = false;
+        this.convergeProgress = 0;
 
-        isConverging = false;
-        convergeProgress = 0;
-
-        resetAllMeshToOriginalState();
+        this.resetAllMeshToOriginalState();
     }
 
 
+    rotateWheels(angle) {
+        if (this.isConverging) return;
 
-    function rotateWheels(angle) {
-        if (isConverging) return;
-
-        topWheel.rotateZ(angle);
-        bottomWheel.rotateZ(angle);
+        this.topWheel.rotateZ(angle);
+        this.bottomWheel.rotateZ(angle);
         
-        for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
-            const mesh = allPhotoMeshes[i];
+        for (let i = 0; i < this.allPhotoMeshes.length; i++) {
+            const mesh = this.allPhotoMeshes[i];
             // Set base rotation if it doesn't exist
             if ( !mesh.userData.baseRotationZ ) {
                 mesh.userData.baseRotationZ = 0;
@@ -692,19 +884,18 @@ function createWheels () {
     }
 
 
+    startSnapAnimation() {
+        if (this.isConverging) return;
 
-    function startSnapAnimation() {
-        if (isConverging) return;
-
-        const snapData = calculateSnapAngle(topWheel);
+        const snapData = this.calculateSnapAngle(this.topWheel);
 
         if (Math.abs(snapData.angle) < 0.01) return; // Already aligned
         
-        isSnapping = true;
-        snapStartRotation = 0;
-        snapTargetRotation = snapData.angle;
-        snapProgress = 0;
-        springVelocity = 0;
+        this.isSnapping = true;
+        this.snapStartRotation = 0;
+        this.snapTargetRotation = snapData.angle;
+        this.snapProgress = 0;
+        this.springVelocity = 0;
         
         // Update project title after snap
         const projectTitle = document.getElementById('project-title');
@@ -714,208 +905,19 @@ function createWheels () {
     }
 
 
-
-    function stopSnapAnimation() {
-        isSnapping = false;
-        targetVelocity = 0;
-        currentVelocity = 0;
-        clearTimeout(spinTimeout);
+    stopSnapAnimation() {
+        this.isSnapping = false;
+        this.targetVelocity = 0;
+        this.currentVelocity = 0;
+        clearTimeout(this.spinTimeout);
     }
 
 
-
-    function calculateSnapAngle (wheel) {
-        snapPoint.x = wheel.children[4].position.x;
-        snapPoint.y = wheel.children[4].position.y;
-        snapPoint.theta = Math.atan2(
-            Math.abs(snapPoint.y - wheel.position.y), 
-            Math.abs(snapPoint.x - wheel.position.x)
-        );
-        
-        let closestMesh = null;
-        let closestX = 0.0;
-        let closestY = 0.0;
-        let shortestDistance = Infinity
-
-        // Determine mesh with the shortest square distance to snap point 
-        for (let i = 0, len = topWheel.children.length; i < len; i++) {
-            const element = topWheel.children[i];
-            tempVector.setFromMatrixPosition(element.matrixWorld);
-
-            
-            let dx = tempVector.x - snapPoint.x;
-            let dy = tempVector.y - snapPoint.y;
-            let currentDistance = dx * dx + dy * dy;
-
-            if (currentDistance < shortestDistance) {
-                shortestDistance = currentDistance;
-                closestX = tempVector.x;
-                closestY = tempVector.y;
-                closestMesh = element;
-            }
-        }
-
-        let angleOfClosestMesh = Math.atan2(
-            Math.abs(closestY - wheel.position.y), 
-            Math.abs(closestX - wheel.position.x)
-        );
-        let snapAngle = Math.abs(angleOfClosestMesh - snapPoint.theta);
-
-        // Determines whether the wheels need to be rotated cw or ccw based on the cartesian quadrant it is in.
-        if (closestX > wheel.position.x && closestY <= wheel.position.y) {        // Q1
-            snapAngle = angleOfClosestMesh > snapPoint.theta ? snapAngle : -1.0 * snapAngle;
-        } 
-        else if (closestX <= wheel.position.x && closestY <= wheel.position.y) {  // Q2
-            snapAngle = angleOfClosestMesh > snapPoint.theta ? -1.0 * snapAngle : snapAngle;
-        } 
-        else if (closestX <= wheel.position.x && closestY > wheel.position.y) {   // Q3
-            snapAngle = angleOfClosestMesh > snapPoint.theta ? snapAngle : -1.0 * snapAngle;
-        } 
-        else if (closestX > wheel.position.x && closestY >= wheel.position.y) {   // Q4
-            snapAngle = angleOfClosestMesh > snapPoint.theta ? -1.0 * snapAngle : snapAngle;
-        }
-
-        return { angle: snapAngle, closestMesh: closestMesh };
-    }
-
-
-
-    function forceHoverCheck() {
-        if (isConverging) return;
-
-        raycaster.setFromCamera(mouse, experience.camera);
-        const rayIntersects = raycaster.intersectObjects(allPhotoMeshes);
-
-        if(!rayIntersects.length) {
-            if (isHovering) {
-                document.body.style.cursor = "default";
-                isHovering = false;
-                hoveredItem = null;
-            }
-        } else {
-            document.body.style.cursor = "pointer";
-            isHovering = true;
-            hoveredItem = rayIntersects[0].object;
-        }
-    }
-
-
-
-    function resetAllMeshUserData() {
-        for (let i = 0; i < allPhotoMeshes.length; i++) {
-            resetMeshUserData(allPhotoMeshes[i]);
-        }
-    }
-
-
-
-    function resetMeshUserData(mesh) {
-        delete mesh.userData.isTarget;
-        delete mesh.userData.cachedTarget;
-        delete mesh.userData.startAngle;
-        delete mesh.userData.angleDiff;
-        delete mesh.userData.radius;
-        delete mesh.userData.startZ;
-        delete mesh.userData.targetZ;
-        delete mesh.userData.zDiff;
-        delete mesh.userData.startPosition;
-    }
-
-
-
-    function resetAllMeshToOriginalState() {
-        for (let i = 0; i < allPhotoMeshes.length; i++) {
-            resetMeshState(allPhotoMeshes[i]);
-        }
-    }
-
-
-
-    function resetMeshState(mesh) {
-        if (mesh.userData.originalPosition) {
-            mesh.position.copy(mesh.userData.originalPosition);
-        }
-        
-        mesh.scale.set(1, 1, 1);
-        mesh.rotation.x = 0;
-        mesh.rotation.y = 0;
-        mesh.rotation.z = mesh.userData.baseRotationZ || 0;
-        
-        resetMeshUserData(mesh);
-    }
-
-
-
-    function cleanupEventListeners() {
-        document.removeEventListener('wheel', handleWheelEvent);
-        document.removeEventListener('touchstart', handleTouchStart);
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleTouchEnd);
-        document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keyup', handleKeyUp);
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
-        document.removeEventListener('pageshow', handlePageShow);
-        document.removeEventListener('pagehide', handlePageHide);  
-        experience.container.removeEventListener('mousemove', handleMouseMove);
-        experience.container.removeEventListener('click', handleMouseClick);
-        experience.container.removeEventListener('mousedown', handleMouseDown);
-        document.removeEventListener('mouseup', handleMouseUp);
-
-        disposeResources();
-
-        if (experience.container.querySelector('canvas')) {
-            const canvas = experience.container.querySelector('canvas');
-            canvas.removeEventListener('webglcontextlost', handleContextLoss);
-            canvas.removeEventListener('webglcontextrestored', handleContextRestored);
-        }
-    }
-
-
-
-    function disposeResources() {
-        texturesToDispose.forEach(texture => {
-            if (texture) texture.dispose();
-        });
-        texturesToDispose.length = 0;
-
-        materialsToDispose.forEach(material => {
-            if (material) material.dispose();
-        });
-        materialsToDispose.length = 0;
-
-        allPhotoMeshes.forEach(mesh => {
-            if (mesh.geometry) mesh.geometry.dispose();
-        });
-
-        if (roundedRectangleGeometry) {
-            roundedRectangleGeometry.dispose();
-        }
-
-        allPhotoMeshes.length = 0;
-        materials.length = 0;
-    }
-
-
-
-    function maintenanceCleanup() {
-        // Garbage collection if available
-        if (window.gc) window.gc();
-
-        for (let i = 0; i < allPhotoMeshes.length; i++) {
-            const mesh = allPhotoMeshes[i];
-
-            if (mesh.userData.baseRotationZ) {
-                // Normalize rotation to prevent accumulation
-                mesh.userData.baseRotationZ = mesh.userData.baseRotationZ % (2 * Math.PI);
-            }
-        }
-    }
-
-
-    function setupWebGLListeners(rendererInstance) {
-        const canvas = rendererInstance.domElement;
-        canvas.addEventListener('webglcontextlost', handleContextLoss, false);
-        canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+    stopStepRotation() {
+        this.isStepRotating = false;
+        this.stepRotationTarget = 0;
+        this.stepRotationProgress = 0;
+        this.stepRotationVelocity = 0;
     }
 
 
@@ -923,7 +925,7 @@ function createWheels () {
     /**
     * Animation Loop   
     */
-    const photoWheels = new Group();
+    this.photoWheels = new Group();
     photoWheels.add(topWheel, bottomWheel);
     photoWheels.cleanup = cleanupEventListeners;
     photoWheels.setupWebGL = setupWebGLListeners;
@@ -1067,10 +1069,10 @@ function createWheels () {
                 return;
             }
 
-            raycaster.setFromCamera(mouse, experience.camera);
+            raycaster.setFromCamera(mouse, experience.camera.instance);
 
             const visibleMeshes = allPhotoMeshes.filter(mesh => {
-                const distance = experience.camera.position.distanceTo(mesh.position);
+                const distance = experience.camera.instance.position.distanceTo(mesh.position);
                 return distance < 400; 
             });
 
@@ -1171,7 +1173,7 @@ function createWheels () {
                 
                 // Tilt effect animation
                 hoveredItem.getWorldPosition(tiltVector);
-                tiltVector.project(experience.camera);
+                tiltVector.project(experience.camera.instance);
 
                 const screenX = tiltVector.x;
                 const screenY = tiltVector.y;
@@ -1221,14 +1223,14 @@ function createWheels () {
 
         for (let i = 0; i < visibleMaterials.length; i++) {
             if (visibleMaterials[i].updateLights) {
-                visibleMaterials[i].updateLights(experience.lights);
+                visibleMaterials[i].updateLights(experience.lights.group);
             }
         }
 
         for (let  i = 0; i < allPhotoMeshes.length; i++) {
             const mesh = allPhotoMeshes[i];
 
-            const distanceToCamera = experience.camera.position.distanceTo(mesh.position);
+            const distanceToCamera = experience.camera.instance.position.distanceTo(mesh.position);
             if (distanceToCamera > 200) {
                 // Lower quality for distant objects
                 mesh.material.uniforms.uLOD.value = 0.5; 
@@ -1244,7 +1246,4 @@ function createWheels () {
         }
     }
 
-    return photoWheels;
 }
-
-export { createWheels }

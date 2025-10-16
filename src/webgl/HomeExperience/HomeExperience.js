@@ -1,18 +1,18 @@
 // Systems
 import { createScene } from '../systems/scene.js';
 import { createRenderer } from '../systems/renderer.js';
-import { Resizer } from '../systems/Resizer.js';
-import { Loop } from '../systems/Loop.js';
+import Resizer from '../systems/Resizer.js';
+import Loop from '../systems/Loop.js';
 
 // Components
-import { createCamera } from './components/camera.js';
-import { createLights } from './components/lights.js';
-import { createBackground } from './components/background.js';
+import Camera from './components/camera.js';
+import Lights from './components/lights.js';
+import Background from './components/background.js';
 import { createWheels } from './components/photoWheels.js';
 
 let instance = null;
 
-class HomeExperience {
+export default class HomeExperience {
     constructor(container) {
         if (instance) return instance;
         instance = this;
@@ -20,28 +20,28 @@ class HomeExperience {
         this.container = container;
         this.renderer = createRenderer();
         this.scene = createScene();
-        this.camera = createCamera();
-        this.loop = new Loop(this.camera, this.scene, this.renderer);
-        this.background = createBackground();
-        this.lights = createLights();
+        this.camera = new Camera();
+        this.loop = new Loop(this.camera.instance, this.scene, this.renderer);
+        this.background = new Background();
+        this.lights = new Lights();
         this.photoWheels = createWheels();
         
         this.container.append(this.renderer.domElement);
         this.photoWheels.setupWebGL(this.renderer);
         
-        this.scene.add(this.lights, this.photoWheels, this.camera, this.background);
+        this.scene.add(this.lights.group, this.photoWheels, this.camera.instance, this.background.mesh);
 
-        for (const light of this.lights.children) this.loop.updatables.push(light);
+        for (const light of this.lights.group.children) this.loop.updatables.push(light);
         this.loop.updatables.push(this.camera);
         this.loop.updatables.push(this.photoWheels);
         this.loop.on('tick', ()=> {});
 
-        this.resizer = new Resizer(this.container, this.camera, this.renderer);
+        this.resizer = new Resizer(this.container, this.camera.instance, this.renderer);
         this.resizer.on('resize', () => {});
     }
 
     render() {
-        this.renderer.render(this.scene, this.camera);
+        this.renderer.render(this.scene, this.camera.instance);
     }
     dispose() {
         if (this.photoWheels) {
@@ -55,5 +55,3 @@ class HomeExperience {
         this.loop.stop();
     }
 }
-    
-export { HomeExperience };

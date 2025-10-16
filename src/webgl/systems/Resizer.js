@@ -1,6 +1,6 @@
 import EventEmitter from "./EventEmitter";
 
-class Resizer extends EventEmitter {
+export default class Resizer extends EventEmitter {
     constructor(container, camera, renderer) {
         super();
         this.container = container;
@@ -20,6 +20,7 @@ class Resizer extends EventEmitter {
     setSize() {
         this.width = this.container.clientWidth;
         this.height = this.container.clientHeight;
+        
         this.camera.aspect = this.width / this.height;
         this.camera.updateProjectionMatrix();
         
@@ -27,5 +28,3 @@ class Resizer extends EventEmitter {
         this.renderer.setPixelRatio(this.pixelRatio);
     }
 }
-
-export { Resizer };

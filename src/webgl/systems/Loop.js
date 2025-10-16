@@ -3,7 +3,7 @@ import EventEmitter from "./EventEmitter";
 
 const clock = new Clock();
 
-class Loop extends EventEmitter {
+export default class Loop extends EventEmitter {
     constructor(camera, scene, renderer) {
         super();
         this.camera = camera;
@@ -31,5 +31,3 @@ class Loop extends EventEmitter {
         }
     }
 }
-
-export { Loop };
