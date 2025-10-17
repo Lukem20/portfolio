@@ -147,6 +147,9 @@ export default class PhotoWheels {
             const mesh = this.allPhotoMeshes[i];
             mesh.userData.originalPosition = mesh.position.clone();
         }
+
+        this.topWheel.userData.originalRotation = this.topWheel.rotation.clone();
+        this.bottomWheel.userData.originalRotation = this.bottomWheel.rotation.clone();
     }
 
     createWheelGroup() {
@@ -548,6 +551,13 @@ export default class PhotoWheels {
             this.targetVelocity = 0;
             this.currentVelocity = 0;
             this.convergeProgress = 0;
+
+            if (this.topWheel.userData.originalRotation) {
+                this.topWheel.rotation.copy(this.topWheel.userData.originalRotation);
+            }
+            if (this.bottomWheel.userData.originalRotation) {
+                this.bottomWheel.rotation.copy(this.bottomWheel.userData.originalRotation);
+            }
 
             this.resetAllMeshToOriginalState();
         }
