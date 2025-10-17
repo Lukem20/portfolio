@@ -1,8 +1,8 @@
 // Systems
 import { createScene } from '../systems/scene.js';
 import { createRenderer } from '../systems/renderer.js';
-import { Resizer } from '../systems/Resizer.js';
-import { Loop } from '../systems/Loop.js';
+import Resizer from '../systems/Resizer.js';
+import Loop from '../systems/Loop.js';
 
 let renderer;
 let scene;
