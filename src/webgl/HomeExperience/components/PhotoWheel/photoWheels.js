@@ -1,8 +1,8 @@
-import HomeExperience from '../HomeExperience.js';
-import { createTexture } from './PhotoWheel/texture.js'
-import { createMaterial } from './PhotoWheel/material.js';
-import { createGeometry } from './PhotoWheel/geometry.js';
-import { createMesh } from './PhotoWheel/mesh.js';
+import HomeExperience from '../../HomeExperience.js';
+import { createTexture } from './texture.js'
+import { createMaterial } from './material.js';
+import { createGeometry } from './geometry.js';
+import { createMesh } from './mesh.js';
 import {
     GEOMETRY_CONFIG,
     PHOTOS_DATA,
@@ -10,7 +10,7 @@ import {
     ANIMATION_CONFIG,
     INTERACTION_CONFIG,
     SCROLL_CONFIG,
-} from './config.js';
+} from '../config.js';
 import {
     Group,
     MathUtils,
@@ -29,7 +29,6 @@ export default class PhotoWheels {
         this.initializeScene();
         this.setupEventListeners();
     }
-
 
 
     initializeState() {
@@ -98,7 +97,6 @@ export default class PhotoWheels {
         /* *** Context/Visibility State *** */
         this.isContextLost = false;
     }
-    
 
 
     initializeScene() {
@@ -112,6 +110,7 @@ export default class PhotoWheels {
 
         this.createPhotoMeshes();
         this.positionWheels();
+        this.createWheelGroup();
     }
 
     createPhotoMeshes() {
@@ -141,7 +140,11 @@ export default class PhotoWheels {
             -WHEEL_CONFIG.POSITION + WHEEL_CONFIG.POSITION_OFFSET
         );
     }
-    
+
+    createWheelGroup() {
+        this.instance = new Group();
+        this.instance.add(this.topWheel, this.bottomWheel);
+    }
 
 
     setupEventListeners() {
@@ -163,18 +166,18 @@ export default class PhotoWheels {
 
     
     /* *** Event Listeners *** */
-
     handleMouseMove = (event) => {
         // Throttle mouse move events for performance
         const now = performance.now();
         if (now - this.lastMouseMoveTime < 16) return;
 
+        // Update state variables
         this.lastMouseMoveTime = now;
+        this.mouseMovedSinceLastCheck = true;
 
         // Normalize mouse coordinates
         this.mouse.x = event.clientX / window.innerWidth * 2 - 1;
         this.mouse.y = -(event.clientY / window.innerHeight * 2 - 1);
-        this.mouseMovedSinceLastCheck = true;
         
         if (this.isDragging) {
             this.handleMouseDrag(event);
@@ -197,8 +200,11 @@ export default class PhotoWheels {
         this.dragStartPosition.x = this.dragCurrentPosition.x;
         this.dragStartPosition.y = this.dragCurrentPosition.y;
 
+        // If dragging mouse above threshold
         if (Math.abs(angleDiff) > 0.001) {
+            // Update state variable
             this.dragDidMove = true;
+
             const maxDragSpeed = 0.075;
             angleDiff = Math.max(-maxDragSpeed, Math.min(maxDragSpeed, angleDiff));
 
@@ -325,7 +331,7 @@ export default class PhotoWheels {
         if(this.isConverging) return;
 
         // Prevent wheels from snapping
-        this.isSnapping = this.false
+        this.isSnapping = false
         clearTimeout(this.spinTimeout);
 
         const firstTouch = event.touches[0];                                      
@@ -376,7 +382,10 @@ export default class PhotoWheels {
         const now = performance.now();
         let releaseVelocity = 0;
 
+        // Calculate average velocity from recent drag samples for momentum
         if (this.dragVelocityHistory.length > 0) {
+
+            // Only use very recent samples (last 100ms)
             const recentSamples = this.dragVelocityHistory.filter((sum, sample) => {
                 now - sample.time < 100;
             });
@@ -392,25 +401,25 @@ export default class PhotoWheels {
             releaseVelocity = this.clampVelocity(releaseVelocity);
         }
 
-        // Apply momentum if there's significant velocity
+        // If released with significant velocity, apply momentum
         if (Math.abs(releaseVelocity) > 0.005) {
             this.targetVelocity = releaseVelocity;
             
             clearTimeout(this.spinTimeout);
+            // Wait longer before snapping to allow momentum to play out
             this.spinTimeout = setTimeout(() => {
                 this.startSnapAnimation();
                 setTimeout(() => this.forceHoverCheck(), 50);
             }, 800); 
         } else {
+            // No momentum - snap immediately
             setTimeout(() => {
                 this.startSnapAnimation();
                 setTimeout(() => this.forceHoverCheck(), 50);
             }, 100);
         }
         
-        // Clear velocity history
         this.dragVelocityHistory.length = 0;
-        
         event.preventDefault();
     }
 
@@ -504,7 +513,7 @@ export default class PhotoWheels {
             return;
         }
 
-        const snapData = calculateSnapAngle(this.topWheel);
+        const snapData = this.calculateSnapAngle(this.topWheel);
 
         if ( !snapData.closestMesh || Math.abs(snapData.angle) > 0.05) {
             return;
@@ -638,11 +647,16 @@ export default class PhotoWheels {
 
 
     calculateSnapAngle (wheel) {
-        this.snapPoint.x = wheel.children[4].position.x;
-        this.snapPoint.y = wheel.children[4].position.y;
-        this.snapPoint.theta = Math.atan2(
-            Math.abs(this.snapPoint.y - wheel.position.y), 
-            Math.abs(this.snapPoint.x - wheel.position.x)
+        const snapPoint = {
+            x: wheel.children[4].position.x,
+            y: wheel.children[4].position.y,
+            theta: 0
+        };
+
+        // Calculate angle of snap point relative to wheel center
+        snapPoint.theta = Math.atan2(
+            Math.abs(snapPoint.y - wheel.position.y), 
+            Math.abs(snapPoint.x - wheel.position.x)
         );
         
         let closestMesh = null;
@@ -650,20 +664,22 @@ export default class PhotoWheels {
         let closestY = 0.0;
         let shortestDistance = Infinity
 
+        const tempVector = new Vector3();
+
         // Determine mesh with the shortest square distance to snap point 
         for (let i = 0; i < this.topWheel.children.length; i++) {
             const element = this.topWheel.children[i];
-            this.tempVector.setFromMatrixPosition(element.matrixWorld);
+            tempVector.setFromMatrixPosition(element.matrixWorld);
 
             
-            let dx = tempVector.x - this.snapPoint.x;
-            let dy = tempVector.y - this.snapPoint.y;
+            let dx = tempVector.x - snapPoint.x;
+            let dy = tempVector.y - snapPoint.y;
             let currentDistance = dx * dx + dy * dy;
 
             if (currentDistance < shortestDistance) {
                 shortestDistance = currentDistance;
-                closestX = this.tempVector.x;
-                closestY = this.tempVector.y;
+                closestX = tempVector.x;
+                closestY = tempVector.y;
                 closestMesh = element;
             }
         }
@@ -672,20 +688,20 @@ export default class PhotoWheels {
             Math.abs(closestY - wheel.position.y), 
             Math.abs(closestX - wheel.position.x)
         );
-        let snapAngle = Math.abs(angleOfClosestMesh - this.snapPoint.theta);
+        let snapAngle = Math.abs(angleOfClosestMesh - snapPoint.theta);
 
-        // Determines whether the wheels need to be rotated cw or ccw based on the cartesian quadrant it is in.
+        // Determines whether the wheels need to be rotated cw or ccw based on the cartesian quadrant the closest mesh is in.
         if (closestX > wheel.position.x && closestY <= wheel.position.y) {        // Q1
-            snapAngle = angleOfClosestMesh > this.snapPoint.theta ? snapAngle : -1.0 * snapAngle;
+            snapAngle = angleOfClosestMesh > snapPoint.theta ? snapAngle : -1.0 * snapAngle;
         } 
         else if (closestX <= wheel.position.x && closestY <= wheel.position.y) {  // Q2
-            snapAngle = angleOfClosestMesh > this.snapPoint.theta ? -1.0 * snapAngle : snapAngle;
+            snapAngle = angleOfClosestMesh > snapPoint.theta ? -1.0 * snapAngle : snapAngle;
         } 
         else if (closestX <= wheel.position.x && closestY > wheel.position.y) {   // Q3
-            snapAngle = angleOfClosestMesh > this.snapPoint.theta ? snapAngle : -1.0 * snapAngle;
+            snapAngle = angleOfClosestMesh > snapPoint.theta ? snapAngle : -1.0 * snapAngle;
         } 
         else if (closestX > wheel.position.x && closestY >= wheel.position.y) {   // Q4
-            snapAngle = angleOfClosestMesh > this.snapPoint.theta ? -1.0 * snapAngle : snapAngle;
+            snapAngle = angleOfClosestMesh > snapPoint.theta ? -1.0 * snapAngle : snapAngle;
         }
 
         return { angle: snapAngle, closestMesh: closestMesh };
@@ -778,7 +794,7 @@ export default class PhotoWheels {
     }
 
 
-    setupWebGLListeners(rendererInstance) {
+    setupWebGLContextListeners(rendererInstance) {
         const canvas = rendererInstance.domElement;
         canvas.addEventListener('webglcontextlost', this.handleContextLoss, false);
         canvas.addEventListener('webglcontextrestored', this.handleContextRestored, false);
@@ -787,7 +803,6 @@ export default class PhotoWheels {
 
 
     /* *** Animation helper methods *** */
-
     startConvergeAnimation(mesh) {
         this.resetAllMeshUserData();
 
@@ -870,6 +885,7 @@ export default class PhotoWheels {
         this.topWheel.rotateZ(angle);
         this.bottomWheel.rotateZ(angle);
         
+        // Counter-rotate each photo mesh to keep them upright
         for (let i = 0; i < this.allPhotoMeshes.length; i++) {
             const mesh = this.allPhotoMeshes[i];
             // Set base rotation if it doesn't exist
@@ -877,7 +893,6 @@ export default class PhotoWheels {
                 mesh.userData.baseRotationZ = 0;
             }
 
-            // Update both the actual rotation and the base rotation together
             mesh.rotateZ(-angle);
             mesh.userData.baseRotationZ = mesh.rotation.z;
         }
@@ -922,37 +937,43 @@ export default class PhotoWheels {
 
 
 
-    /**
-    * Animation Loop   
-    */
-    this.photoWheels = new Group();
-    photoWheels.add(topWheel, bottomWheel);
-    photoWheels.cleanup = cleanupEventListeners;
-    photoWheels.setupWebGL = setupWebGLListeners;
-    photoWheels.disposeResources = disposeResources;
+    /* *** Animation Loop *** */ 
+    tick = () => {
+        if (this.isContextLost || document.hidden) return;
+
+        this.updateConvergeAnimation();
+
+        // Snapping and spinning are mutually exclusize
+        if (this.isStepRotating || this.isSnapping) {
+            this.updateSnapAnimation();
+        } else {
+            this.updateSpinAnimation();
+        }
+
+        this.updateHoverEffects();
+        this.updateShaderMaterials();
+    }
 
 
-    photoWheels.tick = () => {
-        if (isContextLost || document.hidden) return;
+    /* *** Converge on click Animation *** */
+    updateConvergeAnimation() {
+        if (this.isConverging) {
+            this.convergeProgress += ANIMATION_CONFIG.CONVERGE_SPEED;
 
-        const now = performance.now();
-
-        // Converge on click animation
-        if (isConverging) {
-            convergeProgress += ANIMATION_CONFIG.CONVERGE_SPEED;
-
-            if (convergeProgress >= 1) {
-                convergeProgress = 1;
+            if (this.convergeProgress >= 1) {
+                this.convergeProgress = 1;
             }
 
-            const eased = 1 - Math.pow(1 - convergeProgress, 3);
+            // Ease-out
+            const eased = 1 - Math.pow(1 - this.convergeProgress, 3);
 
-            // Animate all photo meshes but the clicked one
-            for (let  i = 0; i < allPhotoMeshes.length; i++) {
-                const photoMesh = allPhotoMeshes[i];
+            for (let  i = 0; i < this.allPhotoMeshes.length; i++) {
+                const photoMesh = this.allPhotoMeshes[i];
 
+                // Skip the clicked mesh and its opposite - they stay in place
                 if (photoMesh.userData.isTarget) continue;
 
+                // Animate all other meshes
                 const currentAngle = photoMesh.userData.startAngle + (photoMesh.userData.angleDiff * eased);
                 const newX = Math.cos(currentAngle) * photoMesh.userData.radius;
                 const newY = Math.sin(currentAngle) * photoMesh.userData.radius;
@@ -961,146 +982,157 @@ export default class PhotoWheels {
                 photoMesh.position.set(newX, newY, newZ);
             }
         }
+    }
 
 
-        //  Snap wheels Animation
-        else {
-            if (isStepRotating) {
-                const displacement = stepRotationTarget - stepRotationProgress;
+    /* ***  Snap wheels Animation *** */
+    updateSnapAnimation() {
+        // Left/Right arrow keys: spring animation to next/prev photo
+        if (this.isStepRotating) {
+            const displacement = this.stepRotationTarget - this.stepRotationProgress;
 
-                stepRotationVelocity += displacement * SCROLL_CONFIG.KEY_STEP_ROTATION_SPEED;
-                stepRotationVelocity *= SCROLL_CONFIG.KEY_STEP_ROTATION_DAMPING;
-                stepRotationProgress += stepRotationVelocity;
+            // Spring physics: acceleration proportional to distance from target
+            this.stepRotationVelocity += displacement * SCROLL_CONFIG.KEY_STEP_ROTATION_SPEED;
+            this.stepRotationVelocity *= SCROLL_CONFIG.KEY_STEP_ROTATION_DAMPING;
+            this.stepRotationProgress += this.stepRotationVelocity;
 
-                if ( Math.abs(displacement) < 0.01 && Math.abs(stepRotationVelocity) < 0.01 ) {
-                    const finalRotation  = stepRotationTarget - stepRotationProgress;
-                    rotateWheels(finalRotation);
+            // When close enough to target, snap exactly and finish
+            if ( Math.abs(displacement) < 0.01 && Math.abs(this.stepRotationVelocity) < 0.01 ) {
+                const finalRotation  = this.stepRotationTarget - this.stepRotationProgress;
+                this.rotateWheels(finalRotation);
 
-                    stopStepRotation();
+                this.stopStepRotation();
 
-                    setTimeout(() => {
-                        startSnapAnimation();
-                        setTimeout (() => forceHoverCheck(), 50);
-                    }, 50);
-                } else {
-                    const deltaRotation = stepRotationVelocity;
-                    rotateWheels(deltaRotation);
-                }
-
+                setTimeout(() => {
+                    this.startSnapAnimation();
+                    setTimeout (() => this.forceHoverCheck(), 50);
+                }, 50);
+            } else {
+                this.rotateWheels(this.stepRotationVelocity);
             }
-            else if (isSnapping) {
 
-                const displacement = snapTargetRotation - snapProgress;
-                const springForce = displacement * springStiffness;
-                const dampingForce = springVelocity * springDamping;
+        }
+        // All other snap animations after scroll/swipe/drag
+        else if (this.isSnapping) {
 
-                springVelocity += springForce - dampingForce;
-                snapProgress += springVelocity;
+            const displacement = this.snapTargetRotation - this.snapProgress;
+            
+            // Spring-damper system for smooth, natural snapping
+            const springForce = displacement * this.springStiffness;
+            const dampingForce = this.springVelocity * this.springDamping;
 
-                // If really small spring and really small velocity
-                if (Math.abs(displacement) < 0.001 && Math.abs(springVelocity) < 0.001) {
-                    snapProgress = snapTargetRotation;
-                    springVelocity = 0;
-                    isSnapping = false;
-                    targetVelocity = 0;
-                    currentVelocity = 0;
+            this.springVelocity += springForce - dampingForce;
+            this.snapProgress += this.springVelocity;
 
-                    setTimeout(() => forceHoverCheck(), 0);
-                }
-                
-                const deltaRotation = snapProgress - snapStartRotation;
-                
-                rotateWheels(deltaRotation);
-                snapStartRotation = snapProgress;
-            } 
+            // When close enough, force exact position to prevent drift
+            if (Math.abs(displacement) < 0.001 && Math.abs(this.springVelocity) < 0.001) {
+                this.snapProgress = this.snapTargetRotation;
+                this.springVelocity = 0;
+                this.isSnapping = false;
+                this.targetVelocity = 0;
+                this.currentVelocity = 0;
+
+                setTimeout(() => this.forceHoverCheck(), 0);
+            }
+            
+            // Rotate by the delta since last frame
+            const deltaRotation = this.snapProgress - this.snapStartRotation;
+            
+            this.rotateWheels(deltaRotation);
+            this.snapStartRotation = this.snapProgress;
+        } 
+    }
 
 
-            // Scroll wheels Animation
-            else { 
+    /* *** Spin Wheels Animation *** */
+    updateSpinAnimation() {
+        // Keyboard scrolling holding up/down arrows
+        if (this.isKeyPressed) {
+            let keyDirection = 0;
 
-                // Keyboard scrolling
-                if (isKeyPressed) {
-                    let keyDirection = 0;
-
-                    if (pressedKeys.has('ArrowUp')) {
-                        keyDirection += SCROLL_CONFIG.KEY_SPIN_SPEED;
-                    }
-                    if (pressedKeys.has('ArrowDown')) {
-                        keyDirection -= SCROLL_CONFIG.KEY_SPIN_SPEED;
-                    }
-                    
-                    if (keyDirection !== 0) {
-                        targetVelocity = keyDirection;
-                        // Clamp to max velocity
-                        targetVelocity = Math.max(-ANIMATION_CONFIG.MAX_VELOCITY, Math.min(ANIMATION_CONFIG.MAX_VELOCITY, targetVelocity));
-                    }
-                }
-
-                currentVelocity = MathUtils.lerp(currentVelocity, targetVelocity, 0.1);
-                targetVelocity *= ANIMATION_CONFIG.FRICTION;
-                
-                // Stop very small movements
-                if (Math.abs(targetVelocity) < ANIMATION_CONFIG.VELOCITY_THRESHOLD) {
-                    targetVelocity = 0;
-                }
-                if (Math.abs(currentVelocity) < ANIMATION_CONFIG.VELOCITY_THRESHOLD) {
-                    currentVelocity = 0;
-                }
-                
-                if (currentVelocity !== 0) {
-                    rotateWheels(currentVelocity);
-                }
+            if (this.pressedKeys.has('ArrowUp')) {
+                keyDirection += SCROLL_CONFIG.KEY_SPIN_SPEED;
+            }
+            if (this.pressedKeys.has('ArrowDown')) {
+                keyDirection -= SCROLL_CONFIG.KEY_SPIN_SPEED;
+            }
+            if (keyDirection !== 0) {
+                this.targetVelocity = this.clampVelocity(keyDirection);
             }
         }
- 
 
-        // Hover effects animation
-        if (mouseMovedSinceLastCheck && now - lastHoverCheck > ANIMATION_CONFIG.HOVER_CHECK_INTERVAL) {
-            lastHoverCheck = now;
-            mouseMovedSinceLastCheck = false;
+        this.currentVelocity = MathUtils.lerp(this.currentVelocity, this.targetVelocity, 0.1);
+        this.targetVelocity *= ANIMATION_CONFIG.FRICTION;
+        
+        // Threshold to prevent small movements
+        if (Math.abs(this.targetVelocity) < ANIMATION_CONFIG.VELOCITY_THRESHOLD) {
+            this.targetVelocity = 0;
+        }
+        if (Math.abs(this.currentVelocity) < ANIMATION_CONFIG.VELOCITY_THRESHOLD) {
+            this.currentVelocity = 0;
+        }
+        if (this.currentVelocity !== 0) {
+            this.rotateWheels(this.currentVelocity);
+        }
+    }
 
-            // Skip raycasting during fast movement
-            if (Math.abs(currentVelocity) > 0.03) {
-                if (isHovering) {
+
+    /* **** Mouse Hover Animations *** */
+    updateHoverEffects() {
+        // Throttle the mouse events for performance.
+        const now = performance.now();
+        if (this.mouseMovedSinceLastCheck && now - this.lastHoverCheck > ANIMATION_CONFIG.HOVER_CHECK_INTERVAL) {
+            this.lastHoverCheck = now;
+            this.mouseMovedSinceLastCheck = false;
+
+            // Skip raycasting during fast wheel spin
+            if (Math.abs(this.currentVelocity) > 0.03) {
+                if (this.isHovering) {
                     document.body.style.cursor = "default";
-                    isHovering = false;
-                    hoveredItem = null;
+                    this.isHovering = false;
+                    this.hoveredItem = null;
                 }
                 return;
             }
 
-            raycaster.setFromCamera(mouse, experience.camera.instance);
+            this.raycaster.setFromCamera(this.mouse, this.experience.camera.instance);
 
-            const visibleMeshes = allPhotoMeshes.filter(mesh => {
-                const distance = experience.camera.instance.position.distanceTo(mesh.position);
+            // Only raycast against nearby meshes for performance
+            const visibleMeshes = this.allPhotoMeshes.filter(mesh => {
+                const distance = this.experience.camera.instance.position.distanceTo(mesh.position);
                 return distance < 400; 
             });
 
-            const rayIntersects = raycaster.intersectObjects(visibleMeshes);
+            const rayIntersects = this.raycaster.intersectObjects(visibleMeshes);
 
             // Not hovering
             if (!rayIntersects.length) {
-                if (isHovering) {
+                // Reset just in case
+                if (this.isHovering) {
                     document.body.style.cursor = "default";
-                    isHovering = false;
-                    hoveredItem = null;
+                    this.isHovering = false;
+                    this.hoveredItem = null;
                 }
                     
-                for (let i = 0, len = allPhotoMeshes.length; i < len; i++) {
-                    const mesh = allPhotoMeshes[i];
+                for (let i = 0; i < this.allPhotoMeshes.length; i++) {
+                    const mesh = this.allPhotoMeshes[i];
 
+                    // Reset scale
                     mesh.scale.set(
                         MathUtils.lerp(mesh.scale.x, 1, ANIMATION_CONFIG.LERP_FACTOR), 
                         MathUtils.lerp(mesh.scale.y, 1, ANIMATION_CONFIG.LERP_FACTOR),  
                         MathUtils.lerp(mesh.scale.z, 1, ANIMATION_CONFIG.LERP_FACTOR)
                     );
 
+                    // Reset x and y tilt rotation
                     mesh.rotation.x = MathUtils.lerp(mesh.rotation.x, 0, ANIMATION_CONFIG.LERP_FACTOR);
                     mesh.rotation.y = MathUtils.lerp(mesh.rotation.y, 0, ANIMATION_CONFIG.LERP_FACTOR);
 
+                    // Reset z rotation
                     const targetRotationZ = mesh.userData.baseRotationZ || 0;
                     const rotationDiff = targetRotationZ - mesh.rotation.z;
 
+                    // Handle angle wrapping -π to π 
                     if (Math.abs(rotationDiff) > Math.PI) {
                         mesh.rotation.z = targetRotationZ;
                     } else {
@@ -1111,6 +1143,7 @@ export default class PhotoWheels {
                         );
                     }
 
+                    // Reset rim lighting
                     if (mesh.material.uniforms && mesh.material.uniforms.uMouseInfluence) {
                         mesh.material.uniforms.uMouseInfluence.value = MathUtils.lerp(
                             mesh.material.uniforms.uMouseInfluence.value, 
@@ -1122,24 +1155,23 @@ export default class PhotoWheels {
             }
 
 
-            // Hovering 
+            // Apply effects to hovered item
             else { 
                 document.body.style.cursor = "pointer";
-                isHovering = true;
-                hoveredItem = rayIntersects[0].object;
+                this.isHovering = true;
+                this.hoveredItem = rayIntersects[0].object;
 
-                for (let i = 0; i < allPhotoMeshes.length; i++) {
-                    const mesh = allPhotoMeshes[i];
+                for (let i = 0; i < this.allPhotoMeshes.length; i++) {
+                    const mesh = this.allPhotoMeshes[i];
 
                     // Reset non hovered items
-                    if (mesh != hoveredItem) {
+                    if (mesh != this.hoveredItem) {
                         mesh.scale.set(
                             MathUtils.lerp(mesh.scale.x, 1, ANIMATION_CONFIG.LERP_FACTOR), 
                             MathUtils.lerp(mesh.scale.y, 1, ANIMATION_CONFIG.LERP_FACTOR),  
                             MathUtils.lerp(mesh.scale.z, 1, ANIMATION_CONFIG.LERP_FACTOR)
                         );
 
-                        // Reset rim lighting for non-hovered items
                         if (mesh.material.uniforms && mesh.material.uniforms.uMouseInfluence) {
                             mesh.material.uniforms.uMouseInfluence.value = MathUtils.lerp(
                                 mesh.material.uniforms.uMouseInfluence.value, 
@@ -1149,10 +1181,11 @@ export default class PhotoWheels {
                         }
                     }
 
+                    // Reset X and Y rotation for all meshes
                     mesh.rotation.x = MathUtils.lerp(mesh.rotation.x, 0, ANIMATION_CONFIG.LERP_FACTOR);
                     mesh.rotation.y = MathUtils.lerp(mesh.rotation.y, 0, ANIMATION_CONFIG.LERP_FACTOR);
 
-                    // Handle Z rotation carefully for non-hovered items
+                    // Restore base Z rotation
                     const targetRotationZ = mesh.userData.baseRotationZ || 0;
                     const rotationDiff = targetRotationZ - mesh.rotation.z;
                     
@@ -1164,73 +1197,81 @@ export default class PhotoWheels {
                 }
                 
                 // Scale up the hovered item
-                hoveredItem.scale.set(
-                    MathUtils.lerp(hoveredItem.scale.x, INTERACTION_CONFIG.HOVER_SCALE, ANIMATION_CONFIG.LERP_FACTOR * 1.25), 
-                    MathUtils.lerp(hoveredItem.scale.y, INTERACTION_CONFIG.HOVER_SCALE, ANIMATION_CONFIG.LERP_FACTOR * 1.25),  
-                    MathUtils.lerp(hoveredItem.scale.z, INTERACTION_CONFIG.HOVER_SCALE, ANIMATION_CONFIG.LERP_FACTOR * 1.25)
+                this.hoveredItem.scale.set(
+                    MathUtils.lerp(this.hoveredItem.scale.x, INTERACTION_CONFIG.HOVER_SCALE, ANIMATION_CONFIG.LERP_FACTOR * 1.25), 
+                    MathUtils.lerp(this.hoveredItem.scale.y, INTERACTION_CONFIG.HOVER_SCALE, ANIMATION_CONFIG.LERP_FACTOR * 1.25),  
+                    MathUtils.lerp(this.hoveredItem.scale.z, INTERACTION_CONFIG.HOVER_SCALE, ANIMATION_CONFIG.LERP_FACTOR * 1.25)
                 );
 
                 
                 // Tilt effect animation
-                hoveredItem.getWorldPosition(tiltVector);
-                tiltVector.project(experience.camera.instance);
+                this.hoveredItem.getWorldPosition(this.tiltVector);
+                this.tiltVector.project(this.experience.camera.instance);
 
-                const screenX = tiltVector.x;
-                const screenY = tiltVector.y;
-                const offsetX = mouse.x - screenX;
-                const offsetY = mouse.y - screenY;
+                const screenX = this.tiltVector.x;
+                const screenY = this.tiltVector.y;
+
+                // Calculate mouse offset from photo center
+                const offsetX = this.mouse.x - screenX;
+                const offsetY = this.mouse.y - screenY;
+
+                // Normalize and clamp offset
                 const normalizedX = MathUtils.clamp(offsetX / INTERACTION_CONFIG.PHOTO_SCREEN_SIZE, -1, 1);
                 const normalizedY = MathUtils.clamp(offsetY / INTERACTION_CONFIG.PHOTO_SCREEN_SIZE, -1, 1);
 
+                // Convert to tilt angles
                 const tiltX = normalizedY * INTERACTION_CONFIG.MAX_TILT;
                 const tiltY = normalizedX * INTERACTION_CONFIG.MAX_TILT;
 
-                hoveredItem.rotation.x = MathUtils.lerp(hoveredItem.rotation.x, tiltX, ANIMATION_CONFIG.LERP_FACTOR);
-                hoveredItem.rotation.y = MathUtils.lerp(hoveredItem.rotation.y, tiltY, ANIMATION_CONFIG.LERP_FACTOR);
+                this.hoveredItem.rotation.x = MathUtils.lerp(this.hoveredItem.rotation.x, tiltX, ANIMATION_CONFIG.LERP_FACTOR);
+                this.hoveredItem.rotation.y = MathUtils.lerp(this.hoveredItem.rotation.y, tiltY, ANIMATION_CONFIG.LERP_FACTOR);
 
-                // Enhanced rim lighting for hovered item
-                if (hoveredItem.material.uniforms) {
-                    const mouseScreenX = (mouse.x + 1) * 0.5;
-                    const mouseScreenY = (mouse.y + 1) * 0.5;
+                // Rim lighting for hovered item
+                if (this.hoveredItem.material.uniforms) {
+                    const mouseScreenX = (this.mouse.x + 1) * 0.5;
+                    const mouseScreenY = (this.mouse.y + 1) * 0.5;
                     
-                    hoveredItem.material.uniforms.uMousePosition.value.set(mouseScreenX, mouseScreenY);
-                    hoveredItem.material.uniforms.uMouseInfluence.value = MathUtils.lerp(
-                        hoveredItem.material.uniforms.uMouseInfluence.value, 
+                    this.hoveredItem.material.uniforms.uMousePosition.value.set(mouseScreenX, mouseScreenY);
+                    this.hoveredItem.material.uniforms.uMouseInfluence.value = MathUtils.lerp(
+                        this.hoveredItem.material.uniforms.uMouseInfluence.value, 
                         1.0, 
                         ANIMATION_CONFIG.LERP_FACTOR
                     );
                 }
 
-                // For hovered item, maintain base Z rotation (no additional tilting on Z-axis)
-                const targetZ = hoveredItem.userData.baseRotationZ || 0;
-                const zDiff = targetZ - hoveredItem.rotation.z;
+                // Maintain base Z rotation (no additional tilting on Z-axis)
+                const targetZ = this.hoveredItem.userData.baseRotationZ || 0;
+                const zDiff = targetZ - this.hoveredItem.rotation.z;
                 
                 if (Math.abs(zDiff) > Math.PI) {
-                    hoveredItem.rotation.z = targetZ;
-                } else if (Math.abs(zDiff) > 0.05) { // Only adjust if significantly off
-                    hoveredItem.rotation.z = MathUtils.lerp(
-                        hoveredItem.rotation.z, 
+                    this.hoveredItem.rotation.z = targetZ;
+                } else if (Math.abs(zDiff) > 0.05) { 
+                    // Slower correction to avoid fighting with tilt animations
+                    this.hoveredItem.rotation.z = MathUtils.lerp(
+                        this.hoveredItem.rotation.z, 
                         targetZ, 
                         ANIMATION_CONFIG.LERP_FACTOR * 0.5
                     );
                 }
             }
         }
+    }
 
-        const visibleMaterials = materials.filter((_, i) => 
-            allPhotoMeshes[i].visible
+    updateShaderMaterials() {
+        const visibleMaterials = this.materials.filter((_, i) => 
+            this.allPhotoMeshes[i].visible
         );
 
         for (let i = 0; i < visibleMaterials.length; i++) {
             if (visibleMaterials[i].updateLights) {
-                visibleMaterials[i].updateLights(experience.lights.group);
+                visibleMaterials[i].updateLights(this.experience.lights.group);
             }
         }
 
-        for (let  i = 0; i < allPhotoMeshes.length; i++) {
-            const mesh = allPhotoMeshes[i];
+        for (let  i = 0; i < this.allPhotoMeshes.length; i++) {
+            const mesh = this.allPhotoMeshes[i];
 
-            const distanceToCamera = experience.camera.instance.position.distanceTo(mesh.position);
+            const distanceToCamera = this.experience.camera.instance.position.distanceTo(mesh.position);
             if (distanceToCamera > 200) {
                 // Lower quality for distant objects
                 mesh.material.uniforms.uLOD.value = 0.5; 
@@ -1238,12 +1279,5 @@ export default class PhotoWheels {
                 mesh.material.uniforms.uLOD.value = 1.0;
             }
         }
-
-
-        // Periodic memory cleanup
-        if (now % 300000 < 16) {
-            maintenanceCleanup();
-        }
     }
-
 }

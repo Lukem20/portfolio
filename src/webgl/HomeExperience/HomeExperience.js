@@ -8,7 +8,7 @@ import Loop from '../systems/Loop.js';
 import Camera from './components/camera.js';
 import Lights from './components/lights.js';
 import Background from './components/background.js';
-import { createWheels } from './components/photoWheels.js';
+import PhotoWheels from './components/PhotoWheel/photoWheels.js';
 
 let instance = null;
 
@@ -24,12 +24,12 @@ export default class HomeExperience {
         this.loop = new Loop(this.camera.instance, this.scene, this.renderer);
         this.background = new Background();
         this.lights = new Lights();
-        this.photoWheels = createWheels();
+        this.photoWheels = new PhotoWheels();
         
         this.container.append(this.renderer.domElement);
-        this.photoWheels.setupWebGL(this.renderer);
+        this.photoWheels.setupWebGLContextListeners(this.renderer);
         
-        this.scene.add(this.lights.group, this.photoWheels, this.camera.instance, this.background.mesh);
+        this.scene.add(this.lights.group, this.photoWheels.instance, this.camera.instance, this.background.mesh);
 
         for (const light of this.lights.group.children) this.loop.updatables.push(light);
         this.loop.updatables.push(this.camera);
@@ -45,7 +45,7 @@ export default class HomeExperience {
     }
     dispose() {
         if (this.photoWheels) {
-            this.photoWheels.cleanup();
+            this.photoWheels.cleanupEventListeners();
         }
     }
     start() {
