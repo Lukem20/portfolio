@@ -110,6 +110,7 @@ export default class PhotoWheels {
 
         this.createPhotoMeshes();
         this.positionWheels();
+        this.saveOriginalMeshPositions();
         this.createWheelGroup();
     }
 
@@ -125,8 +126,6 @@ export default class PhotoWheels {
             // Create mesh
             const photoMeshTop = createMesh(this.roundedRectangleGeometry, this.materials[i], PHOTOS_DATA[i], i);
             const photoMeshBottom = createMesh(this.roundedRectangleGeometry, this.materials[i], PHOTOS_DATA[i], i);
-            photoMeshTop.userData.originalPosition = photoMeshTop.position.clone();
-            photoMeshBottom.userData.originalPosition = photoMeshBottom.position.clone();
             // Add to Group
             this.allPhotoMeshes.push(photoMeshTop, photoMeshBottom);
             this.topWheel.add(photoMeshTop);
@@ -141,6 +140,13 @@ export default class PhotoWheels {
         this.bottomWheel.translateY(
             -WHEEL_CONFIG.POSITION + WHEEL_CONFIG.POSITION_OFFSET
         );
+    }
+    
+    saveOriginalMeshPositions() {
+        for (let i = 0; i < this.allPhotoMeshes.length; i++) {
+            const mesh = this.allPhotoMeshes[i];
+            mesh.userData.originalPosition = mesh.position.clone();
+        }
     }
 
     createWheelGroup() {
