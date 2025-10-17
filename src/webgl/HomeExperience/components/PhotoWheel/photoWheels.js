@@ -546,27 +546,28 @@ export default class PhotoWheels {
     handlePageShow = (event) => {
         console.log('Page show');
         if (event.persisted) {
-            console.log('event persisted');
-            this.endConvergeAnimation();
 
-            this.isSnapping = false;
-            this.targetVelocity = 0;
-            this.currentVelocity = 0;
-            this.convergeProgress = 0;
+            window.location.reload();
+            // this.endConvergeAnimation();
 
-            console.log('reset wheel groups')
-            if (this.topWheel.userData.originalRotation) {
-                this.topWheel.rotation.copy(this.topWheel.userData.originalRotation);
-            }
-            if (this.bottomWheel.userData.originalRotation) {
-                this.bottomWheel.rotation.copy(this.bottomWheel.userData.originalRotation);
-            }
+            // this.isSnapping = false;
+            // this.targetVelocity = 0;
+            // this.currentVelocity = 0;
+            // this.convergeProgress = 0;
 
-            this.resetAllMeshToOriginalState();
+            // console.log('reset wheel groups')
+            // if (this.topWheel.userData.originalRotation) {
+            //     this.topWheel.rotation.copy(this.topWheel.userData.originalRotation);
+            // }
+            // if (this.bottomWheel.userData.originalRotation) {
+            //     this.bottomWheel.rotation.copy(this.bottomWheel.userData.originalRotation);
+            // }
 
-            if (this.experience.renderer) {
-                this.experience.renderer.render(this.experience.scene, this.experience.camera.instance);
-            }
+            // this.resetAllMeshToOriginalState();
+
+            // if (this.experience.renderer) {
+            //     this.experience.renderer.render(this.experience.scene, this.experience.camera.instance);
+            // }
         }
     }
 
