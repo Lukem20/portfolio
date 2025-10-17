@@ -769,8 +769,8 @@ export default class PhotoWheels {
         document.removeEventListener('keydown', this.handleKeyDown);
         document.removeEventListener('keyup', this.handleKeyUp);
         document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-        document.removeEventListener('pageshow', this.handlePageShow);
-        document.removeEventListener('pagehide', this.handlePageHide);  
+        // document.removeEventListener('pageshow', this.handlePageShow);
+        // document.removeEventListener('pagehide', this.handlePageHide);  
         this.experience.container.removeEventListener('mousemove', this.handleMouseMove);
         this.experience.container.removeEventListener('click', this.handleMouseClick);
         this.experience.container.removeEventListener('mousedown', this.handleMouseDown);
