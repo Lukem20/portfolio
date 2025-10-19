@@ -147,6 +147,9 @@ export default class PhotoWheels {
             const mesh = this.allPhotoMeshes[i];
             mesh.userData.originalPosition = mesh.position.clone();
         }
+
+        this.topWheel.userData.originalRotation = this.topWheel.rotation.clone();
+        this.bottomWheel.userData.originalRotation = this.bottomWheel.rotation.clone();
     }
 
     createWheelGroup() {
@@ -543,15 +546,30 @@ export default class PhotoWheels {
 
 
     handlePageShow = (event) => {
+        console.log('Page show');
         if (event.persisted) {
-            this.endConvergeAnimation();
 
-            this.isSnapping = false;
-            this.targetVelocity = 0;
-            this.currentVelocity = 0;
-            this.convergeProgress = 0;
+            window.location.reload();
+            // this.endConvergeAnimation();
 
-            this.resetAllMeshToOriginalState();
+            // this.isSnapping = false;
+            // this.targetVelocity = 0;
+            // this.currentVelocity = 0;
+            // this.convergeProgress = 0;
+
+            // console.log('reset wheel groups')
+            // if (this.topWheel.userData.originalRotation) {
+            //     this.topWheel.rotation.copy(this.topWheel.userData.originalRotation);
+            // }
+            // if (this.bottomWheel.userData.originalRotation) {
+            //     this.bottomWheel.rotation.copy(this.bottomWheel.userData.originalRotation);
+            // }
+
+            // this.resetAllMeshToOriginalState();
+
+            // if (this.experience.renderer) {
+            //     this.experience.renderer.render(this.experience.scene, this.experience.camera.instance);
+            // }
         }
     }
 
@@ -636,6 +654,7 @@ export default class PhotoWheels {
 
 
     resetAllMeshToOriginalState() {
+        console.log('Reset meshes')
         for (let i = 0; i < this.allPhotoMeshes.length; i++) {
             this.resetMeshState(this.allPhotoMeshes[i]);
         }
@@ -650,7 +669,14 @@ export default class PhotoWheels {
         mesh.scale.set(1, 1, 1);
         mesh.rotation.x = 0;
         mesh.rotation.y = 0;
-        mesh.rotation.z = mesh.userData.baseRotationZ || 0;
+
+       if (mesh.userData.originalBaseRotationZ !== undefined) {
+            mesh.rotation.z = mesh.userData.originalBaseRotationZ;
+            mesh.userData.baseRotationZ = mesh.userData.originalBaseRotationZ;
+        } else {
+            mesh.rotation.z = 0;
+            mesh.userData.baseRotationZ = 0;
+        }
         
         this.resetMeshUserData(mesh);
     }
@@ -746,8 +772,8 @@ export default class PhotoWheels {
         document.removeEventListener('keydown', this.handleKeyDown);
         document.removeEventListener('keyup', this.handleKeyUp);
         document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-        document.removeEventListener('pageshow', this.handlePageShow);
-        document.removeEventListener('pagehide', this.handlePageHide);  
+        // document.removeEventListener('pageshow', this.handlePageShow);
+        // document.removeEventListener('pagehide', this.handlePageHide);  
         this.experience.container.removeEventListener('mousemove', this.handleMouseMove);
         this.experience.container.removeEventListener('click', this.handleMouseClick);
         this.experience.container.removeEventListener('mousedown', this.handleMouseDown);
