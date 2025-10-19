@@ -377,7 +377,7 @@ export default class PhotoWheels {
 
         clearTimeout(this.spinTimeout);
         this.spinTimeout = setTimeout(() => {
-            this.startSnapAnimation;
+            this.startSnapAnimation();
         }, SCROLL_CONFIG.SWIPE_SNAP_DELAY);
     }
 
