@@ -3,6 +3,7 @@ import { createScene } from '../systems/scene.js';
 import { createRenderer } from '../systems/renderer.js';
 import Resizer from '../systems/Resizer.js';
 import Loop from '../systems/Loop.js';
+import Debug from '../systems/Debug.js';
 
 // Components
 import Camera from './components/camera.js';
@@ -25,6 +26,7 @@ export default class HomeExperience {
         this.background = new Background();
         this.lights = new Lights();
         this.photoWheels = new PhotoWheels();
+        this.debug = new Debug();
         
         this.container.append(this.renderer.domElement);
         this.photoWheels.setupWebGLContextListeners(this.renderer);

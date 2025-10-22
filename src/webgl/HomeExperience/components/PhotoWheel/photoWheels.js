@@ -28,6 +28,17 @@ export default class PhotoWheels {
         this.initializeState();
         this.initializeScene();
         this.setupEventListeners();
+
+        
+        // Debug
+        // this.debug = this.experience.debug
+
+        // if(this.debug.active) {
+        //     const debugObject = {
+
+        //     };
+        //     this.debugFolder = this.debug.ui.addFolder('photoWheels')
+        // }
     }
 
 
@@ -544,30 +555,30 @@ export default class PhotoWheels {
 
 
     handlePageShow = (event) => {
-        console.log('Page show');
         if (event.persisted) {
 
+            
+            this.endConvergeAnimation();
+
+            this.isSnapping = false;
+            this.targetVelocity = 0;
+            this.currentVelocity = 0;
+            this.convergeProgress = 0;
+
+            if (this.topWheel.userData.originalRotation) {
+                this.topWheel.rotation.copy(this.topWheel.userData.originalRotation);
+            }
+            if (this.bottomWheel.userData.originalRotation) {
+                this.bottomWheel.rotation.copy(this.bottomWheel.userData.originalRotation);
+            }
+
+            this.resetAllMeshToOriginalState();
+
+            if (this.experience.renderer) {
+                this.experience.renderer.render(this.experience.scene, this.experience.camera.instance);
+            }
+        } else {
             window.location.reload();
-            // this.endConvergeAnimation();
-
-            // this.isSnapping = false;
-            // this.targetVelocity = 0;
-            // this.currentVelocity = 0;
-            // this.convergeProgress = 0;
-
-            // console.log('reset wheel groups')
-            // if (this.topWheel.userData.originalRotation) {
-            //     this.topWheel.rotation.copy(this.topWheel.userData.originalRotation);
-            // }
-            // if (this.bottomWheel.userData.originalRotation) {
-            //     this.bottomWheel.rotation.copy(this.bottomWheel.userData.originalRotation);
-            // }
-
-            // this.resetAllMeshToOriginalState();
-
-            // if (this.experience.renderer) {
-            //     this.experience.renderer.render(this.experience.scene, this.experience.camera.instance);
-            // }
         }
     }
 
@@ -581,7 +592,6 @@ export default class PhotoWheels {
         // Dispose resources when page is hidden for 30s
         setTimeout(() => {
             if (document.hidden) {
-                console.log('Page hidden - disposing resources');
                 this.disposeResources();
             }
         }, 30000);
@@ -591,7 +601,6 @@ export default class PhotoWheels {
     handleContextLoss = (event) => {
         event.preventDefault();
         this.isContextLost = true;
-        console.warn('WebGL context lost - pausing animations');
 
         if (this.isConverging) {
             this.endConvergeAnimation();
@@ -652,7 +661,6 @@ export default class PhotoWheels {
 
 
     resetAllMeshToOriginalState() {
-        console.log('Reset meshes')
         for (let i = 0; i < this.allPhotoMeshes.length; i++) {
             this.resetMeshState(this.allPhotoMeshes[i]);
         }
@@ -769,13 +777,11 @@ export default class PhotoWheels {
         document.removeEventListener('touchend', this.handleTouchEnd);
         document.removeEventListener('keydown', this.handleKeyDown);
         document.removeEventListener('keyup', this.handleKeyUp);
-        document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-        // document.removeEventListener('pageshow', this.handlePageShow);
-        // document.removeEventListener('pagehide', this.handlePageHide);  
+        document.removeEventListener('visibilitychange', this.handleVisibilityChange);  
+        document.removeEventListener('mouseup', this.handleMouseUp);
         this.experience.container.removeEventListener('mousemove', this.handleMouseMove);
         this.experience.container.removeEventListener('click', this.handleMouseClick);
         this.experience.container.removeEventListener('mousedown', this.handleMouseDown);
-        document.removeEventListener('mouseup', this.handleMouseUp);
 
         this.disposeResources();
 
@@ -789,26 +795,37 @@ export default class PhotoWheels {
 
 
     disposeResources() {
+        // Dispose geometry
+        if (this.roundedRectangleGeometry) {
+            this.roundedRectangleGeometry.dispose();
+        }
+
+        // Dispose materials
+        this.materialsToDispose.forEach(material => {
+            if (material) material.dispose();
+        });
+        this.materialsToDispose.length = 0;
+        this.materials.length = 0;
+
+        // Dispose textures
         this.texturesToDispose.forEach(texture => {
             if (texture) texture.dispose();
         });
         this.texturesToDispose.length = 0;
 
-        this.materialsToDispose.forEach(material => {
-            if (material) material.dispose();
-        });
-        this.materialsToDispose.length = 0;
-
+        // Dispose meshes
         this.allPhotoMeshes.forEach(mesh => {
             if (mesh.geometry) mesh.geometry.dispose();
         });
-
-        if (this.roundedRectangleGeometry) {
-            this.roundedRectangleGeometry.dispose();
-        }
-
         this.allPhotoMeshes.length = 0;
-        this.materials.length = 0;
+
+        // Dispose renderer
+        this.experience.renderer.dispose();
+
+        // Dispose debug
+        if(this.debug.active) {
+            this.debug.ui.destroy();
+        }
     }
 
 
