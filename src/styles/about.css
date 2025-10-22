@@ -42,8 +42,16 @@
 
 
 /* *** Skills *** */
-#scene-container {
-    
+.scene-container {
+    overflow: hidden;
+}
+
+.scene-container .webgl {
+    display: block;
+    max-width: 1000px;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
 }
 
 #about #skills {
