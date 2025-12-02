@@ -11,7 +11,6 @@ export default defineConfig({
             input: {
                 main: resolve(root, 'index.html'),
                 about: resolve(root, 'about.html'),
-                test: resolve(root, 'test.html'),
                 sevendeadlysins: resolve(root, '/projects/SevenDeadlySins.html'),
                 botanyblog: resolve(root, '/projects/BotanyBlog.html'),
                 brandidentitytimeline: resolve(root, '/projects/BrandIdentityTimeline.html'),
