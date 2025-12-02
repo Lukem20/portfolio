@@ -825,9 +825,9 @@ export default class PhotoWheels {
         this.experience.renderer.dispose();
 
         // Dispose debug
-        if(this.debug.active) {
-            this.debug.ui.destroy();
-        }
+        // if(this.debug.active) {
+        //     this.debug.ui.destroy();
+        // }
     }
 
 
