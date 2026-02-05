@@ -1,5 +1,5 @@
 import { Clock } from "three";
-import EventEmitter from "./EventEmitter";
+import EventEmitter from "./EventEmitter.js";
 
 const clock = new Clock();
 

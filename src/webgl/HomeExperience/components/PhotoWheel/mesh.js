@@ -1,4 +1,4 @@
-import { WHEEL_CONFIG } from '../config.js';
+import { WHEEL_CONFIG } from '../Config.js';
 import {
     Mesh,
 } from 'three';

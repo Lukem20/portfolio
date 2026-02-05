@@ -2,7 +2,7 @@ import {
     INTERACTION_CONFIG,
     SCROLL_CONFIG,
     ANIMATION_CONFIG,
-} from '../config.js';
+} from '../Config.js';
 
 export default class WheelInteraction {
     constructor(state, experience, animation) {

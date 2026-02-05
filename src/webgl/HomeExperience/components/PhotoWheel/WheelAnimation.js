@@ -3,7 +3,7 @@ import {
     WHEEL_CONFIG,
     ANIMATION_CONFIG,
     SCROLL_CONFIG,
-} from '../config.js';
+} from '../Config.js';
 
 export default class WheelAnimation {
     constructor(state, experience) {

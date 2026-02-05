@@ -7,7 +7,7 @@ import {
 } from 'three';
 import {
     ANIMATION_CONFIG,
-} from '../config.js';
+} from '../Config.js';
 
 export default class WheelState {
     constructor() {

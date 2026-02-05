@@ -2,7 +2,7 @@ import { MathUtils } from 'three';
 import {
     ANIMATION_CONFIG,
     INTERACTION_CONFIG,
-} from '../config.js';
+} from '../Config.js';
 
 export default class WheelHover {
     constructor(state, experience) {

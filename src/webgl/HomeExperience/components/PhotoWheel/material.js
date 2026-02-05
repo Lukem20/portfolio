@@ -1,5 +1,5 @@
-import { vertexShader } from './shaders/vertexShader';
-import { fragmentShader } from './shaders/fragmentShader';
+import { vertexShader } from './shaders/vertexShader.js';
+import { fragmentShader } from './shaders/fragmentShader.js';
 import {
     ShaderMaterial,
     Vector2,

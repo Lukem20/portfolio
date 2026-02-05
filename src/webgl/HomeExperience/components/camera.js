@@ -2,7 +2,7 @@ import {
     PerspectiveCamera,
     Clock,
 } from 'three';
-import HomeExperience from '../HomeExperience';
+import HomeExperience from '../HomeExperience.js';
 
 
 export default class Camera {

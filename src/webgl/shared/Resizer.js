@@ -1,4 +1,4 @@
-import EventEmitter from "./EventEmitter";
+import EventEmitter from "./EventEmitter.js";
 
 export default class Resizer extends EventEmitter {
     constructor(container, camera, renderer) {
