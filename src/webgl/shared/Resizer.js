@@ -9,12 +9,14 @@ export default class Resizer extends EventEmitter {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         this.pixelRatio = Math.min(window.devicePixelRatio, 2);
-        this.setSize();
-
-        window.addEventListener("resize", () => {
+        
+        this.handleResize = () => {
             this.trigger('resize');
             this.setSize();
-        });
+        }
+        
+        this.setSize();
+        window.addEventListener("resize", this.handleResize);
     }
 
     setSize() {
@@ -26,5 +28,9 @@ export default class Resizer extends EventEmitter {
         
         this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(this.pixelRatio);
+    }
+
+    dispose() {
+        window.removeEventListener("resize", this.handleResize);
     }
 }

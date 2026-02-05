@@ -25,7 +25,7 @@ export default class Loop extends EventEmitter {
     }
 
     tick() {
-        const deltaTime = clock.getElapsedTime();
+        const deltaTime = clock.getDelta();
         for (const object of this.updatables) {
             object.tick(deltaTime);
         }

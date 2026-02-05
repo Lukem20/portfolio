@@ -6,7 +6,6 @@
     --text-color:               #FFFFEE;
     --call-to-action:           #F4FF5E;
 }
-/* ------ * /
 
 
 
@@ -66,7 +65,6 @@ p.tall-first-letter::first-letter {
     font-weight: bold;
     padding-top: 0.15em;
     margin-right: 0.2em;
-
     initial-letter: 2;
 }
 

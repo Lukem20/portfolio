@@ -4,12 +4,11 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="author" content="Luke Moore" />
-        <meta name="description" content="Luke Moore's 2024/25 portfolio website. Web designer & developer." />
+        <meta name="description" content="Luke Moore's 2024 portfolio website. Web designer & developer." />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <title>Luke Moore</title>
 
-        <link rel="icon" type="image/svg+xml" href="/favicon-light.svg" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" media="(prefers-color-scheme: light)">
         <link href="/favicon-light.svg" rel="icon" type="image/svg+xml" media="(prefers-color-scheme: dark)">
         <link rel="stylesheet" href="styles/global.css" />
@@ -54,24 +53,15 @@
 
             async function main() {
                 const container = document.querySelector('#scene-container');
+                if (!container) return;
 
-                if (!container) {
-                    return;
-                }
-
-                const homeExperience = new HomeExperience(container);
-                homeExperience.render();
-                homeExperience.start();
+                const canvasExperience = new HomeExperience(container);
+                canvasExperience.render();
+                canvasExperience.start();
 
                 window.addEventListener('beforeunload', () => {
-                    if (homeExperience) {
-                        homeExperience.dispose();
-                    }
-                });
-
-                document.addEventListener('pagehide', () => {
-                    if (homeExperience) {
-                        homeExperience.dispose();
+                    if (canvasExperience) {
+                        canvasExperience.dispose();
                     }
                 });
             }

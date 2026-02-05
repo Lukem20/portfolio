@@ -4,17 +4,15 @@ import {
     Object3D,
     Group,
 } from 'three';
-import HomeExperience from '../HomeExperience';
-
 
 export default class Lights {
 
-    constructor() {
-        this.experience = new HomeExperience();
+    constructor(scene) {
+        this.scene = scene;
         this.ambientLight = new AmbientLight(0xffffff, 0.1);
-        this.spotLight1 = this.createSpotlight( 0xFAFAFA, 240, this.experience.scene );
-        this.spotLight2 = this.createSpotlight( 0x36EEF5, 120, this.experience.scene );
-        this.spotLight3 = this.createSpotlight( 0xFF5F37, 0, this.experience.scene );
+        this.spotLight1 = this.createSpotlight( 0xFAFAFA, 240 );
+        this.spotLight2 = this.createSpotlight( 0x36EEF5, 120 );
+        this.spotLight3 = this.createSpotlight( 0xFF5F37, 0 );
         this.group = new Group();
 
         this.addLightsToGroup();
@@ -30,7 +28,7 @@ export default class Lights {
         this.group.position.y -= 90;
     }
 
-    createSpotlight(color, angleOffset, scene) {
+    createSpotlight(color, angleOffset) {
         const light = new SpotLight(color, 80);
         light.castShadow = true;
         light.angle = 0.3;
@@ -57,16 +55,16 @@ export default class Lights {
         );
 
         light.target = target;
-        scene.add(target);
+        this.scene.add(target);
 
         const movement = {
-            angleX: Math.random() * Math.PI * 2,     // Random starting angle for X
-            angleY: Math.random() * Math.PI * 2,     // Random starting angle for Y
-            speedX: 0.006 + Math.random() * 0.004,   // Random speed X (0.008-0.012)
-            speedY: 0.004 + Math.random() * 0.006,   // Random speed Y (0.006-0.012)
-            radiusX: 10 + Math.random() * 15,        // Random X radius (10-25)
-            radiusY: 5 + Math.random() * 10,        // Random Y radius (10-25)
-            centerOffsetX: (Math.random() - 0.5) * 20, // Random center offset
+            angleX: Math.random() * Math.PI * 2,        // Random starting angle for X
+            angleY: Math.random() * Math.PI * 2,        // Random starting angle for Y
+            speedX: 0.006 + Math.random() * 0.004,      // Random speed X (0.008-0.012)
+            speedY: 0.004 + Math.random() * 0.006,      // Random speed Y (0.006-0.012)
+            radiusX: 10 + Math.random() * 15,           // Random X radius (10-25)
+            radiusY: 5 + Math.random() * 10,            // Random Y radius (10-25)
+            centerOffsetX: (Math.random() - 0.5) * 20,  // Random center offset
             centerOffsetY: (Math.random() - 0.5) * 20
         }; 
 
